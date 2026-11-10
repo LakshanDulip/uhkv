@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Student Dashboard — Upper Homadola</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --maroon: #650F2A; --maroon2: #800020; --bg: #FFFFFF; --surface: #F8F6F7;
+  --text: #1B1418; --muted: #716970; --border: #E9DFE3;
+  --ok: #21734A; --err: #B3324F; --ink: #650F2A; --card-bg: #FFFFFF;
+  --shadow: 0 1px 3px rgba(101,15,42,.06), 0 12px 32px -12px rgba(101,15,42,.18);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sinhala: 'Noto Sans Sinhala', 'Inter', system-ui, sans-serif;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #120D12; --surface: #1C141B; --text: #F4EEF1; --muted: #B5A9B0;
+  --border: #35272F; --ink: #E58FA7; --err: #FF8DA5; --ok: #6FD39F;
+  --card-bg: #1A131A;
+  --shadow: 0 2px 6px rgba(0,0,0,.4), 0 16px 36px -12px rgba(0,0,0,.6);
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 400 1rem/1.65 var(--font-sinhala);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+html[lang="en"] body { font-family: var(--font-sans); }
+h1,h2,h3,h4 { margin: 0 0 .5em; color: var(--text); line-height: 1.3; }
+a { color: var(--ink); text-decoration: none; }
+.wrap { width: min(1140px, 100% - 2rem); margin-inline: auto; }
+
+header {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+}
+.bar { display: flex; align-items: center; gap: 1rem; min-height: 62px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; color: var(--text); }
+.mark {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--maroon), var(--maroon2));
+  display: grid; place-items: center; color: #fff;
+}
+nav { margin-inline-start: auto; display: flex; gap: .35rem; align-items: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  min-height: 38px; padding: .45rem 1rem; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font: inherit; font-weight: 600; font-size: .88rem; cursor: pointer;
+  transition: transform .15s, box-shadow .2s;
+}
+.btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn.p { background: var(--maroon); border-color: var(--maroon); color: #fff; }
+
+main { padding: 2rem 0 4rem; }
+h2.page { font-size: 1.6rem; margin-bottom: 1rem; }
+.tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin: 1rem 0 1.5rem; }
+.tabs .btn[aria-current="true"] { background: var(--maroon); color: #fff; border-color: var(--maroon); }
+.card {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+  padding: 1.4rem; box-shadow: var(--shadow); margin-bottom: 1rem;
+}
+label { display: block; font-weight: 600; font-size: .9rem; margin: .7rem 0 .3rem; }
+input, select, textarea {
+  width: 100%; min-height: 42px; padding: .6rem .8rem; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit;
+}
+.row { display: flex; gap: .6rem; flex-wrap: wrap; }
+.row > * { flex: 1; min-width: 0; }
+.msg { min-height: 1.3em; font-weight: 600; font-size: .88rem; margin: .5rem 0; }
+.msg.e { color: var(--err); } .msg.o { color: var(--ok); }
+.tw { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+th, td { text-align: start; padding: .6rem .7rem; border-bottom: 1px solid var(--border); }
+th { background: color-mix(in srgb, var(--maroon) 5%, transparent); font-weight: 700; }
+.hide { display: none !important; }
+.login-wrap { max-width: 460px; margin: 4rem auto; }
+.notice-banner { padding: .7rem 1rem; background: color-mix(in srgb, var(--maroon) 6%, transparent); border-left: 4px solid var(--maroon); border-radius: 0 8px 8px 0; font-size: .9rem; color: var(--muted); margin: .5rem 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="index.html">
+      <span class="mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-5 9 5-9 5-9-5z"/><path d="M7 11.5V16c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-4.5"/>
+        </svg>
+      </span>
+      <span>Student Panel</span>
+    </a>
+    <nav>
+      <a class="btn" href="index.html">← Home</a>
+      <button class="btn" id="out" style="display:none;">Sign out</button>
+      <button class="btn" id="theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div id="loginWrap" class="login-wrap">
+      <div class="card">
+        <h2>Student Login</h2>
+        <p class="msg e" id="lerr" role="alert"></p>
+        <form id="lf">
+          <label for="u">Admission Number</label>
+          <input id="u" autocomplete="username" required>
+          <label for="p">Password</label>
+          <input id="p" type="password" autocomplete="current-password" required>
+          <button class="btn p" id="lbtn" type="submit" style="width:100%;margin-top:1rem;">Sign In</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="app" class="hide">
+      <h2 class="page" id="who"></h2>
+      <div class="tabs" id="tabs"></div>
+      <div id="panel"></div>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+const CFG = {
+  firebase: {
+    apiKey: "AIzaSyAtJmvP91wY2pToErARMdcSwpJ2ftVYaCM",
+    authDomain: "uhkv-53eb9.firebaseapp.com",
+    projectId: "uhkv-53eb9",
+    storageBucket: "uhkv-53eb9.firebasestorage.app",
+    messagingSenderId: "191585546232",
+    appId: "1:191585546232:web:b289c3321319c6eb4af00d"
+  },
+  imgbbKey: "bc81d388ab05868ad68ff92d859a7cd7",
+  domain: "uhkv.internal"
+};
+
+const $ = s => document.querySelector(s);
+const root = document.documentElement;
+const st = (k,v) => { try { return v === undefined ? localStorage.getItem(k) : localStorage.setItem(k,v); } catch { return null; } };
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const today = () => new Date().toISOString().slice(0,10);
+const safeImg = u => /^https:\/\/i\.ibb\.co\//.test(u || "");
+const driveOk = u => { try { const x = new URL(u); return x.protocol==="https:" && ["drive.google.com","docs.google.com"].includes(x.hostname); } catch { return false; } };
+const tbl = (h,r) => r.length ? `<div class="tw"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${r.map(c=>`<tr>${c.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : "<p style='color:var(--muted);margin-top:.8rem;'>No records present.</p>";
+
+if (st("uhs_theme")) root.dataset.theme = st("uhs_theme");
+$("#theme").onclick = () => {
+  const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const n = cur === "dark" ? "light" : "dark";
+  root.dataset.theme = n; st("uhs_theme", n);
+};
+
+const B = "https://www.gstatic.com/firebasejs/10.12.2/";
+const [app, au, fs] = await Promise.all([
+  import(B+"firebase-app.js"),
+  import(B+"firebase-auth.js"),
+  import(B+"firebase-firestore.js")
+]);
+const F = { app, au, fs };
+const a = app.initializeApp(CFG.firebase);
+const A = au.getAuth(a);
+const D = fs.getFirestore(a);
+const col = n => fs.collection(D, n);
+const dc = (n,i) => fs.doc(D, n, i);
+const W = (...args) => fs.where(...args);
+const getAll = async (n, ...c) => (await fs.getDocs(fs.query(col(n), ...c))).docs.map(d => ({ id: d.id, ...d.data() }));
+
+const panel = h => { $("#panel").innerHTML = h; };
+const note = (m, ok) => { const n = $("#pm"); if (n) { n.textContent = m; n.className = "msg " + (ok?"o":"e"); } };
+
+const ibbUp = async f => {
+  if (!CFG.imgbbKey || !/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 8e6) throw new Error("JPG/PNG/WebP under 8MB required");
+  const fd = new FormData(); fd.append("image", f);
+  const r = await fetch("https://api.imgbb.com/1/upload?key="+encodeURIComponent(CFG.imgbbKey), { method: "POST", body: fd });
+  const j = await r.json();
+  if (!j.success) throw new Error("Upload failed");
+  return j.data.url;
+};
+
+let me = null;
+
+function alias(raw) {
+  const u = raw.trim().toUpperCase().replace(/\s/g, "");
+  let p = u === "ADMIN" ? "admin" : /^(\d{9}[VX]|\d{12})$/.test(u) ? "t" + u.toLowerCase() : /^\d{1,8}$/.test(u) ? "s" + u : null;
+  return p ? `${p}@${CFG.domain}` : null;
+}
+
+au.onAuthStateChanged(A, async u => {
+  if (!u) { me = null; $("#app").classList.add("hide"); $("#loginWrap").classList.remove("hide"); $("#out").style.display = "none"; return; }
+  try {
+    const s = await fs.getDoc(dc("users", u.uid));
+    if (!s.exists() || s.data().active === false) { await au.signOut(A); $("#lerr").textContent = "Account deactivated."; return; }
+    me = { uid: u.uid, ...s.data() };
+    if (me.role !== "student") {
+      if (me.role === "admin") location.href = "index.html";
+      else if (["teacher","principal"].includes(me.role)) location.href = "teacher.html";
+      else await au.signOut(A);
+      return;
+    }
+    showApp();
+  } catch { await au.signOut(A); }
+});
+
+$("#lf").onsubmit = async e => {
+  e.preventDefault();
+  const em = alias($("#u").value), pw = $("#p").value;
+  if (!em || !pw) { $("#lerr").textContent = "Invalid credentials."; return; }
+  $("#lbtn").disabled = true;
+  try { await au.signInWithEmailAndPassword(A, em, pw); }
+  catch { $("#lerr").textContent = "Incorrect credentials or account deactivated."; }
+  $("#lbtn").disabled = false; $("#p").value = "";
+};
+$("#out").onclick = () => au.signOut(A);
+
+const TABS = ["home", "att", "hw", "marks", "tt", "qb", "lib", "acct"];
+const NAME = {
+  home: "Profile", att: "My Attendance", hw: "Homework", marks: "My Marks",
+  tt: "Timetable", qb: "Question Bank", lib: "Library", acct: "Account Settings"
+};
+
+function showApp() {
+  $("#loginWrap").classList.add("hide");
+  $("#app").classList.remove("hide");
+  $("#out").style.display = "";
+  $("#who").textContent = `${me.name || ""} — Grade ${me.grade || "-"}`;
+  $("#tabs").innerHTML = TABS.map(k => `<button class="btn" data-t="${k}">${NAME[k]}</button>`).join("");
+  $("#tabs").onclick = e => { const b = e.target.closest("[data-t]"); if (b) go(b.dataset.t); };
+  go("home");
+}
+function go(k) {
+  document.querySelectorAll("#tabs .btn").forEach(b => b.setAttribute("aria-current", b.dataset.t === k));
+  P[k]();
+}
+
+const P = {
+  home() {
+    const soc = (me.societies || []).map(s => `<li>${esc(s)}</li>`).join("") || "<li>None recorded</li>";
+    const ex = (me.extracurricular || []).map(x => `<li>${esc(x)}</li>`).join("") || "<li>None recorded</li>";
+    const aw = (me.awards || []).map(a => `<li><strong>${esc(a.title || a)}</strong> ${a.year ? `(${esc(a.year)})` : ""}</li>`).join("") || "<li>None recorded</li>";
+    panel(`
+      <div class="card">
+        <h3>${esc(me.name || "")}</h3>
+        <p><strong>Admission No:</strong> ${esc(me.adm || "")}</p>
+        <p><strong>Grade:</strong> ${esc(me.grade || "")}</p>
+        <hr style="border:0;border-top:1px solid var(--border);margin:1.25rem 0;">
+        <h4>Societies & Leadership</h4><ul>${soc}</ul>
+        <h4>Extracurricular</h4><ul>${ex}</ul>
+        <h4>Awards</h4><ul>${aw}</ul>
+      </div>
+    `);
+  },
+
+  att() {
+    panel("<h3>My Attendance</h3><p>Loading...</p>");
+    (async () => {
+      try {
+        const r = (await getAll("attendance", W("adm","==",me.adm))).sort((a,b)=>b.date.localeCompare(a.date));
+        const p = r.filter(x=>x.status!=="absent").length;
+        const pct = r.length ? Math.round(p/r.length*100) : 0;
+        panel(`<h3>My Attendance</h3>
+          <div class="card">
+            <p><strong>Standing:</strong> ${r.length?`${pct}% (${p}/${r.length})`:"No records"}</p>
+            ${tbl(["Date","Status","By"], r.slice(0,90).map(x => [
+              esc(x.date),
+              `<span class="msg ${x.status==='present'?'o':'e'}">${esc(x.status)}</span>`,
+              esc(x.byName||"—")
+            ]))}
+          </div>`);
+      } catch { panel("<p>Load error.</p>"); }
+    })();
+  },
+
+  hw() {
+    panel("<h3>Homework</h3><div id='hlist'>Loading...</div>");
+    (async () => {
+      try {
+        const tasks = await getAll("homework", W("grade","==",+me.grade));
+        tasks.sort((a,b)=>(b.due||"").localeCompare(a.due||""));
+        const subs = Object.fromEntries((await getAll("hwSubs", W("adm","==",me.adm))).map(x=>[x.hwId,x]));
+        $("#hlist").innerHTML = tasks.length ? tasks.map(h => `
+          <article class="card">
+            <h4 style="margin:0 0 .2rem;">${esc(h.title)}</h4>
+            <small style="color:var(--muted)">Grade ${esc(h.grade)} • ${esc(h.subject)} • Due: ${esc(h.due)}</small>
+            <p style="margin:.6rem 0;">${esc(h.instructions)}</p>
+            ${driveOk(h.link)?`<p><a href="${esc(h.link)}" target="_blank">📄 Document</a></p>`:""}
+            ${subs[h.id] ? `
+              <div class="notice-banner" style="border-color:var(--ok);">
+                ✓ Submitted ${esc(subs[h.id].date||"")}
+                ${subs[h.id].feedback ? `<br><strong>Teacher Feedback:</strong> ${esc(subs[h.id].feedback)}` : ""}
+              </div>
+            ` : `
+              <form data-s="${h.id}" data-g="${esc(h.grade)}" style="margin-top:.6rem;">
+                <textarea rows="2" placeholder="Your answer"></textarea>
+                <label style="font-size:.85rem;">Image (optional)</label>
+                <input type="file" accept="image/jpeg,image/png,image/webp">
+                <p class="msg" id="pm"></p>
+                <p style="margin-top:.5rem;"><button class="btn p">Submit</button></p>
+              </form>
+            `}
+          </article>`).join("") : "<p>No homework.</p>";
+
+        $("#hlist").onsubmit = async e => {
+          const f = e.target.closest("[data-s]");
+          if (!f) return;
+          e.preventDefault();
+          const text = f.querySelector("textarea").value.trim();
+          const file = f.querySelector("input").files[0];
+          if (!text && !file) return note("Provide answer or image.");
+          note("Submitting...", true);
+          try {
+            let imgUrl = "";
+            if (file) imgUrl = await ibbUp(file);
+            await fs.setDoc(dc("hwSubs", `${f.dataset.s}_${me.adm}`), {
+              hwId: f.dataset.s, grade: +f.dataset.g, adm: me.adm, name: me.name,
+              text, img: imgUrl, date: today(), createdAt: fs.serverTimestamp()
+            });
+            note("Submitted.", true); P.hw();
+          } catch { note("Submission error."); }
+        };
+      } catch { $("#hlist").textContent = "Load error."; }
+    })();
+  },
+
+  marks() {
+    panel("<h3>My Marks</h3><div id='ml'>Loading...</div>");
+    (async () => {
+      try {
+        const r = await getAll("marks", W("adm","==",me.adm), W("status","==","approved"));
+        r.sort((a,b)=>(a.exam+a.subject).localeCompare(b.exam+b.subject));
+        $("#ml").innerHTML = `<div class="card">${tbl(["Exam","Term","Subject","Marks"],
+          r.map(x => [esc(x.exam), `T${esc(x.term)}`, esc(x.subject), `<strong>${esc(x.marks)}</strong>`]))}</div>`;
+      } catch { $("#ml").textContent = "Load error."; }
+    })();
+  },
+
+  tt() {
+    panel("<h3>Timetable</h3><div id='tl'>Loading...</div>");
+    (async () => {
+      try {
+        const r = await getAll("timetable", W("grade","==",+me.grade));
+        const DAYS = ["Mon","Tue","Wed","Thu","Fri"];
+        r.sort((a,b)=>DAYS.indexOf(a.day)-DAYS.indexOf(b.day)||a.period-b.period);
+        $("#tl").innerHTML = `<div class="card">${tbl(["Day","Period","Subject","Teacher"],
+          r.map(x => [esc(x.day), `P${esc(x.period)}`, esc(x.subject), esc(x.teacher)]))}</div>`;
+      } catch { $("#tl").textContent = "Load error."; }
+    })();
+  },
+
+  qb() {
+    panel(`
+      <h3>Question Bank</h3>
+      <p style="margin:1rem 0;"><a class="btn" href="https://quizhub.lk/" target="_blank">🌐 QuizHub</a></p>
+      <div id="ql">Loading...</div>
+    `);
+    (async () => {
+      try {
+        const s = await fs.getDocs(fs.query(col("qbank"), fs.orderBy("createdAt","desc"), fs.limit(100)));
+        const r = s.docs.map(d=>d.data()).filter(x => driveOk(x.url) && +x.grade === +me.grade);
+        $("#ql").innerHTML = `<div class="card">${tbl(["Subject","Title","Link"],
+          r.map(x=>[esc(x.subject), esc(x.title), `<a href="${esc(x.url)}" target="_blank">View</a>`]))}</div>`;
+      } catch { $("#ql").textContent = "Load error."; }
+    })();
+  },
+
+  async lib() {
+    panel("<p>Loading library...</p>");
+    try {
+      const [books, loans] = await Promise.all([
+        getAll("books"),
+        getAll("loans", W("adm","==",me.adm))
+      ]);
+      panel(`
+        <h3>Library</h3>
+        <div class="card">
+          <h4>My Borrowed Books</h4>
+          ${tbl(["Title","Issued","Due","Status"],
+            loans.map(l => [esc(l.title), esc(l.issued), esc(l.due), l.returned ? "Returned" : "Borrowed"]))}
+        </div>
+        <div class="card">
+          <h4>Catalog</h4>
+          ${tbl(["Title","Author","Availability"],
+            books.map(b=>[esc(b.title), esc(b.author||"—"), `${esc(b.avail)}/${esc(b.qty)}`]))}
+        </div>
+      `);
+    } catch { panel("<p>Library load error.</p>"); }
+  },
+
+  acct() {
+    panel(`
+      <h3>Account Settings</h3>
+      <form id="af" class="card">
+        <label>Current Password</label><input id="op" type="password" required>
+        <label>New Password (min 10)</label><input id="np" type="password" required>
+        <p class="msg" id="pm"></p>
+        <button class="btn p" style="margin-top:.8rem;">Update</button>
+      </form>
+    `);
+    $("#af").onsubmit = async e => {
+      e.preventDefault();
+      const np = $("#np").value;
+      if (np.length < 10) return note("Password must be 10+ characters.");
+      try {
+        const u = A.currentUser;
+        const cred = au.EmailAuthProvider.credential(u.email, $("#op").value);
+        await au.reauthenticateWithCredential(u, cred);
+        await au.updatePassword(u, np);
+        await fs.setDoc(dc("users", u.uid), { mustChangePassword: false }, { merge: true });
+        note("Password updated.", true); $("#af").reset();
+      } catch { note("Authentication error."); }
+    };
+  }
+};
+</script>
+</body>
+</html>
