@@ -143,7 +143,7 @@ section h2::after { content: ""; display: block; width: 56px; height: 4px; borde
 .ph strong { color: var(--maroon); display: block; margin-bottom: .4rem; font-size: 1.15rem; }
 [data-theme="dark"] .ph strong { color: var(--ink); }
 
-/* Timeline UI with Enhanced Image & Link Support */
+/* Timeline UI with Image & Link */
 .timeline { position: relative; max-width: 900px; margin: 2rem auto 0; padding-left: 2rem; border-left: 3px solid var(--maroon); }
 .timeline-item {
   position: relative; margin-bottom: 2.5rem;
@@ -225,7 +225,7 @@ input, select, textarea {
 .msg { min-height: 1.4em; font-weight: 600; font-size: .9rem; margin: .5rem 0; }
 .msg.e { color: var(--err); } .msg.o { color: var(--ok); }
 .row { display: flex; gap: .7rem; flex-wrap: wrap; }
-.row > * { flex: 1; }
+.row > * { flex: 1; min-width: 0; }
 .tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin: 1.4rem 0; }
 .tabs .btn[aria-current="true"] { background: var(--maroon); color: #FFFFFF; border-color: var(--maroon); }
 .tw { overflow-x: auto; }
@@ -233,6 +233,13 @@ table { border-collapse: collapse; width: 100%; font-size: .9rem; }
 th, td { text-align: start; padding: .75rem; border-bottom: 1px solid var(--border); }
 th { background: color-mix(in srgb, var(--maroon) 5%, transparent); font-weight: 700; }
 .hide { display: none !important; }
+
+.status-pill {
+  display: inline-block; padding: .25rem .65rem; border-radius: 99px;
+  font-size: .78rem; font-weight: 700;
+}
+.status-pill.active { background: rgba(33, 115, 74, 0.12); color: var(--ok); }
+.status-pill.inactive { background: rgba(179, 50, 79, 0.12); color: var(--err); }
 
 footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--muted); font-size: .9rem; background: var(--bg); }
 .prog { position: fixed; top: 0; left: 0; height: 3px; width: 100%; background: linear-gradient(90deg, var(--maroon), var(--maroon2)); transform: scaleX(0); transform-origin: left; z-index: 60; pointer-events: none; }
@@ -294,7 +301,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--mu
     </div>
   </section>
 
-  <!-- History & Milestone Timeline Section with Images and Links -->
+  <!-- History Timeline -->
   <section id="history">
     <div class="wrap">
       <h2 data-i="nHistory"></h2>
@@ -362,7 +369,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--mu
     </div>
   </section>
 
-  <!-- Login Section -->
+  <!-- Login Section & Admin Panel Container -->
   <section id="login" class="alt">
     <div class="wrap">
       <h2 data-i="nLogin" style="text-align:center;"></h2>
@@ -437,7 +444,7 @@ let CMS = {
   phone: "", email: ""
 };
 
-let TIMELINE = [], PREFECTS = [], ACHIEVEMENTS = [], ALBUMS = [], POSTS = [];
+let TIMELINE = [], PREFECTS = [], ACHIEVEMENTS = [], ALBUMS = [], POSTS = [], NOTICES = [];
 
 const T = {
   en: {
@@ -530,7 +537,6 @@ function renderPublic() {
     </div>
   `).join("");
 
-  // History Timeline with Image and External Link rendering
   const tBox = $("#historyTimeline");
   if (!TIMELINE.length) {
     tBox.innerHTML = `<p style="color:var(--muted)">${t("noHist")}</p>`;
@@ -552,7 +558,6 @@ function renderPublic() {
     `).join("");
   }
 
-  // School Song & Lyrics
   const sBox = $("#sb");
   if (!ok(CMS.song_url)) {
     sBox.innerHTML = `<p style="color:var(--muted);grid-column:1/-1;">${t("songNone")}</p>`;
@@ -574,7 +579,6 @@ function renderPublic() {
     au.onpause = au.onended = () => $("#disc").classList.remove("spin");
   }
 
-  // Prefects List
   const pBox = $("#prefectsList");
   pBox.innerHTML = PREFECTS.length ? PREFECTS.map(p => `
     <div class="card prefect-card">
@@ -584,7 +588,6 @@ function renderPublic() {
     </div>
   `).join("") : `<p style="color:var(--muted)">${t("noPref")}</p>`;
 
-  // Achievements List
   const aBox = $("#achieveList");
   aBox.innerHTML = ACHIEVEMENTS.length ? ACHIEVEMENTS.map(a => `
     <div class="card achieve-card">
@@ -595,7 +598,6 @@ function renderPublic() {
     </div>
   `).join("") : `<p style="color:var(--muted)">${t("noAchieve")}</p>`;
 
-  // Gallery Albums
   const gBox = $("#galList");
   gBox.innerHTML = ALBUMS.length ? '<div class="albs">' + ALBUMS.map((a, i) => `
     <button class="alb" data-i="${i}" aria-label="${esc(pick(a, 'title'))}">
@@ -605,7 +607,6 @@ function renderPublic() {
     </button>
   `).join("") + '</div>' : `<p style="color:var(--muted)">${t("noGal")}</p>`;
 
-  // News List
   const nBox = $("#newsList");
   nBox.innerHTML = POSTS.length ? POSTS.map(p => `
     <article class="card">
@@ -615,7 +616,6 @@ function renderPublic() {
     </article>
   `).join("") : `<p style="color:var(--muted)">${t("noNews")}</p>`;
 
-  // Contact Info
   $("#contactDetails").innerHTML = `
     <h3 style="margin-top:0;">${esc(t("nContact"))}</h3>
     <p><strong>${esc(t("addr"))}:</strong> ${esc(CMS.address || t("tbd"))}</p>
@@ -644,6 +644,19 @@ let F, A, D, me = null;
 const col = n => F.fs.collection(D, n);
 const dc = (n, i) => F.fs.doc(D, n, i);
 const getAll = async (n, ...c) => (await F.fs.getDocs(F.fs.query(col(n), ...c))).docs.map(d => ({ id: d.id, ...d.data() }));
+const W = (...a) => F.fs.where(...a);
+
+const rnd = max => {
+  const lim = 256 - (256 % max), b = new Uint8Array(1);
+  do { crypto.getRandomValues(b); } while (b[0] >= lim);
+  return b[0] % max;
+};
+const genPw = () => {
+  let s = "";
+  for (let i = 0; i < 2; i++) s += String.fromCharCode(65 + rnd(26));
+  for (let i = 0; i < 4; i++) s += rnd(10);
+  return s;
+};
 
 async function boot() {
   const V = "10.12.2", B = `https://www.gstatic.com/firebasejs/${V}/`;
@@ -687,16 +700,17 @@ async function boot() {
 
 async function loadAllData() {
   try {
-    const [cDoc, hDocs, pDocs, achDocs, albDocs, postDocs] = await Promise.all([
+    const [cDoc, hDocs, pDocs, achDocs, albDocs, postDocs, notDocs] = await Promise.all([
       F.fs.getDoc(dc("cms", "home")),
       getAll("timeline", F.fs.orderBy("year", "asc")),
       getAll("prefects", F.fs.orderBy("order", "asc")),
       getAll("achievements", F.fs.orderBy("createdAt", "desc")),
       getAll("albums", F.fs.orderBy("createdAt", "desc")),
-      getAll("posts", F.fs.orderBy("createdAt", "desc"), F.fs.limit(20))
+      getAll("posts", F.fs.orderBy("createdAt", "desc"), F.fs.limit(20)),
+      getAll("notices", F.fs.orderBy("createdAt", "desc"), F.fs.limit(50))
     ]);
     if (cDoc.exists()) CMS = { ...CMS, ...cDoc.data() };
-    TIMELINE = hDocs; PREFECTS = pDocs; ACHIEVEMENTS = achDocs; ALBUMS = albDocs; POSTS = postDocs;
+    TIMELINE = hDocs; PREFECTS = pDocs; ACHIEVEMENTS = achDocs; ALBUMS = albDocs; POSTS = postDocs; NOTICES = notDocs;
     renderPublic();
   } catch (e) { renderPublic(); }
 }
@@ -727,21 +741,24 @@ const ibbUp = async f => {
   return j.data.url;
 };
 
-/* ================= ADMIN CMS DASHBOARD ================= */
-const TABS = { admin: ["cms", "history", "prefects", "achieve", "albums", "users", "acct"] };
+/* ================= COMPLETE SYSTEM ADMIN DASHBOARD ================= */
+const TABS = {
+  admin: ["teachers", "students", "notices", "post", "cms", "history", "prefects", "achieve", "albums", "acct"]
+};
 const NAME = {
-  cms: "Website CMS", history: "School History", prefects: "Prefects Board",
-  achieve: "Achievements", albums: "Gallery Albums", users: "Accounts", acct: "Account Settings"
+  teachers: "Teachers Manage", students: "Students Manage", notices: "Notifications",
+  post: "News & Events", cms: "Website CMS", history: "School History", prefects: "Prefects Board",
+  achieve: "Achievements", albums: "Gallery Albums", acct: "Account Settings"
 };
 
 function showApp() {
   $("#loginBox").classList.add("hide");
   $("#app").classList.remove("hide");
-  $("#who").textContent = `${me.name || ""} (${me.role.toUpperCase()})`;
+  $("#who").textContent = `${me.name || ""} (SYSTEM ADMINISTRATOR)`;
   const tabs = TABS[me.role] || ["acct"];
   $("#tabs").innerHTML = tabs.map(k => `<button class="btn" data-t="${k}">${NAME[k]}</button>`).join("");
   $("#tabs").onclick = e => { const b = e.target.closest("[data-t]"); if (b) go(b.dataset.t); };
-  go(tabs[0]);
+  go("teachers");
 }
 function go(k) {
   document.querySelectorAll("#tabs .btn").forEach(b => b.setAttribute("aria-current", b.dataset.t === k));
@@ -752,9 +769,412 @@ const note = (m, ok) => { const n = $("#pm"); if (n) { n.textContent = m; n.clas
 const tbl = (h, r) => r.length ? `<div class="tw"><table><thead><tr>${h.map(x => `<th>${x}</th>`).join("")}</tr></thead><tbody>${r.map(c => `<tr>${c.map(x => `<td>${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : "<p style='color:var(--muted);margin-top:.8rem;'>No records present.</p>";
 
 const P = {
+  /* 1. TEACHER MANAGEMENT MODULE */
+  async teachers() {
+    panel(`
+      <h3>Teachers Management Module</h3>
+      <form id="tfAdd" class="card" style="margin-bottom:1.5rem;">
+        <h4>Register New Teacher Account</h4>
+        <div class="row">
+          <div><label>Teacher NIC Number</label><input id="t_nic" placeholder="e.g. 198512345678 or 851234567V" required></div>
+          <div><label>Full Name</label><input id="t_name" placeholder="Name with initials" required></div>
+        </div>
+        <div class="row" style="margin-top:.5rem;">
+          <div><label>Assigned Teaching Grades (e.g. 6,7,8)</label><input id="t_grades" placeholder="Grades 1 to 11" required></div>
+          <div><label>Designated Class Teacher Grade (Optional)</label><input id="t_ct" type="number" min="1" max="11" placeholder="Grade (1-11)"></div>
+        </div>
+        <div class="row" style="margin-top:.5rem;">
+          <div><label>Primary Subjects (comma separated)</label><input id="t_sub" placeholder="e.g. Science, Mathematics"></div>
+          <div>
+            <label>Initial Temporary Password</label>
+            <div style="display:flex;gap:.5rem;">
+              <input id="t_pw" readonly required>
+              <button class="btn" type="button" id="t_gen">Generate</button>
+            </div>
+          </div>
+        </div>
+        <p class="msg" id="pm"></p>
+        <button class="btn p" style="margin-top:.8rem;">Create Teacher Account</button>
+      </form>
+      <h4>Registered Teachers Directory</h4>
+      <div id="tList">Loading...</div>
+    `);
+
+    $("#t_gen").onclick = () => { $("#t_pw").value = genPw(); };
+    $("#t_gen").click();
+
+    const loadTeachers = async () => {
+      try {
+        const docs = await getAll("users", W("role", "in", ["teacher", "principal"]));
+        $("#tList").innerHTML = tbl(
+          ["ID", "Name", "Masked NIC", "Teaching Grades", "Class Teacher", "Status", "Actions"],
+          docs.map(t => [
+            `<strong>${esc(t.teacherId || "—")}</strong>`,
+            esc(t.name),
+            `<code>${esc(t.nicMasked || "Protected")}</code>`,
+            esc((t.grades || []).join(", ") || "—"),
+            esc(t.assignedClassTeacherGrade ? `Grade ${t.assignedClassTeacherGrade}` : "—"),
+            `<span class="status-pill ${t.active !== false ? 'active' : 'inactive'}">${t.active !== false ? 'Active' : 'Disabled'}</span>`,
+            `<div style="display:flex;gap:.3rem;flex-wrap:wrap;">
+              <button class="btn" data-togt="${esc(t.id)}" data-st="${t.active !== false}">${t.active !== false ? 'Disable' : 'Activate'}</button>
+              <button class="btn" data-rstt="${esc(t.id)}" data-nm="${esc(t.name)}">Reset Password</button>
+            </div>`
+          ])
+        );
+      } catch (err) { $("#tList").textContent = "Could not load teachers list: " + err.message; }
+    };
+    loadTeachers();
+
+    $("#tfAdd").onsubmit = async e => {
+      e.preventDefault();
+      const rawNIC = $("#t_nic").value.trim().toUpperCase().replace(/\s/g, "");
+      const name = $("#t_name").value.trim();
+      const grades = $("#t_grades").value.split(",").map(x => +x.trim()).filter(x => x >= 1 && x <= 11);
+      const ctGrade = +$("#t_ct").value || null;
+      const subjects = $("#t_sub").value.split(",").map(x => x.trim()).filter(Boolean);
+      const pw = $("#t_pw").value;
+
+      if (!/^(\d{9}[VX]|\d{12})$/.test(rawNIC)) return note("Invalid NIC format.", false);
+      if (!grades.length) return note("Assign at least one valid grade between 1 and 11.", false);
+
+      note("Creating teacher account...", true);
+      let secApp;
+      try {
+        const em = alias(rawNIC);
+        secApp = F.app.initializeApp(CFG.firebase, "sec_tch_" + Date.now());
+        const secAuth = F.au.getAuth(secApp);
+        const cr = await F.au.createUserWithEmailAndPassword(secAuth, em, pw);
+        await F.au.signOut(secAuth);
+
+        const teacherSeqId = await F.fs.runTransaction(D, async tx => {
+          const counterRef = dc("counters", "teachers");
+          const snap = await tx.get(counterRef);
+          const nextVal = ((snap.data()?.n || 0) + 1);
+          tx.set(counterRef, { n: nextVal });
+          return "TCH-" + String(nextVal).padStart(4, "0");
+        });
+
+        await F.fs.setDoc(dc("users", cr.user.uid), {
+          role: "teacher",
+          name,
+          teacherId: teacherSeqId,
+          nicMasked: rawNIC.slice(0, 3) + "******" + rawNIC.slice(-2),
+          grades,
+          assignedClassTeacherGrade: ctGrade,
+          subjects,
+          active: true,
+          mustChangePassword: true,
+          createdAt: F.fs.serverTimestamp()
+        });
+
+        note(`Teacher account created (${teacherSeqId}). Temporary Password: ${pw}`, true);
+        $("#tfAdd").reset();
+        $("#t_gen").click();
+        loadTeachers();
+      } catch (err) {
+        note(err.code === "auth/email-already-in-use" ? "This NIC is already registered." : err.message, false);
+      } finally {
+        if (secApp) try { await F.app.deleteApp(secApp); } catch {}
+      }
+    };
+
+    $("#tList").onclick = async e => {
+      const tog = e.target.closest("[data-togt]");
+      const rst = e.target.closest("[data-rstt]");
+      if (tog) {
+        const curStatus = tog.dataset.st === "true";
+        await F.fs.setDoc(dc("users", tog.dataset.togt), { active: !curStatus }, { merge: true });
+        loadTeachers();
+      }
+      if (rst) {
+        const newPw = genPw();
+        alert(`Temporary reset password for ${rst.dataset.nm}: ${newPw}\nInstruct teacher to sign in and update password.`);
+      }
+    };
+  },
+
+  /* 2. STUDENT MANAGEMENT MODULE */
+  async students() {
+    panel(`
+      <h3>Students Management Module</h3>
+      <form id="sfAdd" class="card" style="margin-bottom:1.5rem;">
+        <h4>Register New Student Account</h4>
+        <div class="row">
+          <div><label>Permanent Admission Number</label><input id="s_adm" placeholder="e.g. 1052" required></div>
+          <div><label>Full Student Name</label><input id="s_name" placeholder="Full name of student" required></div>
+          <div>
+            <label>Enrolled Grade (1 to 11)</label>
+            <select id="s_gr" required>
+              ${[...Array(11)].map((_, i) => `<option value="${i+1}">Grade ${i+1}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:.5rem;">
+          <div><label>Guardian Name &amp; Contact</label><input id="s_guard" placeholder="Guardian Name / Phone"></div>
+          <div>
+            <label>Initial Generated Password</label>
+            <div style="display:flex;gap:.5rem;">
+              <input id="s_pw" readonly required>
+              <button class="btn" type="button" id="s_gen">Generate</button>
+            </div>
+          </div>
+        </div>
+        <p class="msg" id="pm"></p>
+        <button class="btn p" style="margin-top:.8rem;">Register Student</button>
+      </form>
+
+      <div class="card" style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;">
+        <strong>Filter Roster:</strong>
+        <select id="fltGrade" style="width:auto;min-height:38px;">
+          <option value="all">All Grades (1–11)</option>
+          ${[...Array(11)].map((_, i) => `<option value="${i+1}">Grade ${i+1}</option>`).join("")}
+        </select>
+      </div>
+
+      <h4>Student Directory</h4>
+      <div id="sList">Loading...</div>
+    `);
+
+    $("#s_gen").onclick = () => { $("#s_pw").value = genPw(); };
+    $("#s_gen").click();
+
+    const loadStudents = async () => {
+      try {
+        const filterVal = $("#fltGrade") ? $("#fltGrade").value : "all";
+        let queryConstraint = [W("role", "==", "student")];
+        if (filterVal !== "all") queryConstraint.push(W("grade", "==", +filterVal));
+
+        const docs = await getAll("users", ...queryConstraint);
+        docs.sort((a,b) => (a.adm||"").localeCompare(b.adm||""));
+
+        $("#sList").innerHTML = tbl(
+          ["Admission No", "Student Name", "Grade", "Status", "Actions"],
+          docs.map(s => [
+            `<strong>${esc(s.adm)}</strong>`,
+            esc(s.name),
+            `Grade ${esc(s.grade)}`,
+            `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`,
+            `<div style="display:flex;gap:.3rem;flex-wrap:wrap;">
+              <button class="btn" data-togs="${esc(s.id)}" data-st="${s.active !== false}">${s.active !== false ? 'Suspend' : 'Activate'}</button>
+              <button class="btn" data-rsts="${esc(s.id)}" data-adm="${esc(s.adm)}" data-nm="${esc(s.name)}">Reset Password</button>
+            </div>`
+          ])
+        );
+      } catch (err) { $("#sList").textContent = "Could not load students: " + err.message; }
+    };
+    loadStudents();
+
+    $("#fltGrade").onchange = loadStudents;
+
+    $("#sfAdd").onsubmit = async e => {
+      e.preventDefault();
+      const adm = $("#s_adm").value.trim();
+      const name = $("#s_name").value.trim();
+      const grade = +$("#s_gr").value;
+      const guardian = $("#s_guard").value.trim();
+      const pw = $("#s_pw").value;
+
+      if (!/^\d{1,8}$/.test(adm)) return note("Admission number must be 1 to 8 digits.", false);
+      if (pw === adm) return note("Password cannot be identical to admission number.", false);
+
+      note("Registering student...", true);
+      let secApp;
+      try {
+        const em = alias(adm);
+        secApp = F.app.initializeApp(CFG.firebase, "sec_stu_" + Date.now());
+        const secAuth = F.au.getAuth(secApp);
+        const cr = await F.au.createUserWithEmailAndPassword(secAuth, em, pw);
+        await F.au.signOut(secAuth);
+
+        await F.fs.setDoc(dc("users", cr.user.uid), {
+          role: "student",
+          adm,
+          name,
+          grade,
+          guardianInfo: guardian,
+          active: true,
+          mustChangePassword: true,
+          societies: [],
+          extracurricular: [],
+          awards: [],
+          createdAt: F.fs.serverTimestamp()
+        });
+
+        note(`Student registered (Admission: ${adm}). Temporary Password: ${pw}`, true);
+        $("#sfAdd").reset();
+        $("#s_gen").click();
+        loadStudents();
+      } catch (err) {
+        note(err.code === "auth/email-already-in-use" ? "This Admission Number already exists." : err.message, false);
+      } finally {
+        if (secApp) try { await F.app.deleteApp(secApp); } catch {}
+      }
+    };
+
+    $("#sList").onclick = async e => {
+      const tog = e.target.closest("[data-togs]");
+      const rst = e.target.closest("[data-rsts]");
+      if (tog) {
+        const curStatus = tog.dataset.st === "true";
+        await F.fs.setDoc(dc("users", tog.dataset.togs), { active: !curStatus }, { merge: true });
+        loadStudents();
+      }
+      if (rst) {
+        const newPw = genPw();
+        alert(`New Password for student ${rst.dataset.nm} (Adm: ${rst.dataset.adm}):\n${newPw}\nProvide this credential to the student once.`);
+      }
+    };
+  },
+
+  /* 3. BROADCAST NOTIFICATIONS MODULE */
+  async notices() {
+    panel(`
+      <h3>Notification & Broadcast Center</h3>
+      <form id="ntfAdd" class="card" style="margin-bottom:1.5rem;">
+        <h4>Publish Notification Alert</h4>
+        <div class="row">
+          <div><label>Notice Title</label><input id="nt_title" required placeholder="Announcement headline"></div>
+          <div>
+            <label>Target Audience</label>
+            <select id="nt_target">
+              <option value="all">Entire School Community</option>
+              <option value="teachers">All Teachers</option>
+              <option value="students">All Students</option>
+              ${[...Array(11)].map((_, i) => `<option value="grade_${i+1}">Grade ${i+1} Students Only</option>`).join("")}
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:.5rem;">
+          <label>Notification Content</label>
+          <textarea id="nt_body" rows="3" required placeholder="Detailed message for targeted users"></textarea>
+        </div>
+        <p class="msg" id="pm"></p>
+        <button class="btn p" style="margin-top:.8rem;">Broadcast Alert</button>
+      </form>
+
+      <h4>Active Notifications</h4>
+      <div id="ntList">Loading...</div>
+    `);
+
+    const loadNotices = async () => {
+      try {
+        const docs = await getAll("notices", F.fs.orderBy("createdAt", "desc"));
+        $("#ntList").innerHTML = docs.length ? docs.map(n => `
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin:.6rem 0;padding:1rem;border:1px solid var(--border);border-radius:12px;background:var(--card-bg);">
+            <div>
+              <strong style="color:var(--maroon);font-size:1.05rem;">${esc(n.title)}</strong>
+              <span style="font-size:.78rem;background:var(--surface);padding:.2rem .6rem;border-radius:99px;margin-left:.5rem;border:1px solid var(--border);">Target: ${esc(n.target)}</span>
+              <p style="margin:.4rem 0 0;color:var(--text);">${esc(n.body)}</p>
+            </div>
+            <button class="btn" data-dnt="${esc(n.id)}">Delete</button>
+          </div>
+        `).join("") : "<p style='color:var(--muted)'>No active notifications.</p>";
+      } catch (err) { $("#ntList").textContent = "Could not load notices: " + err.message; }
+    };
+    loadNotices();
+
+    $("#ntfAdd").onsubmit = async e => {
+      e.preventDefault();
+      try {
+        await F.fs.addDoc(col("notices"), {
+          title: $("#nt_title").value.trim(),
+          target: $("#nt_target").value,
+          body: $("#nt_body").value.trim(),
+          createdAt: F.fs.serverTimestamp(),
+          by: me.uid
+        });
+        note("Notification broadcasted successfully.", true);
+        $("#ntfAdd").reset();
+        loadNotices();
+      } catch (err) { note("Error: " + err.message, false); }
+    };
+
+    $("#ntList").onclick = async e => {
+      const b = e.target.closest("[data-dnt]");
+      if (b && confirm("Delete this notification?")) {
+        await F.fs.deleteDoc(dc("notices", b.dataset.dnt));
+        loadNotices();
+      }
+    };
+  },
+
+  /* 4. NEWS & EVENTS POST CMS */
+  post() {
+    panel(`
+      <h3>News & Event Publications</h3>
+      <form id="pf" class="card" style="margin-bottom:1.5rem;">
+        <h4>Publish News or Event</h4>
+        <label>Category</label>
+        <select id="pt">
+          <option value="news">School News</option>
+          <option value="event">Upcoming Event</option>
+        </select>
+        <div class="row">
+          <div><label>English Title</label><input id="te"></div>
+          <div><label>Sinhala Title</label><input id="ts"></div>
+        </div>
+        <div class="row">
+          <div><label>English Details</label><textarea id="be" rows="3"></textarea></div>
+          <div><label>Sinhala Details</label><textarea id="bs" rows="3"></textarea></div>
+        </div>
+        <label>Scheduled Date (Required for Events)</label>
+        <input id="pd" type="date">
+        <p class="msg" id="pm"></p>
+        <button class="btn p" style="margin-top:.8rem;">Publish Post</button>
+      </form>
+      <h4>Active Published Items</h4>
+      <div id="postList">Loading...</div>
+    `);
+
+    const loadPosts = async () => {
+      try {
+        const docs = await getAll("posts", F.fs.orderBy("createdAt", "desc"));
+        $("#postList").innerHTML = docs.length ? docs.map(p => `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:.5rem 0;padding:.8rem;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);">
+            <div style="flex:1;">
+              <strong>[${esc(p.type.toUpperCase())}] ${esc(p.title_si || p.title_en)}</strong>
+              ${p.date ? `<small style="display:block;color:var(--muted);">${esc(p.date)}</small>` : ""}
+            </div>
+            <button class="btn" data-dp="${esc(p.id)}">Delete</button>
+          </div>
+        `).join("") : "<p style='color:var(--muted)'>No published news or events.</p>";
+      } catch (err) { $("#postList").textContent = "Could not load posts: " + err.message; }
+    };
+    loadPosts();
+
+    $("#pf").onsubmit = async e => {
+      e.preventDefault();
+      const o = {
+        type: $("#pt").value,
+        title_en: $("#te").value.trim(), title_si: $("#ts").value.trim(),
+        body_en: $("#be").value.trim(), body_si: $("#bs").value.trim(),
+        date: $("#pd").value, published: true,
+        createdAt: F.fs.serverTimestamp(), author: me.uid
+      };
+      if (!o.title_en && !o.title_si) return note("Provide title in at least one language.", false);
+      try {
+        await F.fs.addDoc(col("posts"), o);
+        note("Item published successfully.", true);
+        $("#pf").reset();
+        await loadAllData();
+        loadPosts();
+      } catch (err) { note("Error: " + err.message, false); }
+    };
+
+    $("#postList").onclick = async e => {
+      const b = e.target.closest("[data-dp]");
+      if (b && confirm("Delete post?")) {
+        await F.fs.deleteDoc(dc("posts", b.dataset.dp));
+        await loadAllData();
+        loadPosts();
+      }
+    };
+  },
+
+  /* 5. WEBSITE MAIN CMS */
   cms() {
     panel(`
-      <h3>Website CMS — Home Page Customizer</h3>
+      <h3>Website CMS — Customizer</h3>
       <form id="cfMain" class="card" style="display:flex;flex-direction:column;gap:1rem;">
         <h4>1. Hero & Branding</h4>
         <div class="row">
@@ -821,16 +1241,15 @@ const P = {
         CMS = { ...CMS, ...up };
         renderPublic();
         note("Website updated successfully!", true);
-      } catch (err) { note("Save failed: " + err.message); }
+      } catch (err) { note("Save failed: " + err.message, false); }
     };
   },
 
-  /* School History Timeline CMS with Image and Link support */
+  /* 6. HISTORY TIMELINE */
   history() {
     panel(`
       <h3>School History &amp; Milestone Timeline</h3>
       <form id="hf" class="card" style="margin-bottom:1.5rem;">
-        <h4>Add Milestone, Era, or Leadership Record</h4>
         <div class="row">
           <div><label>Year / Era</label><input id="h_yr" placeholder="e.g. 1954 or 1990–2005" required></div>
           <div><label>Title (Sinhala)</label><input id="h_tsi" required></div>
@@ -840,31 +1259,14 @@ const P = {
           <div><label>Description (Sinhala)</label><textarea id="h_dsi" rows="3" required></textarea></div>
           <div><label>Description (English)</label><textarea id="h_den" rows="3"></textarea></div>
         </div>
-        
-        <h4 style="margin-top:1rem;">Image Attachment (Optional)</h4>
         <div class="row">
-          <div>
-            <label>Upload Photo (JPG/PNG/WebP, max 8MB)</label>
-            <input id="h_img" type="file" accept="image/*">
-          </div>
-          <div>
-            <label>Or Direct Image URL (https://...)</label>
-            <input id="h_img_url" placeholder="https://i.ibb.co/...">
-          </div>
+          <div><label>Upload Photo (Optional)</label><input id="h_img" type="file" accept="image/*"></div>
+          <div><label>Or Image URL (https://...)</label><input id="h_img_url"></div>
         </div>
-
-        <h4 style="margin-top:1rem;">Reference Link / Document (Optional)</h4>
         <div class="row">
-          <div>
-            <label>Reference URL (https://...)</label>
-            <input id="h_link" placeholder="https://...">
-          </div>
-          <div>
-            <label>Link Label / Button Text</label>
-            <input id="h_llabel" placeholder="e.g. විශේෂ ලේඛනය / Official Record">
-          </div>
+          <div><label>Reference Link (https://...)</label><input id="h_link"></div>
+          <div><label>Link Label</label><input id="h_llabel" placeholder="Read More"></div>
         </div>
-
         <p class="msg" id="pm"></p>
         <button class="btn p" style="margin-top:.8rem;">Add to Timeline</button>
       </form>
@@ -907,7 +1309,7 @@ const P = {
         await loadAllData();
         P.history();
         note("Milestone added successfully!", true);
-      } catch (err) { note("Add failed: " + err.message); }
+      } catch (err) { note("Add failed: " + err.message, false); }
     };
 
     $("#hlList").onclick = async e => {
@@ -920,11 +1322,11 @@ const P = {
     };
   },
 
+  /* 7. PREFECTS BOARD */
   prefects() {
     panel(`
       <h3>Prefects Board Manager</h3>
       <form id="prf" class="card" style="margin-bottom:1.5rem;">
-        <h4>Add Student Leader</h4>
         <div class="row">
           <div><label>Name</label><input id="p_nm" required></div>
           <div><label>Role (Sinhala)</label><input id="p_rsi" placeholder="ප්‍රධාන ශිෂ්‍ය නායක" required></div>
@@ -937,7 +1339,6 @@ const P = {
         <p class="msg" id="pm"></p>
         <button class="btn p">Add Prefect</button>
       </form>
-      <h4>Active Prefects Board</h4>
       <div id="prList"></div>
     `);
 
@@ -965,7 +1366,7 @@ const P = {
           order: +$("#p_ord").value, photo, createdAt: F.fs.serverTimestamp()
         });
         await loadAllData(); P.prefects();
-      } catch (err) { note("Error: " + err.message); }
+      } catch (err) { note("Error: " + err.message, false); }
     };
 
     $("#prList").onclick = async e => {
@@ -977,26 +1378,25 @@ const P = {
     };
   },
 
+  /* 8. ACHIEVEMENTS */
   achieve() {
     panel(`
       <h3>Achievements &amp; Honours Manager</h3>
       <form id="acf" class="card" style="margin-bottom:1.5rem;">
-        <h4>Post New School Achievement</h4>
         <div class="row">
           <div><label>Title (Sinhala)</label><input id="a_tsi" required></div>
           <div><label>Title (English)</label><input id="a_ten"></div>
-          <div><label>Year / Date</label><input id="a_yr" placeholder="2026"></div>
+          <div><label>Year</label><input id="a_yr" placeholder="2026"></div>
         </div>
         <div class="row">
           <div><label>Description (Sinhala)</label><textarea id="a_dsi" rows="2"></textarea></div>
           <div><label>Description (English)</label><textarea id="a_den" rows="2"></textarea></div>
         </div>
-        <label>Photo / Award Image (JPG/PNG/WebP)</label>
+        <label>Award Photo (JPG/PNG/WebP)</label>
         <input id="a_img" type="file" accept="image/*">
         <p class="msg" id="pm"></p>
         <button class="btn p">Publish Achievement</button>
       </form>
-      <h4>Published Achievements</h4>
       <div id="acList"></div>
     `);
 
@@ -1024,7 +1424,7 @@ const P = {
           year: $("#a_yr").value.trim(), image: img, createdAt: F.fs.serverTimestamp()
         });
         await loadAllData(); P.achieve();
-      } catch (err) { note("Error: " + err.message); }
+      } catch (err) { note("Error: " + err.message, false); }
     };
 
     $("#acList").onclick = async e => {
@@ -1036,6 +1436,7 @@ const P = {
     };
   },
 
+  /* 9. GALLERY ALBUMS */
   albums() {
     panel(`
       <h3>Gallery Albums Manager</h3>
@@ -1046,7 +1447,6 @@ const P = {
         <p class="msg" id="pm"></p>
         <button class="btn p" id="abtn">Upload Album</button>
       </form>
-      <h4>Active Albums</h4>
       <div id="albList"></div>
     `);
 
@@ -1077,7 +1477,7 @@ const P = {
           urls, cover: urls[0], count: urls.length, createdAt: F.fs.serverTimestamp()
         });
         await loadAllData(); P.albums();
-      } catch (err) { note("Upload failed: " + err.message); }
+      } catch (err) { note("Upload failed: " + err.message, false); }
       $("#abtn").disabled = false;
     };
 
@@ -1090,25 +1490,13 @@ const P = {
     };
   },
 
-  async users() {
-    panel("<h3>User Directory</h3><div id='ul'>Loading...</div>");
-    try {
-      const s = await F.fs.getDocs(col("users"));
-      $("#ul").innerHTML = tbl(["Name","Role","Identifier","Grade","Status"],
-        s.docs.map(d => d.data()).map(u => [
-          esc(u.name), esc(u.role), esc(u.adm||u.teacherId||"—"),
-          esc(u.grade?`Grade ${u.grade}`:(u.grades||[]).join(", ")||"—"),
-          u.active !== false ? "<span class='msg o'>Active</span>" : "<span class='msg e'>Disabled</span>"
-        ]));
-    } catch { $("#ul").textContent = "Could not load users."; }
-  },
-
+  /* 10. ACCOUNT SETTINGS */
   acct() {
     panel(`
-      <h3>Account Settings</h3>
-      <form id="af">
+      <h3>Administrator Account Settings</h3>
+      <form id="af" class="card">
         <label>Current Password</label><input id="op" type="password" required>
-        <label>New Password (min 10)</label><input id="np" type="password" required>
+        <label>New Password (min 10 characters)</label><input id="np" type="password" required>
         <p class="msg" id="pm"></p>
         <button class="btn p" style="margin-top:.8rem;">Update Password</button>
       </form>
@@ -1116,20 +1504,20 @@ const P = {
     $("#af").onsubmit = async e => {
       e.preventDefault();
       const np = $("#np").value;
-      if (np.length < 10) return note("Password must be 10+ characters.");
+      if (np.length < 10) return note("Password must be 10+ characters.", false);
       try {
         const u = A.currentUser;
         const cred = F.au.EmailAuthProvider.credential(u.email, $("#op").value);
         await F.au.reauthenticateWithCredential(u, cred);
         await F.au.updatePassword(u, np);
         await F.fs.setDoc(dc("users", u.uid), { mustChangePassword: false }, { merge: true });
-        note("Password updated.", true); $("#af").reset();
-      } catch { note("Authentication error."); }
+        note("Password updated successfully.", true); $("#af").reset();
+      } catch { note("Authentication error. Current password incorrect.", false); }
     };
   }
 };
 
-/* Lightbox Interactions */
+/* Lightbox */
 let curUrls = [], curIdx = 0;
 const showLb = i => {
   curIdx = (i + curUrls.length) % curUrls.length;
