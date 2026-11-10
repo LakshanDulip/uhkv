@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -28,792 +28,202 @@
   --font-sinhala: 'Noto Sans Sinhala', 'Inter', system-ui, sans-serif;
   --font-serif: 'Fraunces', 'Noto Sans Sinhala', serif;
 }
-
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #120D12;
-  --surface: #1C141B;
-  --text: #F4EEF1;
-  --muted: #B5A9B0;
-  --border: #35272F;
-  --ink: #E58FA7;
-  --err: #FF8DA5;
-  --ok: #6FD39F;
+  --bg: #120D12; --surface: #1C141B; --text: #F4EEF1; --muted: #B5A9B0;
+  --border: #35272F; --ink: #E58FA7; --err: #FF8DA5; --ok: #6FD39F;
   --card-bg: #1A131A;
   --shadow: 0 2px 6px rgba(0,0,0,.4), 0 16px 36px -12px rgba(0,0,0,.6);
 }
-
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 76px; }
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  margin: 0; background: var(--bg); color: var(--text);
   font: 400 1rem/1.65 var(--font-sinhala);
-  overflow-x: hidden;
-  padding-top: env(safe-area-inset-top, 0px);
+  overflow-x: hidden; padding-top: env(safe-area-inset-top, 0px);
   transition: background 0.25s ease, color 0.25s ease;
 }
-
 html[lang="en"] body { font-family: var(--font-sans); }
-
-h1, h2, h3, h4 {
-  font-family: var(--font-serif);
-  line-height: 1.25;
-  margin: 0 0 .5em;
-  color: var(--text);
-}
-
-html[lang="si"] h1, html[lang="si"] h2, html[lang="si"] h3, html[lang="si"] h4 {
-  font-family: var(--font-sinhala);
-  line-height: 1.45;
-}
-
+h1,h2,h3,h4 { font-family: var(--font-serif); line-height: 1.25; margin: 0 0 .5em; color: var(--text); }
+html[lang="si"] h1, html[lang="si"] h2, html[lang="si"] h3, html[lang="si"] h4 { font-family: var(--font-sinhala); line-height: 1.45; }
 a { color: var(--ink); text-decoration: none; }
 :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
-
 .wrap { width: min(1140px, 100% - 2rem); margin-inline: auto; }
 
 header {
-  position: sticky;
-  top: 0;
-  z-index: 40;
+  position: sticky; top: 0; z-index: 40;
   background: color-mix(in srgb, var(--bg) 92%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-
-.bar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  min-height: 68px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  font-weight: 700;
-  color: var(--text);
-  font-size: 1.05rem;
-}
-
+.bar { display: flex; align-items: center; gap: 1rem; min-height: 68px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: .75rem; font-weight: 700; color: var(--text); font-size: 1.05rem; }
 .mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 40px; height: 40px; border-radius: 12px;
   background: linear-gradient(135deg, var(--maroon), var(--maroon2));
-  display: grid;
-  place-items: center;
-  color: #fff;
-  flex-shrink: 0;
+  display: grid; place-items: center; color: #fff; flex-shrink: 0; overflow: hidden;
 }
-
-nav {
-  margin-inline-start: auto;
-  display: flex;
-  align-items: center;
-  gap: .35rem;
-}
-
-nav a.l {
-  padding: .5rem .7rem;
-  color: var(--text);
-  font-size: .92rem;
-  font-weight: 500;
-  position: relative;
-}
-
+.mark.has-logo { background: #fff; padding: 3px; border: 1px solid var(--border); }
+.mark img { width: 100%; height: 100%; object-fit: contain; }
+nav { margin-inline-start: auto; display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
+nav a.l { padding: .5rem .65rem; color: var(--text); font-size: .9rem; font-weight: 500; position: relative; }
 nav a.l::after {
-  content: "";
-  position: absolute;
-  left: .7rem;
-  right: .7rem;
-  bottom: .2rem;
-  height: 2px;
-  background: var(--ink);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .25s ease;
+  content: ""; position: absolute; left: .65rem; right: .65rem; bottom: .2rem; height: 2px;
+  background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
 }
-
 nav a.l:hover::after { transform: scaleX(1); }
-
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .4rem;
-  min-height: 42px;
-  padding: .55rem 1.15rem;
-  border-radius: 9px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-weight: 600;
-  font-size: .92rem;
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
-  position: relative;
-  overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  min-height: 42px; padding: .55rem 1.15rem; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font: inherit; font-weight: 600; font-size: .92rem; cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease; position: relative; overflow: hidden;
 }
-
-.btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow);
-}
-
+.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow); }
 .btn:active:not(:disabled) { transform: translateY(0); }
 .btn:disabled { opacity: .55; cursor: not-allowed; }
-.btn.p { background: var(--maroon); border-color: var(--maroon); color: #FFFFFF; }
-.btn.p:hover:not(:disabled) { background: var(--maroon2); border-color: var(--maroon2); }
-
+.btn.p {
+  background: linear-gradient(180deg, var(--maroon2), var(--maroon));
+  border-color: var(--maroon); color: #FFFFFF;
+  box-shadow: 0 4px 0 #3d0919, 0 12px 22px -8px rgba(101,15,42,.45);
+}
 #menu { display: none; }
-
-@media(max-width: 920px) {
+@media(max-width: 980px) {
   #menu { display: inline-flex; margin-inline-start: auto; }
   nav {
-    position: absolute;
-    top: 68px;
-    left: 0;
-    right: 0;
-    margin: 0;
-    background: var(--bg);
-    flex-direction: column;
-    align-items: stretch;
-    padding: 1.25rem;
-    border-bottom: 1px solid var(--border);
-    transform: translateY(-140%);
-    transition: transform .3s ease;
-    z-index: -1;
+    position: absolute; top: 68px; left: 0; right: 0; margin: 0; background: var(--bg);
+    flex-direction: column; align-items: stretch; padding: 1.25rem; border-bottom: 1px solid var(--border);
+    transform: translateY(-140%); transition: transform .3s ease; z-index: -1;
   }
   nav.open { transform: translateY(0); }
 }
 
 .hero {
-  position: relative;
-  padding: clamp(3rem, 8vw, 5.5rem) 0 3.5rem;
-  background: radial-gradient(800px 420px at 85% 10%, color-mix(in srgb, var(--maroon) 12%, transparent), transparent);
-  overflow: hidden;
+  position: relative; padding: clamp(4rem, 10vw, 7rem) 0 4.5rem;
+  background: radial-gradient(900px 500px at 85% 10%, color-mix(in srgb, var(--maroon) 14%, transparent), transparent);
+  overflow: hidden; text-align: start;
 }
-
-.hero .wrap {
-  display: grid;
-  grid-template-columns: 1.2fr .8fr;
-  gap: 2.5rem;
-  align-items: center;
+.hero::before, .hero::after {
+  content: ""; position: absolute; border-radius: 50%; filter: blur(70px); opacity: .3;
+  animation: drift 14s ease-in-out infinite alternate; pointer-events: none;
 }
-
-@media(max-width: 860px) {
-  .hero .wrap { grid-template-columns: 1fr; }
-}
-
-.hero h1 {
-  font-size: clamp(2rem, 5.5vw, 3.6rem);
-  font-weight: 800;
-  color: var(--maroon);
-}
-
+.hero::before { width: 380px; height: 380px; background: var(--maroon2); left: -90px; top: 10px; }
+.hero::after { width: 340px; height: 340px; background: #c9577a; right: 8%; bottom: -90px; animation-delay: -6s; }
+@keyframes drift { to { transform: translate(50px, 35px) scale(1.15); } }
+.hero-box { max-width: 760px; position: relative; z-index: 2; }
+.hero h1 { font-size: clamp(2.3rem, 6vw, 4rem); font-weight: 800; color: var(--maroon); margin-bottom: .6rem; }
 [data-theme="dark"] .hero h1 { color: #FFFFFF; }
+.hero p.lead { color: var(--muted); font-size: 1.15rem; line-height: 1.8; margin: 1rem 0 2rem; }
+.cta { display: flex; flex-wrap: wrap; gap: .85rem; }
+.hv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; z-index: 0; }
+.hv-shade { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s; background: linear-gradient(120deg, rgba(30,4,14,.88), rgba(101,15,42,.55)); z-index: 1; }
+.hero.has-video .hv, .hero.has-video .hv-shade { opacity: 1; }
+.hero.has-video h1 { color: #fff; }
+.hero.has-video p.lead { color: rgba(255,255,255,.92); }
+.hero.has-video .btn:not(.p) { background: rgba(255,255,255,.16); color: #fff; border-color: rgba(255,255,255,.45); backdrop-filter: blur(8px); }
+.hlogo { width: 92px; height: 92px; object-fit: contain; border-radius: 24px; background: #fff; padding: 8px; margin-bottom: 1.1rem; box-shadow: 0 22px 34px -12px rgba(0,0,0,.45); }
 
-.hero p.lead {
-  color: var(--muted);
-  font-size: 1.05rem;
-  max-width: 52ch;
-  margin: 1rem 0 1.6rem;
-}
-
-.cta { display: flex; flex-wrap: wrap; gap: .75rem; }
-
-.steps-box {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow);
-}
-
-.steps {
-  display: flex;
-  align-items: flex-end;
-  gap: 7px;
-  height: 220px;
-}
-
-.steps b {
-  flex: 1;
-  border-radius: 6px 6px 0 0;
-  background: linear-gradient(180deg, var(--maroon2), var(--maroon));
-  color: #FFFFFF;
-  font: 600 .75rem/1 var(--font-sans);
-  display: flex;
-  justify-content: center;
-  padding-top: 6px;
-  height: calc(18% + var(--i) * 7.4%);
-}
-
-.cap { font-size: .85rem; color: var(--muted); margin-top: .9rem; text-align: center; }
-
-section { padding: 3.8rem 0; }
+section { padding: 4rem 0; position: relative; }
 section.alt { background: var(--surface); }
+section h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); }
+section h2::after { content: ""; display: block; width: 56px; height: 4px; border-radius: 4px; margin-top: .55rem; background: linear-gradient(90deg, var(--maroon), var(--maroon2)); }
+#login h2::after { margin-inline: auto; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.4rem; }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.25rem;
+.card, .ph, .song {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px;
+  padding: 1.5rem; box-shadow: var(--shadow); transition: transform .25s ease, box-shadow .25s ease;
 }
-
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.4rem;
-  box-shadow: var(--shadow);
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-
-.card:hover { box-shadow: 0 16px 36px -12px rgba(101,15,42,.28); }
-
-.ph {
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1.2rem;
-  box-shadow: var(--shadow);
-}
-.ph strong { color: var(--maroon); display: block; margin-bottom: .4rem; font-size: 1.1rem; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px -12px rgba(101,15,42,.24); }
+.ph strong { color: var(--maroon); display: block; margin-bottom: .4rem; font-size: 1.15rem; }
 [data-theme="dark"] .ph strong { color: var(--ink); }
-.ph p { color: var(--text); margin: 0; }
 
-.grades {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: .75rem;
-  margin: 1.5rem 0;
+.timeline { position: relative; max-width: 900px; margin: 2rem auto 0; padding-left: 2rem; border-left: 3px solid var(--maroon); }
+.timeline-item { position: relative; margin-bottom: 2.2rem; }
+.timeline-item::before {
+  content: ""; position: absolute; left: calc(-2rem - 8px); top: 4px; width: 14px; height: 14px;
+  border-radius: 50%; background: var(--maroon2); border: 3px solid #fff; box-shadow: 0 0 0 3px var(--maroon);
+}
+.timeline-year { font-weight: 800; color: var(--maroon); font-size: 1.15rem; margin-bottom: .3rem; }
+[data-theme="dark"] .timeline-year { color: var(--ink); }
+
+.song { display: grid; grid-template-columns: 220px 1fr; gap: 2.5rem; align-items: center; }
+@media (max-width: 760px) { .song { grid-template-columns: 1fr; } }
+.disc {
+  width: 200px; aspect-ratio: 1; border-radius: 50%; margin: auto; position: relative;
+  background: repeating-radial-gradient(circle, #1a0a12 0 3px, #2b1321 3px 6px);
+  box-shadow: 0 24px 38px -12px rgba(0,0,0,.5), inset 0 0 0 4px rgba(255,255,255,.08);
+}
+.disc span { position: absolute; inset: 33%; border-radius: 50%; background: linear-gradient(135deg, var(--maroon), var(--maroon2)) center/cover; box-shadow: 0 0 0 4px rgba(255,255,255,.14); }
+.disc.spin { animation: spin 5s linear infinite; }
+@keyframes spin { to { rotate: 360deg; } }
+.song audio { width: 100%; margin-top: .8rem; }
+.lyrics {
+  white-space: pre-line; max-height: 280px; overflow-y: auto; padding: 1.1rem 1.3rem; margin-top: 1rem;
+  border-radius: 14px; background: var(--surface); border: 1px solid var(--border); line-height: 2; font-size: .95rem;
 }
 
-.grade-pill {
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  border-radius: 10px;
-  padding: .85rem .5rem;
-  text-align: center;
-  font-weight: 700;
-  color: var(--maroon);
-  box-shadow: var(--shadow);
-  transition: transform .15s ease;
+.prefects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.2rem; }
+.prefect-card { text-align: center; padding: 1.5rem 1rem; }
+.prefect-avatar {
+  width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin: 0 auto .8rem;
+  border: 3px solid var(--maroon); box-shadow: var(--shadow);
 }
+.prefect-card h4 { margin: 0 0 .2rem; font-size: 1.05rem; }
+.prefect-card p { font-size: .85rem; color: var(--muted); margin: 0; }
 
-[data-theme="dark"] .grade-pill { color: #FFFFFF; }
-.grade-pill:hover { transform: translateY(-2px); }
+.achieve-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.4rem; }
+.achieve-card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 12px; margin-bottom: .8rem; border: 1px solid var(--border); }
 
-.notice-banner {
-  padding: .85rem 1.1rem;
-  background: color-mix(in srgb, var(--maroon) 6%, transparent);
-  border-left: 4px solid var(--maroon);
-  border-radius: 0 8px 8px 0;
-  font-size: .9rem;
-  color: var(--muted);
+.albs { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.3rem; }
+.alb {
+  all: unset; box-sizing: border-box; cursor: pointer; display: block; position: relative;
+  border-radius: 18px; overflow: hidden; border: 1px solid var(--border); background: var(--card-bg);
+  box-shadow: var(--shadow); transition: transform .3s ease, box-shadow .3s ease;
 }
+.alb:hover { transform: translateY(-6px); box-shadow: 0 24px 44px -16px rgba(101,15,42,.35); }
+.alb img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+.alb b { display: block; padding: .9rem 1rem 1rem; font-weight: 700; color: var(--text); }
+.alb .albc { position: absolute; top: .75rem; right: .75rem; padding: .25rem .7rem; border-radius: 99px; font: 600 .78rem var(--font-sans); color: #fff; background: rgba(40,6,20,.75); backdrop-filter: blur(6px); }
 
-.gal {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: .8rem;
-}
-
-.gal figure { margin: 0; }
-.gal img {
-  width: 100%;
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  display: block;
-}
-
-.gal figcaption {
-  font-size: .8rem;
-  color: var(--muted);
-  margin-top: .4rem;
-  text-align: center;
-}
-
-.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
-.reveal.in { opacity: 1; transform: none; }
+.ov { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 1rem; background: rgba(20,6,13,.82); backdrop-filter: blur(8px); }
+.ov[hidden], .lb[hidden] { display: none; }
+.ovb { width: min(1080px, 100%); max-height: 90vh; overflow-y: auto; background: var(--bg); border-radius: 20px; padding: 1.5rem; box-shadow: 0 40px 80px -20px rgba(0,0,0,.7); }
+.ovh { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+.ovg { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .8rem; }
+.ovg img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; cursor: zoom-in; }
+.lb { position: fixed; inset: 0; z-index: 110; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .8rem; padding: 1rem; background: rgba(10,3,7,.96); }
+.lb img { max-width: 90%; max-height: 86vh; margin: auto; object-fit: contain; }
 
 label { display: block; font-weight: 600; font-size: .9rem; margin: .8rem 0 .3rem; }
 input, select, textarea {
-  width: 100%;
-  min-height: 44px;
-  padding: .6rem .8rem;
-  border-radius: 9px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font: inherit;
-  transition: border-color .2s;
+  width: 100%; min-height: 44px; padding: .65rem .85rem; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit;
 }
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--maroon);
-}
-
 .login { max-width: 480px; margin: 0 auto; }
 .msg { min-height: 1.4em; font-weight: 600; font-size: .9rem; margin: .5rem 0; }
-.msg.e { color: var(--err); }
-.msg.o { color: var(--ok); }
-
-.row { display: flex; gap: .6rem; flex-wrap: wrap; }
+.msg.e { color: var(--err); } .msg.o { color: var(--ok); }
+.row { display: flex; gap: .7rem; flex-wrap: wrap; }
 .row > * { flex: 1; }
-
-.tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin: 1.2rem 0; }
-.tabs .btn[aria-current="true"] {
-  background: var(--maroon);
-  color: #FFFFFF;
-  border-color: var(--maroon);
-}
-
-.tw { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin: 1.4rem 0; }
+.tabs .btn[aria-current="true"] { background: var(--maroon); color: #FFFFFF; border-color: var(--maroon); }
+.tw { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: .9rem; }
-th, td { text-align: start; padding: .65rem .75rem; border-bottom: 1px solid var(--border); }
-th { background: color-mix(in srgb, var(--maroon) 5%, transparent); color: var(--text); font-weight: 700; }
-
+th, td { text-align: start; padding: .75rem; border-bottom: 1px solid var(--border); }
+th { background: color-mix(in srgb, var(--maroon) 5%, transparent); font-weight: 700; }
 .hide { display: none !important; }
 
-footer {
-  border-top: 1px solid var(--border);
-  padding: 2.5rem 0;
-  color: var(--muted);
-  font-size: .9rem;
-  background: var(--bg);
-}
-
-.prog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  width: 100%;
-  background: linear-gradient(90deg, var(--maroon), var(--maroon2));
-  transform: scaleX(0);
-  transform-origin: left;
-  z-index: 60;
-  pointer-events: none;
-}
+footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--muted); font-size: .9rem; background: var(--bg); }
+.prog { position: fixed; top: 0; left: 0; height: 3px; width: 100%; background: linear-gradient(90deg, var(--maroon), var(--maroon2)); transform: scaleX(0); transform-origin: left; z-index: 60; pointer-events: none; }
 
 @media(prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
-  }
-  .reveal { opacity: 1; transform: none; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
-
 @media print {
   header, footer, .tabs, .btn, #out, .hero, section:not(#login) { display: none !important; }
 }
 </style>
 </head>
-
-  <!-- ===== UPPER HOMADOLA ADD-ON: paste this whole block right before </body> ===== -->
-<style>
-/* Academics removed from home page */
-#academics, a.l[href="#academics"] { display: none !important; }
-
-/* ---------- 3D look ---------- */
-.ph, .steps-box, #newsList .card, #evList .card, .song, .gal figure {
-  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform .25s ease, box-shadow .25s ease;
-  will-change: transform;
-}
-.ph, .card, .song {
-  border-radius: 20px;
-  background: linear-gradient(150deg, var(--card-bg), var(--surface));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 2px 4px rgba(101,15,42,.08),
-              0 18px 36px -14px rgba(101,15,42,.28), 0 40px 60px -30px rgba(101,15,42,.22);
-}
-[data-theme="dark"] .ph, [data-theme="dark"] .card, [data-theme="dark"] .song {
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 18px 40px -14px rgba(0,0,0,.7);
-}
-.ph strong { transform: translateZ(30px); }
-
-.btn.p {
-  background: linear-gradient(180deg, var(--maroon2), var(--maroon));
-  box-shadow: 0 4px 0 #3d0919, 0 12px 22px -8px rgba(101,15,42,.55);
-}
-.btn.p:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0 #3d0919, 0 16px 26px -8px rgba(101,15,42,.6); }
-.btn.p:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #3d0919, 0 4px 10px -4px rgba(101,15,42,.5); }
-
-section h2 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); }
-section h2::after { content: ""; display: block; width: 56px; height: 4px; border-radius: 4px; margin-top: .55rem; background: linear-gradient(90deg, var(--maroon), var(--maroon2)); }
-#login h2::after { margin-inline: auto; }
-
-/* Hero: floating 3D bars + orbs */
-.hero::before, .hero::after { content: ""; position: absolute; border-radius: 50%; filter: blur(60px); opacity: .35; animation: drift 14s ease-in-out infinite alternate; pointer-events: none; }
-.hero::before { width: 360px; height: 360px; background: var(--maroon2); left: -80px; top: 20px; }
-.hero::after { width: 300px; height: 300px; background: #c9577a; right: 10%; bottom: -80px; animation-delay: -6s; }
-@keyframes drift { to { transform: translate(60px, 40px) scale(1.15); } }
-.hero .wrap { position: relative; z-index: 2; }
-.steps { transform: perspective(800px) rotateX(10deg) rotateY(-16deg); transform-style: preserve-3d; }
-.steps b { box-shadow: 5px 0 0 rgba(0,0,0,.28), 0 16px 20px -8px rgba(101,15,42,.6); animation: bob 4s ease-in-out infinite; animation-delay: calc(var(--i) * .15s); }
-@keyframes bob { 50% { translate: 0 -8px; } }
-
-/* Hero background video */
-.hv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
-.hv-shade { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s; background: linear-gradient(120deg, rgba(30,4,14,.85), rgba(101,15,42,.45)); }
-.hero.has-video .hv, .hero.has-video .hv-shade { opacity: 1; }
-.hero.has-video::before, .hero.has-video::after { display: none; }
-.hero.has-video h1 { color: #fff; }
-.hero.has-video p.lead { color: rgba(255,255,255,.9); }
-.hero.has-video .btn:not(.p) { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.4); backdrop-filter: blur(6px); }
-
-/* Logo */
-.mark.has-logo { background: #fff; padding: 3px; }
-.mark img { width: 100%; height: 100%; object-fit: contain; }
-.hlogo { width: 92px; height: 92px; object-fit: contain; border-radius: 24px; background: #fff; padding: 8px; margin-bottom: 1.1rem; box-shadow: 0 22px 34px -12px rgba(0,0,0,.45); animation: bob 5s ease-in-out infinite; }
-
-/* School song */
-.song { display: grid; grid-template-columns: 220px 1fr; gap: 2rem; align-items: center; padding: 2rem; border: 1px solid var(--border); }
-@media (max-width: 720px) { .song { grid-template-columns: 1fr; } }
-.disc { width: 200px; aspect-ratio: 1; border-radius: 50%; margin: auto; position: relative; background: repeating-radial-gradient(circle, #1a0a12 0 3px, #2b1321 3px 6px); box-shadow: 0 26px 40px -12px rgba(0,0,0,.55), inset 0 0 0 4px rgba(255,255,255,.06); }
-.disc span { position: absolute; inset: 33%; border-radius: 50%; background: linear-gradient(135deg, var(--maroon), var(--maroon2)) center/cover; box-shadow: 0 0 0 4px rgba(255,255,255,.12); }
-.disc.spin { animation: spin 5s linear infinite; }
-@keyframes spin { to { rotate: 360deg; } }
-.song audio { width: 100%; margin-top: .8rem; }
-.lyrics { white-space: pre-line; max-height: 280px; overflow: auto; padding: 1rem 1.2rem; margin-top: 1rem; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); line-height: 1.95; }
-
-/* Entrance animation (scroll-driven where supported) */
-@keyframes rise { from { opacity: 0; translate: 0 28px; } }
-#newsList .card, #evList .card, .gal figure, .ph, .song { animation: rise .7s ease both; }
-@supports (animation-timeline: view()) {
-  #newsList .card, #evList .card, .gal figure, .ph, .song { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 35%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero::before, .hero::after, .steps b, .hlogo, .disc.spin { animation: none !important; }
-  .ph, .steps-box, .card, .song { transform: none !important; }
-}
-</style>
-
-<script type="module">
-const CFG = {
-  firebase: {
-    apiKey: "AIzaSyAtJmvP91wY2pToErARMdcSwpJ2ftVYaCM",
-    authDomain: "uhkv-53eb9.firebaseapp.com",
-    projectId: "uhkv-53eb9",
-    storageBucket: "uhkv-53eb9.firebasestorage.app",
-    messagingSenderId: "191585546232",
-    appId: "1:191585546232:web:b289c3321319c6eb4af00d",
-    measurementId: "G-FQNP6GWS6D"
-  },
-  imgbbKey: "bc81d388ab05868ad68ff92d859a7cd7"
-};
-const $ = s => document.querySelector(s), root = document.documentElement;
-const ok = u => { try { return new URL(u).protocol === "https:"; } catch { return false; } };
-const lang = () => root.lang === "en" ? "en" : "si";
-const TXT = {
-  en: { song: "School Song", none: "The school song will appear here once published.", nol: "Lyrics will be added soon." },
-  si: { song: "පාසල් ගීතය", none: "පාසල් ගීතය පළ කළ පසු මෙහි දිස්වනු ඇත.", nol: "පද රචනය ඉක්මනින් එක් කරනු ඇත." }
-};
-
-/* ---- inject DOM ---- */
-const hero = $(".hero"), mark = $(".mark"), mark0 = mark.innerHTML;
-hero.insertAdjacentHTML("afterbegin", '<video id="hv" class="hv" muted loop playsinline autoplay></video><div class="hv-shade"></div>');
-hero.querySelector(".wrap > div").insertAdjacentHTML("afterbegin", '<img id="hl" class="hlogo" alt="School logo" hidden>');
-$("#about").insertAdjacentHTML("afterend", '<section id="song"><div class="wrap"><h2 id="sh"></h2><div class="song" id="sb"></div></div></section>');
-$('a.l[href="#about"]').insertAdjacentHTML("afterend", '<a class="l" id="ns" href="#song"></a>');
-
-let C = {}, songSrc = "";
-function paint() {
-  const l = lang(), t = TXT[l], p = k => C[k + "_" + l] || C[k + "_en"] || C[k + "_si"] || "";
-  $("#ns").textContent = $("#sh").textContent = t.song;
-
-  const hv = $("#hv"), vid = ok(C.hero_video);
-  hero.classList.toggle("has-video", vid);
-  if (vid && hv.dataset.s !== C.hero_video) { hv.dataset.s = C.hero_video; hv.src = C.hero_video; hv.play().catch(() => {}); }
-  if (!vid && hv.dataset.s) { hv.removeAttribute("src"); hv.dataset.s = ""; hv.load(); }
-
-  const logo = ok(C.logo_url);
-  mark.classList.toggle("has-logo", logo);
-  mark.innerHTML = logo ? `<img alt="" src="${C.logo_url.replace(/"/g, "")}">` : mark0;
-  $("#hl").hidden = !logo; if (logo) $("#hl").src = C.logo_url;
-
-  const box = $("#sb");
-  if (!ok(C.song_url)) { songSrc = ""; box.innerHTML = `<div class="ph" style="grid-column:1/-1"><p>${t.none}</p></div>`; return; }
-  if (songSrc !== C.song_url) {
-    songSrc = C.song_url;
-    box.innerHTML = '<div class="disc" id="disc"><span id="dl"></span></div><div><h3 id="stt"></h3><audio id="au" controls preload="none"></audio><div class="lyrics" id="sly"></div></div>';
-    const a = $("#au"); a.src = C.song_url;
-    a.onplay = () => $("#disc").classList.add("spin");
-    a.onpause = a.onended = () => $("#disc").classList.remove("spin");
-  }
-  if (logo) $("#dl").style.backgroundImage = `url("${C.logo_url.replace(/"/g, "")}")`;
-  $("#stt").textContent = p("song_title") || t.song;
-  $("#sly").textContent = p("lyrics") || t.nol;
-}
-new MutationObserver(paint).observe(root, { attributes: true, attributeFilter: ["lang"] });
-paint();
-
-/* ---- 3D tilt ---- */
-if (matchMedia("(hover:hover)").matches && !matchMedia("(prefers-reduced-motion:reduce)").matches) {
-  const SEL = ".ph,.steps-box,#newsList .card,#evList .card,.song,.gal figure"; let cur;
-  addEventListener("pointermove", e => {
-    const el = e.target.closest?.(SEL);
-    if (cur && cur !== el) { cur.style.setProperty("--rx", "0deg"); cur.style.setProperty("--ry", "0deg"); }
-    cur = el; if (!el) return;
-    const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-    el.style.setProperty("--ry", (x * 10).toFixed(1) + "deg"); el.style.setProperty("--rx", (-y * 10).toFixed(1) + "deg");
-  }, { passive: true });
-}
-
-/* ---- Firebase: load media settings, admin editor ---- */
-try {
-  const B = "https://www.gstatic.com/firebasejs/10.12.2/";
-  const [app, fs] = await Promise.all([import(B + "firebase-app.js"), import(B + "firebase-firestore.js")]);
-  const D = fs.getFirestore(app.initializeApp(CFG.firebase)), ref = fs.doc(D, "cms", "home");
-  try { C = (await fs.getDoc(ref)).data() || {}; paint(); } catch {}
-
-  const card = () => `
-    <div class="card" id="uxCard">
-      <h4 style="margin-top:0;">Branding, Video &amp; School Song</h4>
-      <label for="x_logo">School Logo (JPG/PNG/WebP, max 5MB)</label><input id="x_logo" type="file" accept="image/jpeg,image/png,image/webp">
-      <label><input id="x_rl" type="checkbox" style="width:auto;min-height:0"> Remove current logo</label>
-      <label for="x_vid">Home Page Background Video — direct https link to .mp4 (muted, looping; keep under ~8MB)</label>
-      <input id="x_vid" placeholder="https://.../school.mp4">
-      <label for="x_song">School Song — direct https link to .mp3</label>
-      <input id="x_song" placeholder="https://.../school-song.mp3">
-      <div class="row">
-        <div><label for="x_tsi">Song Title (Sinhala)</label><input id="x_tsi"></div>
-        <div><label for="x_ten">Song Title (English)</label><input id="x_ten"></div>
-      </div>
-      <div class="row">
-        <div><label for="x_lsi">Lyrics (Sinhala)</label><textarea id="x_lsi" rows="8"></textarea></div>
-        <div><label for="x_len">Lyrics (English)</label><textarea id="x_len" rows="8"></textarea></div>
-      </div>
-      <p class="msg" id="uxm" role="alert"></p>
-      <button class="btn p" type="button" id="x_save">Save Media &amp; Song</button>
-    </div>`;
-
-  function mount() {
-    const f = $("#cmsForm"); if (!f || $("#uxCard")) return;
-    f.querySelector("#pm").insertAdjacentHTML("beforebegin", card());
-    const set = { x_vid: C.hero_video, x_song: C.song_url, x_tsi: C.song_title_si, x_ten: C.song_title_en, x_lsi: C.lyrics_si, x_len: C.lyrics_en };
-    for (const k in set) $("#" + k).value = set[k] || "";
-    const v = id => $("#" + id).value.trim(), msg = (t, g) => { $("#uxm").textContent = t; $("#uxm").className = "msg " + (g ? "o" : "e"); };
-    $("#x_save").onclick = async () => {
-      if ((v("x_vid") && !ok(v("x_vid"))) || (v("x_song") && !ok(v("x_song")))) return msg("Links must start with https://");
-      try {
-        msg("Saving...", 1);
-        let logo = $("#x_rl").checked ? "" : (C.logo_url || ""); const file = $("#x_logo").files[0];
-        if (file) {
-          if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 5e6) return msg("Logo must be JPG/PNG/WebP under 5MB.");
-          const fd = new FormData(); fd.append("image", file);
-          const j = await (await fetch("https://api.imgbb.com/1/upload?key=" + encodeURIComponent(CFG.imgbbKey), { method: "POST", body: fd })).json();
-          if (!j.success) throw new Error("Logo upload failed"); logo = j.data.url;
-        }
-        const o = { logo_url: logo, hero_video: v("x_vid"), song_url: v("x_song"), song_title_si: v("x_tsi"), song_title_en: v("x_ten"), lyrics_si: $("#x_lsi").value.trim(), lyrics_en: $("#x_len").value.trim() };
-        await fs.setDoc(ref, o, { merge: true });
-        Object.assign(C, o); paint(); msg("Saved and live on the home page.", 1);
-      } catch (e) { msg("Failed: " + e.message); }
-    };
-  }
-  new MutationObserver(mount).observe($("#panel"), { childList: true, subtree: true });
-} catch (e) { console.warn("Add-on media load skipped", e); }
-</script>
-<!-- ===== END ADD-ON ===== -->
-
-<!-- ===== GALLERY ALBUMS ADD-ON: paste right before </body> (after the first add-on) ===== -->
-<style>
-.albs { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.2rem; }
-.alb { all: unset; box-sizing: border-box; cursor: pointer; display: block; position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); background: var(--card-bg);
-  box-shadow: 0 2px 4px rgba(101,15,42,.08), 0 18px 36px -14px rgba(101,15,42,.3); transition: transform .3s ease, box-shadow .3s ease; }
-.alb:hover, .alb:focus-visible { transform: translateY(-8px) rotateX(4deg); box-shadow: 0 30px 50px -18px rgba(101,15,42,.45); outline: 3px solid var(--ink); outline-offset: 2px; }
-.alb img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; transition: transform .5s ease; }
-.alb:hover img { transform: scale(1.06); }
-.alb b { display: block; padding: .9rem 1rem 1rem; font-weight: 700; color: var(--text); line-height: 1.4; }
-.alb .albc { position: absolute; top: .7rem; right: .7rem; padding: .25rem .65rem; border-radius: 99px; font: 600 .78rem var(--font-sans); color: #fff; background: rgba(40,6,20,.72); backdrop-filter: blur(6px); }
-
-.ov { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 1rem; background: rgba(20,6,13,.78); backdrop-filter: blur(8px); animation: ovin .25s ease; }
-.ov[hidden], .lb[hidden] { display: none; }
-@keyframes ovin { from { opacity: 0; } }
-.ovb { width: min(1100px, 100%); max-height: 92vh; overflow: auto; background: var(--bg); border-radius: 22px; padding: 0 1.2rem 1.2rem; box-shadow: 0 40px 80px -20px rgba(0,0,0,.7); }
-.ovh { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; background: var(--bg); }
-.ovh h3 { margin: 0; }
-.ovg { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .7rem; }
-.ovg img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 12px; cursor: zoom-in; border: 1px solid var(--border); transition: transform .25s ease, box-shadow .25s ease; }
-.ovg img:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 16px 28px -12px rgba(0,0,0,.5); }
-.lb { position: absolute; inset: 0; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .5rem; padding: 1rem; background: rgba(10,3,7,.95); }
-.lb img { max-width: 100%; max-height: 88vh; margin: auto; object-fit: contain; border-radius: 10px; }
-.lbx { position: absolute; top: 1rem; right: 1rem; }
-</style>
-
-<script type="module">
-const CFG = {
-  firebase: {
-    apiKey: "AIzaSyAtJmvP91wY2pToErARMdcSwpJ2ftVYaCM",
-    authDomain: "uhkv-53eb9.firebaseapp.com",
-    projectId: "uhkv-53eb9",
-    storageBucket: "uhkv-53eb9.firebasestorage.app",
-    messagingSenderId: "191585546232",
-    appId: "1:191585546232:web:b289c3321319c6eb4af00d",
-    measurementId: "G-FQNP6GWS6D"
-  },
-  imgbbKey: "bc81d388ab05868ad68ff92d859a7cd7"
-};
-const $ = s => document.querySelector(s), root = document.documentElement;
-const lang = () => root.lang === "en" ? "en" : "si";
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const iOk = u => /^https:\/\/i\.ibb\.co\//.test(u || "");
-const TX = { en: { none: "No gallery albums published yet", ph: "photos" }, si: { none: "තවම ඡායාරූප ඇල්බම් පළ කර නැත", ph: "ඡායාරූප" } };
-const ttl = a => lang() === "en" ? (a.title_en || a.title || "") : (a.title || a.title_en || "");
-
-const B = "https://www.gstatic.com/firebasejs/10.12.2/";
-const [app, fs] = await Promise.all([import(B + "firebase-app.js"), import(B + "firebase-firestore.js")]);
-const D = fs.getFirestore(app.initializeApp(CFG.firebase));
-let A = [];
-
-async function loadAlbums() {
-  try {
-    const s = await fs.getDocs(fs.query(fs.collection(D, "albums"), fs.orderBy("createdAt", "desc"), fs.limit(60)));
-    A = s.docs.map(d => ({ id: d.id, ...d.data() })).filter(a => Array.isArray(a.urls) && a.urls.some(iOk));
-  } catch { A = []; }
-  paint();
-}
-
-/* ---------- Public: album cards ---------- */
-function paint() {
-  const box = $("#galList"); if (!box) return;
-  if (!A.length) { box.innerHTML = `<div class="alb-root ph"><p>${TX[lang()].none}</p></div>`; return; }
-  box.innerHTML = '<div class="alb-root albs">' + A.map((a, i) => {
-    const n = a.urls.filter(iOk).length;
-    return `<button class="alb" data-i="${i}" aria-label="${esc(ttl(a))}">
-      <img loading="lazy" src="${esc(iOk(a.cover) ? a.cover : a.urls.find(iOk))}" alt="">
-      <span class="albc">${n} ${TX[lang()].ph}</span><b>${esc(ttl(a))}</b></button>`;
-  }).join("") + "</div>";
-}
-// the original script re-renders #galList (language switch etc.) — put albums back
-new MutationObserver(() => { if (!$("#galList .alb-root")) paint(); }).observe($("#galList"), { childList: true });
-paint();
-
-/* ---------- Public: album viewer + lightbox ---------- */
-document.body.insertAdjacentHTML("beforeend", `
-  <div id="albOv" class="ov" hidden role="dialog" aria-modal="true">
-    <div class="ovb"><div class="ovh"><h3 id="ovt"></h3><button class="btn" id="ovx" aria-label="Close">✕</button></div><div class="ovg" id="ovg"></div></div>
-    <div class="lb" id="lb" hidden><button class="btn" id="lbp" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="btn" id="lbn" aria-label="Next">›</button><button class="btn lbx" id="lbc" aria-label="Close photo">✕</button></div>
-  </div>`);
-let cur = [], k = 0;
-const showLb = i => { k = (i + cur.length) % cur.length; $("#lbi").src = cur[k]; $("#lb").hidden = false; };
-const closeOv = () => { $("#albOv").hidden = true; $("#lb").hidden = true; document.body.style.overflow = ""; };
-$("#galList").addEventListener("click", e => {
-  const b = e.target.closest(".alb"); if (!b) return;
-  const a = A[+b.dataset.i]; cur = a.urls.filter(iOk);
-  $("#ovt").textContent = ttl(a);
-  $("#ovg").innerHTML = cur.map((u, i) => `<img loading="lazy" data-k="${i}" src="${esc(u)}" alt="${esc(ttl(a))} ${i + 1}">`).join("");
-  $("#albOv").hidden = false; $("#ovg").parentElement.scrollTop = 0; document.body.style.overflow = "hidden";
-});
-$("#ovg").onclick = e => { const im = e.target.closest("[data-k]"); if (im) showLb(+im.dataset.k); };
-$("#lbp").onclick = () => showLb(k - 1);
-$("#lbn").onclick = () => showLb(k + 1);
-$("#lbc").onclick = () => { $("#lb").hidden = true; };
-$("#ovx").onclick = closeOv;
-$("#albOv").addEventListener("click", e => { if (e.target.id === "albOv") closeOv(); });
-addEventListener("keydown", e => {
-  if ($("#albOv").hidden) return;
-  if (e.key === "Escape") { $("#lb").hidden ? closeOv() : ($("#lb").hidden = true); }
-  if (!$("#lb").hidden && e.key === "ArrowLeft") showLb(k - 1);
-  if (!$("#lb").hidden && e.key === "ArrowRight") showLb(k + 1);
-});
-
-/* ---------- Admin: "Gallery Albums" tab (replaces the single-photo Gallery CMS tab) ---------- */
-const shrink = f => new Promise(r => {          // resize to max 1600px so 20 phone photos upload fast
-  const i = new Image();
-  i.onload = () => {
-    const s = Math.min(1, 1600 / Math.max(i.width, i.height)), c = document.createElement("canvas");
-    c.width = Math.round(i.width * s); c.height = Math.round(i.height * s);
-    c.getContext("2d").drawImage(i, 0, 0, c.width, c.height);
-    c.toBlob(b => r(b || f), "image/jpeg", .85);
-  };
-  i.onerror = () => r(f); i.src = URL.createObjectURL(f);
-});
-const upload = async f => {
-  const fd = new FormData(); fd.append("image", await shrink(f), "photo.jpg");
-  const j = await (await fetch("https://api.imgbb.com/1/upload?key=" + encodeURIComponent(CFG.imgbbKey), { method: "POST", body: fd })).json();
-  if (!j.success || !iOk(j.data.url)) throw new Error("Upload rejected");
-  return j.data.url;
-};
-
-function listAdmin() {
-  $("#a_l").innerHTML = A.length ? A.map(a => `
-    <div style="display:flex;gap:.8rem;align-items:center;margin:.6rem 0;">
-      <img src="${esc(iOk(a.cover) ? a.cover : a.urls[0])}" alt="" style="width:72px;height:54px;object-fit:cover;border-radius:8px;">
-      <span style="flex:1;"><strong>${esc(a.title || a.title_en)}</strong><br><small style="color:var(--muted)">${a.urls.length} photos</small></span>
-      <button class="btn" data-del="${esc(a.id)}">Delete</button>
-    </div>`).join("") : "<p style='color:var(--muted)'>No albums yet.</p>";
-}
-
-function adminPanel() {
-  $("#panel").innerHTML = `
-    <h3>Gallery Albums</h3>
-    <p style="color:var(--muted)">One event = one album. Pick up to 20 photos; visitors see the album title, and photos load when they click it.</p>
-    <form id="af2" class="card" style="margin-bottom:1.5rem;">
-      <label for="a_t">Album title (Sinhala or any language)</label><input id="a_t" required>
-      <label for="a_e">English title (optional)</label><input id="a_e">
-      <label for="a_f">Photos (max 20 — JPG / PNG / WebP)</label>
-      <input id="a_f" type="file" accept="image/jpeg,image/png,image/webp" multiple required>
-      <p class="msg" id="a_m" role="alert"></p>
-      <button class="btn p" id="a_b">Upload Album</button>
-    </form>
-    <h4>Published albums</h4><div id="a_l"></div>`;
-  listAdmin();
-  const msg = (t, g) => { $("#a_m").textContent = t; $("#a_m").className = "msg " + (g ? "o" : "e"); };
-
-  $("#af2").onsubmit = async e => {
-    e.preventDefault();
-    const files = [...$("#a_f").files], title = $("#a_t").value.trim();
-    if (!title) return msg("Enter an album title.");
-    if (!files.length) return msg("Choose at least one photo.");
-    if (files.length > 20) return msg("Maximum 20 photos per album. You chose " + files.length + ".");
-    if (files.some(f => !/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 15e6)) return msg("Only JPG/PNG/WebP images under 15MB each.");
-    $("#a_b").disabled = true;
-    try {
-      const urls = new Array(files.length); let next = 0, done = 0;
-      msg(`Uploading 0/${files.length}...`, 1);
-      await Promise.all([0, 1, 2].map(async () => {            // 3 uploads at a time
-        while (next < files.length) { const i = next++; urls[i] = await upload(files[i]); msg(`Uploading ${++done}/${files.length}...`, 1); }
-      }));
-      await fs.addDoc(fs.collection(D, "albums"), { title, title_en: $("#a_e").value.trim(), urls, cover: urls[0], count: urls.length, createdAt: fs.serverTimestamp() });
-      $("#af2").reset(); msg("Album published on the home page.", 1);
-      await loadAlbums(); listAdmin();
-    } catch (err) { msg("Upload failed: " + err.message); }
-    $("#a_b").disabled = false;
-  };
-
-  $("#a_l").onclick = async e => {
-    const b = e.target.closest("[data-del]"); if (!b || !confirm("Delete this album from the website?")) return;
-    try { await fs.deleteDoc(fs.doc(D, "albums", b.dataset.del)); await loadAlbums(); listAdmin(); }
-    catch (err) { msg("Delete failed: " + err.message); }
-  };
-}
-
-new MutationObserver(() => {
-  const g = $('#tabs [data-t="gal"]');
-  if (!g || $("#albTab")) return;
-  g.style.display = "none";
-  g.insertAdjacentHTML("afterend", '<button class="btn" id="albTab">Gallery Albums</button>');
-  $("#albTab").onclick = () => {
-    document.querySelectorAll("#tabs .btn").forEach(b => b.setAttribute("aria-current", b.id === "albTab"));
-    adminPanel();
-  };
-}).observe($("#tabs"), { childList: true });
-
-loadAlbums();
-</script>
-<!-- ===== END GALLERY ADD-ON ===== -->
-  
 <body>
 
 <div class="prog" id="pbar" aria-hidden="true"></div>
@@ -821,10 +231,9 @@ loadAlbums();
 <header>
   <div class="wrap bar">
     <a class="brand" href="#top">
-      <span class="mark" aria-hidden="true">
+      <span class="mark" id="brandMark" aria-hidden="true">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-5 9 5-9 5-9-5z"/>
-          <path d="M7 11.5V16c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-4.5"/>
+          <path d="M3 9l9-5 9 5-9 5-9-5z"/><path d="M7 11.5V16c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-4.5"/>
         </svg>
       </span>
       <span data-i="bName">Upper Homadola</span>
@@ -832,12 +241,14 @@ loadAlbums();
     <button class="btn" id="menu" aria-expanded="false" aria-controls="nav" data-i="menu">Menu</button>
     <nav id="nav" aria-label="Main Navigation">
       <a class="l" href="#about" data-i="nAbout">About</a>
-      <a class="l" href="#academics" data-i="nAcad">Academics</a>
-      <a class="l" href="#news" data-i="nNews">School News</a>
-      <a class="l" href="#events" data-i="nEvents">Events</a>
+      <a class="l" href="#history" data-i="nHistory">History</a>
+      <a class="l" href="#song" data-i="nSong">School Song</a>
+      <a class="l" href="#prefects" data-i="nPrefects">Prefects</a>
+      <a class="l" href="#achievements" data-i="nAchieve">Achievements</a>
       <a class="l" href="#gallery" data-i="nGal">Gallery</a>
+      <a class="l" href="#news" data-i="nNews">News</a>
       <a class="l" href="#contact" data-i="nContact">Contact</a>
-      <a class="btn p" href="#login" data-i="nLogin">Student/Teacher Login</a>
+      <a class="btn p" href="#login" data-i="nLogin">Login</a>
       <button class="btn" id="lang" aria-label="Toggle language">සිං</button>
       <button class="btn" id="theme" aria-label="Toggle dark/light mode">◐</button>
     </nav>
@@ -846,8 +257,11 @@ loadAlbums();
 
 <main>
   <div class="hero" id="top">
+    <video id="hv" class="hv" muted loop playsinline autoplay></video>
+    <div class="hv-shade"></div>
     <div class="wrap">
-      <div>
+      <div class="hero-box">
+        <img id="hl" class="hlogo" alt="School logo" hidden>
         <h1 id="heroH1" data-i="h1"></h1>
         <p class="lead" id="heroLead" data-i="lead"></p>
         <div class="cta">
@@ -855,30 +269,51 @@ loadAlbums();
           <a class="btn" href="#login" data-i="portal"></a>
         </div>
       </div>
-      <div class="steps-box" aria-hidden="true">
-        <div class="steps">
-          <b style="--i:0">1</b><b style="--i:1">2</b><b style="--i:2">3</b><b style="--i:3">4</b>
-          <b style="--i:4">5</b><b style="--i:5">6</b><b style="--i:7">7</b><b style="--i:7">8</b>
-          <b style="--i:8">9</b><b style="--i:9">10</b><b style="--i:10">11</b>
-        </div>
-        <p class="cap" data-i="cap"></p>
-      </div>
     </div>
   </div>
 
   <section id="about" class="alt">
     <div class="wrap">
       <h2 data-i="nAbout"></h2>
-      <div class="grid reveal" id="aboutBox"></div>
+      <div class="grid" id="aboutBox"></div>
     </div>
   </section>
 
-  <section id="academics">
+  <section id="history">
     <div class="wrap">
-      <h2 data-i="nAcad"></h2>
-      <p style="color:var(--muted)" data-i="acadP"></p>
-      <div class="grades reveal" id="grades"></div>
-      <div class="notice-banner" data-i="divNote"></div>
+      <h2 data-i="nHistory"></h2>
+      <p style="color:var(--muted)" data-i="histP"></p>
+      <div class="timeline" id="historyTimeline"></div>
+    </div>
+  </section>
+
+  <section id="song" class="alt">
+    <div class="wrap">
+      <h2 data-i="nSong"></h2>
+      <div class="song" id="sb"></div>
+    </div>
+  </section>
+
+  <section id="prefects">
+    <div class="wrap">
+      <h2 data-i="nPrefects"></h2>
+      <p style="color:var(--muted)" data-i="prefP"></p>
+      <div class="prefects-grid" id="prefectsList"></div>
+    </div>
+  </section>
+
+  <section id="achievements" class="alt">
+    <div class="wrap">
+      <h2 data-i="nAchieve"></h2>
+      <p style="color:var(--muted)" data-i="achieveP"></p>
+      <div class="achieve-grid" id="achieveList"></div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <div class="wrap">
+      <h2 data-i="nGal"></h2>
+      <div id="galList"></div>
     </div>
   </section>
 
@@ -889,40 +324,32 @@ loadAlbums();
     </div>
   </section>
 
-  <section id="events">
-    <div class="wrap">
-      <h2 data-i="nEvents"></h2>
-      <div class="grid" id="evList"></div>
-    </div>
-  </section>
-
-  <section id="gallery" class="alt">
-    <div class="wrap">
-      <h2 data-i="nGal"></h2>
-      <div id="galList"></div>
-    </div>
-  </section>
-
   <section id="contact">
     <div class="wrap">
       <h2 data-i="nContact"></h2>
-      <div class="grid reveal" id="contactBox"></div>
+      <div class="grid">
+        <div class="card" id="contactDetails"></div>
+        <div class="card" style="display:flex;flex-direction:column;justify-content:center;text-align:center;">
+          <h3 style="margin-top:0;" data-i="locTitle">School Location</h3>
+          <p style="color:var(--muted);margin-bottom:1.5rem;" data-i="locDesc">Visit G/Upper Homadola School in the Southern Province.</p>
+          <a class="btn p" href="https://share.google/81eGZFnMwfhs200B4" target="_blank" rel="noopener noreferrer" style="align-self:center;">
+            📍 Open in Google Maps
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="login" class="alt">
     <div class="wrap">
       <h2 data-i="nLogin" style="text-align:center;"></h2>
-      
       <div class="card login" id="loginBox">
         <p class="msg" id="cfgMsg"></p>
         <form id="lf" novalidate>
           <label for="u" data-i="user"></label>
           <input id="u" autocomplete="username" autocapitalize="off" required>
-          
           <label for="p" data-i="pass"></label>
           <input id="p" type="password" autocomplete="current-password" required>
-          
           <p class="msg e" id="lerr" role="alert"></p>
           <button class="btn p" id="lbtn" type="submit" style="width:100%;margin-top:.6rem;" data-i="signin"></button>
         </form>
@@ -947,8 +374,21 @@ loadAlbums();
   </div>
 </footer>
 
+<div id="albOv" class="ov" hidden role="dialog" aria-modal="true">
+  <div class="ovb">
+    <div class="ovh"><h3 id="ovt"></h3><button class="btn" id="ovx">✕</button></div>
+    <div class="ovg" id="ovg"></div>
+  </div>
+  <div class="lb" id="lb" hidden>
+    <button class="btn" id="lbp">‹</button>
+    <img id="lbi" alt="Full Preview">
+    <button class="btn" id="lbn">›</button>
+    <button class="btn" id="lbc" style="position:absolute;top:1rem;right:1rem;">✕</button>
+  </div>
+</div>
+
 <script type="module">
-/* ====== CONFIGURATION ====== */
+/* ===== SYSTEM CONFIGURATION ===== */
 const CFG = {
   firebase: {
     apiKey: "AIzaSyAtJmvP91wY2pToErARMdcSwpJ2ftVYaCM",
@@ -960,52 +400,65 @@ const CFG = {
     measurementId: "G-FQNP6GWS6D"
   },
   imgbbKey: "bc81d388ab05868ad68ff92d859a7cd7",
-  domain: "uhkv.internal"
+  domain: "uhkv.internal",
+  teacherUrl: "teacher.html",
+  studentUrl: "student.html"
 };
 
 let CMS = {
-  hero_title_si: "", hero_title_en: "",
-  hero_lead_si: "", hero_lead_en: "",
-  intro_si: "", intro_en: "",
-  vision_si: "", vision_en: "",
-  mission_si: "", mission_en: "",
-  principal_si: "", principal_en: "",
+  hero_title_si: "", hero_title_en: "", hero_lead_si: "", hero_lead_en: "",
+  intro_si: "", intro_en: "", vision_si: "", vision_en: "",
+  mission_si: "", mission_en: "", principal_si: "", principal_en: "",
+  logo_url: "", hero_video: "", song_url: "", song_title_si: "", song_title_en: "",
+  lyrics_si: "", lyrics_en: "",
   address: "G/Upper Homadola School, Southern Province, Sri Lanka",
-  phone: "",
-  email: ""
+  phone: "", email: ""
 };
-/* =========================== */
+
+let TIMELINE = [], PREFECTS = [], ACHIEVEMENTS = [], ALBUMS = [], POSTS = [];
 
 const T = {
   en: {
-    bName: "Upper Homadola", menu: "Menu", nAbout: "About", nAcad: "Academics", nNews: "School News",
-    nEvents: "Events", nGal: "Gallery", nContact: "Contact", nLogin: "Student/Teacher Login",
+    bName: "Upper Homadola", menu: "Menu", nAbout: "About", nHistory: "History", nSong: "School Song",
+    nPrefects: "Prefects", nAchieve: "Achievements", nGal: "Gallery", nNews: "News", nContact: "Contact", nLogin: "Login",
     h1: "A school community, organised in one secure place.",
     lead: "G/Upper Homadola School, Grades 1 to 11. News, notices, academic services, and role-based management in Sinhala and English.",
-    explore: "Explore School", portal: "Login Portal", cap: "Grade 1 to Grade 11",
+    explore: "Explore School", portal: "Login Portal",
     intro: "Introduction", vision: "Vision", mission: "Mission", principal: "Principal's Message", ph: "To be provided by the school administration.",
-    acadP: "The school provides education for Grades 1 through 11. Classes are organized by grade as single units.",
-    divNote: "Important: There are no A, B, or C divisions. Each grade functions as a single unified class cohort.",
-    grade: "Grade", noNews: "No news published yet", noEv: "No upcoming events", noGal: "No gallery albums published yet",
-    noP: "Content will appear here once officially published by the administration.",
-    addr: "Address", tel: "Telephone", mail: "Email", tbd: "To be provided by the school.",
-    user: "Admission number (Student) or NIC (Teacher) / Username", pass: "Password", signin: "Sign In",
+    histP: "Milestones, previous leadership, and the journey of institutional growth.",
+    prefP: "Student leaders appointed to uphold student discipline and school values.",
+    achieveP: "Recognitions, academic triumphs, and sports achievements.",
+    noHist: "Historical records will be published soon.",
+    noPref: "Prefects list has not been published yet.",
+    noAchieve: "Achievements will appear here once recorded.",
+    noGal: "No gallery albums published yet.", photos: "photos",
+    noNews: "No news announcements published.",
+    songTitle: "School Song", songNone: "School song audio will be available soon.", noLyrics: "Lyrics will be added shortly.",
+    locTitle: "Location & Directions", locDesc: "Visit G/Upper Homadola School in the Southern Province.",
+    addr: "Address", tel: "Telephone", mail: "Email", tbd: "To be provided.",
+    user: "Admission number or NIC / Username", pass: "Password", signin: "Sign In",
     bad: "Incorrect credentials or account deactivated. Contact administration.",
     off: "Firebase is initializing. Please verify network configuration.",
     foot: "© G/Upper Homadola School. Sri Lanka. All rights reserved."
   },
   si: {
-    bName: "ඉහළ හෝමාදෝල", menu: "මෙනුව", nAbout: "අප ගැන", nAcad: "අධ්‍යාපනය", nNews: "පාසල් පුවත්",
-    nEvents: "සිදුවීම්", nGal: "ඡායාරූප", nContact: "සම්බන්ධ වන්න", nLogin: "ශිෂ්‍ය/ගුරු පිවිසුම",
+    bName: "ඉහළ හෝමාදෝල", menu: "මෙනුව", nAbout: "අප ගැන", nHistory: "ඉතිහාසය", nSong: "පාසල් ගීතය",
+    nPrefects: "ශිෂ්‍ය නායක මණ්ඩලය", nAchieve: "ජයග්‍රහණ", nGal: "ඡායාරූප", nNews: "පුවත්", nContact: "සම්බන්ධ වන්න", nLogin: "පිවිසුම",
     h1: "පාසල් ප්‍රජාව, ආරක්ෂිත එක් තැනක.",
     lead: "ග/ඉහළ හෝමාදෝල විද්‍යාලය, 1 සිට 11 දක්වා ශ්‍රේණි. ප්‍රවෘත්ති, නිවේදන සහ ශිෂ්‍ය කළමනාකරණ පද්ධතිය සිංහල සහ ඉංග්‍රීසි භාෂාවෙන්.",
-    explore: "අධ්‍යයන අංශය", portal: "පිවිසුම් ද්වාරය", cap: "1 ශ්‍රේණියේ සිට 11 ශ්‍රේණිය දක්වා",
+    explore: "අධ්‍යයන අංශය", portal: "පිවිසුම් ද්වාරය",
     intro: "හැඳින්වීම", vision: "දැක්ම", mission: "මෙහෙවර", principal: "විදුහල්පති පණිවිඩය", ph: "පාසල් පරිපාලනය විසින් සපයනු ඇත.",
-    acadP: "පාසල 1 ශ්‍රේණියේ සිට 11 ශ්‍රේණිය දක්වා ක්‍රියාත්මක වේ. පන්ති සංවිධානය කරනු ලබන්නේ ශ්‍රේණි අනුව පමණි.",
-    divNote: "වැදගත්: A, B, හෝ C ලෙස පන්ති බෙදීම් නොමැති අතර එක් එක් ශ්‍රේණිය තනි ඒකකයක් ලෙස ක්‍රියාත්මක වේ.",
-    grade: "ශ්‍රේණිය", noNews: "තවම පුවත් පළ කර නැත", noEv: "ඉදිරි සිදුවීම් නැත", noGal: "තවම ඡායාරූප පළ කර නැත",
-    noP: "පරිපාලනය විසින් පළ කළ පසු අන්තර්ගතය මෙහි දිස්වනු ඇත.",
-    addr: "ලිපිනය", tel: "දුරකථනය", mail: "විද්‍යුත් තැපෑල", tbd: "පාසල විසින් සපයනු ඇත.",
+    histP: "පාසලේ ආරම්භය, විදුහල්පතිවරුන් සහ සංවර්ධන ගමන් මග.",
+    prefP: "විනය හා නායකත්වය විදහාපාන ශිෂ්‍ය නායක නායිකාවන්.",
+    achieveP: "පාසල දිනූ ජයග්‍රහණ, කුසලාන සහ සම්මාන.",
+    noHist: "ඉතිහාසගත තොරතුරු ඉක්මනින් ඇතුළත් කරනු ඇත.",
+    noPref: "ශිෂ්‍ය නායක නාමලේඛනය තවම පළ කර නැත.",
+    noAchieve: "විශේෂ ජයග්‍රහණ සටහන් වී නොමැත.",
+    noGal: "තවම ඡායාරූප ඇල්බම පළ කර නැත.", photos: "ඡායාරූප",
+    noNews: "තවම පුවත් නිවේදන පළ කර නැත.",
+    songTitle: "පාසල් ගීතය", songNone: "පාසල් ගීතය තවම එක් කර නැත.", noLyrics: "පද රචනය ඉක්මනින් එක් කරනු ඇත.",
+    locTitle: "පාසලේ පිහිටීම", locDesc: "දකුණු පළාතේ පිහිටි ග/ඉහළ හෝමාදෝල විද්‍යාලය වෙත පැමිණෙන්න.",
+    addr: "ලිපිනය", tel: "දුරකථනය", mail: "විද්‍යුත් තැපෑල", tbd: "සපයනු ඇත.",
     user: "ඇතුළත් වීමේ අංකය (ශිෂ්‍ය) හෝ ජා.හැ.අ. (ගුරු) / නම", pass: "මුරපදය", signin: "පිවිසෙන්න",
     bad: "පරිශීලක නාමය හෝ මුරපදය වැරදියි. නැතහොත් ගිණුම අක්‍රීය කර ඇත.",
     off: "Firebase පද්ධතිය සම්බන්ධ වෙමින් පවතී.",
@@ -1017,128 +470,146 @@ const $ = s => document.querySelector(s);
 const root = document.documentElement;
 const st = (k, v) => { try { return v === undefined ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch(e) { return null; } };
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-
-let lang = st("uhs_lang") || "si";
-let posts = [], gal = [];
-
-const t = k => T[lang][k] || k;
-const pick = (o, k) => o[k + "_" + lang] || o[k + "_en"] || o[k + "_si"] || "";
+const ok = u => { try { return new URL(u).protocol === "https:"; } catch { return false; } };
 const safeImg = u => /^https:\/\/(i\.ibb\.co|images\.unsplash\.com)\//.test(u || "");
 
-function empty(a, b) {
-  return `<div class="ph"><strong>${esc(t(a))}</strong><p>${esc(t(b))}</p></div>`;
-}
+let lang = st("uhs_lang") || "si";
+const t = k => T[lang][k] || k;
+const pick = (o, k) => o[k + "_" + lang] || o[k + "_en"] || o[k + "_si"] || "";
 
-function cards(list) {
-  return list.map(p => `
+function renderPublic() {
+  root.lang = lang;
+  document.querySelectorAll("[data-i]").forEach(e => {
+    if (T[lang][e.dataset.i]) e.textContent = T[lang][e.dataset.i];
+  });
+  $("#lang").textContent = lang === "en" ? "සිං" : "EN";
+
+  $("#heroH1").textContent = CMS["hero_title_" + lang] || t("h1");
+  $("#heroLead").textContent = CMS["hero_lead_" + lang] || t("lead");
+
+  const hv = $("#hv");
+  const hasVid = ok(CMS.hero_video);
+  $(".hero").classList.toggle("has-video", hasVid);
+  if (hasVid && hv.dataset.s !== CMS.hero_video) {
+    hv.dataset.s = CMS.hero_video; hv.src = CMS.hero_video; hv.play().catch(()=>{});
+  }
+  if (!hasVid && hv.dataset.s) { hv.removeAttribute("src"); hv.dataset.s = ""; hv.load(); }
+
+  const hasLogo = ok(CMS.logo_url);
+  const mark = $("#brandMark");
+  mark.classList.toggle("has-logo", hasLogo);
+  if (hasLogo) {
+    mark.innerHTML = `<img src="${esc(CMS.logo_url)}" alt="Logo">`;
+    $("#hl").hidden = false; $("#hl").src = CMS.logo_url;
+  } else { $("#hl").hidden = true; }
+
+  $("#aboutBox").innerHTML = ["intro", "vision", "mission", "principal"].map(k => `
+    <div class="ph">
+      <strong>${esc(t(k))}</strong>
+      <p>${esc(CMS[k + "_" + lang] || t("ph"))}</p>
+    </div>
+  `).join("");
+
+  const tBox = $("#historyTimeline");
+  if (!TIMELINE.length) {
+    tBox.innerHTML = `<p style="color:var(--muted)">${t("noHist")}</p>`;
+  } else {
+    tBox.innerHTML = TIMELINE.map(item => `
+      <div class="timeline-item">
+        <div class="timeline-year">${esc(item.year)}</div>
+        <h4 style="margin:0 0 .3rem;">${esc(pick(item, "title"))}</h4>
+        <p style="margin:0;color:var(--text);">${esc(pick(item, "desc"))}</p>
+      </div>
+    `).join("");
+  }
+
+  const sBox = $("#sb");
+  if (!ok(CMS.song_url)) {
+    sBox.innerHTML = `<p style="color:var(--muted);grid-column:1/-1;">${t("songNone")}</p>`;
+  } else {
+    const sTitle = pick(CMS, "song_title") || t("songTitle");
+    const sLyrics = pick(CMS, "lyrics") || t("noLyrics");
+    sBox.innerHTML = `
+      <div class="disc" id="disc">
+        <span style="${hasLogo ? `background-image:url('${esc(CMS.logo_url)}')` : ''}"></span>
+      </div>
+      <div>
+        <h3 style="margin-top:0;">${esc(sTitle)}</h3>
+        <audio id="sau" controls preload="none" src="${esc(CMS.song_url)}"></audio>
+        <div class="lyrics">${esc(sLyrics)}</div>
+      </div>
+    `;
+    const au = $("#sau");
+    au.onplay = () => $("#disc").classList.add("spin");
+    au.onpause = au.onended = () => $("#disc").classList.remove("spin");
+  }
+
+  const pBox = $("#prefectsList");
+  pBox.innerHTML = PREFECTS.length ? PREFECTS.map(p => `
+    <div class="card prefect-card">
+      <img class="prefect-avatar" src="${esc(p.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150')}" alt="${esc(p.name)}">
+      <h4>${esc(p.name)}</h4>
+      <p><strong>${esc(pick(p, "role"))}</strong></p>
+    </div>
+  `).join("") : `<p style="color:var(--muted)">${t("noPref")}</p>`;
+
+  const aBox = $("#achieveList");
+  aBox.innerHTML = ACHIEVEMENTS.length ? ACHIEVEMENTS.map(a => `
+    <div class="card achieve-card">
+      ${a.image ? `<img src="${esc(a.image)}" alt="${esc(pick(a, 'title'))}">` : ''}
+      <h4>${esc(pick(a, "title"))}</h4>
+      <small style="color:var(--muted);display:block;margin-bottom:.4rem;">${esc(a.year || '')}</small>
+      <p style="margin:0;">${esc(pick(a, "desc"))}</p>
+    </div>
+  `).join("") : `<p style="color:var(--muted)">${t("noAchieve")}</p>`;
+
+  const gBox = $("#galList");
+  gBox.innerHTML = ALBUMS.length ? '<div class="albs">' + ALBUMS.map((a, i) => `
+    <button class="alb" data-i="${i}" aria-label="${esc(pick(a, 'title'))}">
+      <img loading="lazy" src="${esc(a.cover || a.urls[0])}" alt="">
+      <span class="albc">${a.urls.length} ${t("photos")}</span>
+      <b>${esc(pick(a, 'title'))}</b>
+    </button>
+  `).join("") + '</div>' : `<p style="color:var(--muted)">${t("noGal")}</p>`;
+
+  const nBox = $("#newsList");
+  nBox.innerHTML = POSTS.length ? POSTS.map(p => `
     <article class="card">
       <h3>${esc(pick(p, "title"))}</h3>
       <p style="color:var(--text);margin:.5rem 0;">${esc(pick(p, "body"))}</p>
       ${p.date ? `<small style="color:var(--muted);">${esc(p.date)}</small>` : ""}
     </article>
-  `).join("");
+  `).join("") : `<p style="color:var(--muted)">${t("noNews")}</p>`;
+
+  $("#contactDetails").innerHTML = `
+    <h3 style="margin-top:0;">${esc(t("nContact"))}</h3>
+    <p><strong>${esc(t("addr"))}:</strong> ${esc(CMS.address || t("tbd"))}</p>
+    <p><strong>${esc(t("tel"))}:</strong> ${esc(CMS.phone || t("tbd"))}</p>
+    <p><strong>${esc(t("mail"))}:</strong> ${esc(CMS.email || t("tbd"))}</p>
+  `;
 }
 
-function renderPublic() {
-  const n = posts.filter(p => p.published && p.type !== "event");
-  const e = posts.filter(p => p.published && p.type === "event");
-  $("#newsList").innerHTML = n.length ? cards(n) : empty("noNews", "noP");
-  $("#evList").innerHTML = e.length ? cards(e) : empty("noEv", "noP");
-  $("#galList").innerHTML = gal.length ? `
-    <div class="gal">
-      ${gal.filter(g => safeImg(g.url)).map(g => `
-        <figure>
-          <img loading="lazy" src="${esc(g.url)}" alt="${esc(g.title || 'School photograph')}">
-          ${g.title ? `<figcaption>${esc(g.title)}</figcaption>` : ""}
-        </figure>
-      `).join("")}
-    </div>
-  ` : empty("noGal", "noP");
-}
-
-function render() {
-  root.lang = lang;
-  document.querySelectorAll("[data-i]").forEach(e => {
-    if (T[lang][e.dataset.i]) e.textContent = T[lang][e.dataset.i];
-  });
-
-  // Dynamic Hero text from CMS (or fallback to defaults)
-  const heroH1 = CMS["hero_title_" + lang] || t("h1");
-  const heroLead = CMS["hero_lead_" + lang] || t("lead");
-  $("#heroH1").textContent = heroH1;
-  $("#heroLead").textContent = heroLead;
-
-  // Dynamic About Section
-  const aboutKeys = ["intro", "vision", "mission", "principal"];
-  $("#aboutBox").innerHTML = aboutKeys.map(k => {
-    const val = CMS[k + "_" + lang] || t("ph");
-    return `
-      <div class="ph">
-        <strong>${esc(t(k))}</strong>
-        <p>${esc(val)}</p>
-      </div>
-    `;
-  }).join("");
-
-  // Dynamic Contact Section
-  $("#contactBox").innerHTML = [
-    ["addr", CMS.address || t("tbd")],
-    ["tel", CMS.phone || t("tbd")],
-    ["mail", CMS.email || t("tbd")]
-  ].map(([k, val]) => `
-    <div class="ph">
-      <strong>${esc(t(k))}</strong>
-      <p>${esc(val)}</p>
-    </div>
-  `).join("");
-
-  $("#grades").innerHTML = [...Array(11)].map((_, i) => `<div class="grade-pill">${t("grade")} ${i + 1}</div>`).join("");
-  $("#lang").textContent = lang === "en" ? "සිං" : "EN";
-  renderPublic();
-}
-
-$("#lang").onclick = () => { lang = lang === "en" ? "si" : "en"; st("uhs_lang", lang); render(); };
-
+$("#lang").onclick = () => { lang = lang === "en" ? "si" : "en"; st("uhs_lang", lang); renderPublic(); };
 if (st("uhs_theme")) root.dataset.theme = st("uhs_theme");
 $("#theme").onclick = () => {
   const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
   const n = cur === "dark" ? "light" : "dark";
-  root.dataset.theme = n;
-  st("uhs_theme", n);
+  root.dataset.theme = n; st("uhs_theme", n);
 };
-
-$("#menu").onclick = e => {
-  const isOpen = $("#nav").classList.toggle("open");
-  e.currentTarget.setAttribute("aria-expanded", isOpen);
-};
-$("#nav").addEventListener("click", e => {
-  if (e.target.closest("a")) $("#nav").classList.remove("open");
-});
-
-render();
-
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-}), { threshold: .1 });
-document.querySelectorAll(".reveal").forEach(e => io.observe(e));
+$("#menu").onclick = e => { e.currentTarget.setAttribute("aria-expanded", $("#nav").classList.toggle("open")); };
+$("#nav").addEventListener("click", e => { if (e.target.closest("a")) $("#nav").classList.remove("open"); });
 
 addEventListener("scroll", () => requestAnimationFrame(() => {
   const h = document.documentElement;
-  const p = Math.min(1, scrollY / Math.max(1, h.scrollHeight - innerHeight));
-  $("#pbar").style.transform = `scaleX(${p})`;
+  $("#pbar").style.transform = `scaleX(${Math.min(1, scrollY / Math.max(1, h.scrollHeight - innerHeight))})`;
 }), { passive: true });
 
-/* ================= FIREBASE INITIALIZATION ================= */
-const ON = !!CFG.firebase.apiKey;
+/* ================= FIREBASE & DATA ================= */
 let F, A, D, me = null;
-
-if (!ON) {
-  $("#cfgMsg").textContent = t("off");
-  $("#cfgMsg").className = "msg e";
-  $("#lbtn").disabled = true;
-} else {
-  boot();
-}
+const col = n => F.fs.collection(D, n);
+const dc = (n, i) => F.fs.doc(D, n, i);
+const getAll = async (n, ...c) => (await F.fs.getDocs(F.fs.query(col(n), ...c))).docs.map(d => ({ id: d.id, ...d.data() }));
+const W = (...a) => F.fs.where(...a);
 
 async function boot() {
   const V = "10.12.2", B = `https://www.gstatic.com/firebasejs/${V}/`;
@@ -1152,1234 +623,434 @@ async function boot() {
     const a = app.initializeApp(CFG.firebase);
     A = au.getAuth(a);
     D = fs.getFirestore(a);
-
-    // Load CMS Data & Public Posts
-    await loadCMS();
-    loadPublic();
+    await loadAllData();
 
     au.onAuthStateChanged(A, async u => {
-      if (!u) {
-        me = null;
-        $("#app").classList.add("hide");
-        $("#loginBox").classList.remove("hide");
-        return;
-      }
+      if (!u) { me = null; $("#app").classList.add("hide"); $("#loginBox").classList.remove("hide"); return; }
       try {
-        const s = await fs.getDoc(fs.doc(D, "users", u.uid));
+        const s = await fs.getDoc(dc("users", u.uid));
         if (!s.exists() || s.data().active === false) {
-          await au.signOut(A);
-          $("#lerr").textContent = t("bad");
-          return;
+          await au.signOut(A); $("#lerr").textContent = t("bad"); return;
         }
         me = { uid: u.uid, ...s.data() };
-        showApp();
-      } catch(err) {
-        await au.signOut(A);
-      }
+        // ADMIN only stays on index.html for CMS; others redirected
+        if (me.role === "admin") {
+          showApp();
+        } else if (me.role === "teacher") {
+          location.href = CFG.teacherUrl;
+        } else if (me.role === "student") {
+          location.href = CFG.studentUrl;
+        } else if (me.role === "principal") {
+          location.href = CFG.teacherUrl;
+        } else {
+          await au.signOut(A);
+          $("#lerr").textContent = t("bad");
+        }
+      } catch { await au.signOut(A); }
     });
-  } catch(err) {
-    $("#cfgMsg").textContent = "Error loading secure authentication components.";
+  } catch (err) {
+    $("#cfgMsg").textContent = "Firebase initialization error.";
     $("#cfgMsg").className = "msg e";
   }
 }
 
-async function loadCMS() {
+async function loadAllData() {
   try {
-    const snap = await F.fs.getDoc(F.fs.doc(D, "cms", "home"));
-    if (snap.exists()) {
-      CMS = { ...CMS, ...snap.data() };
-      render();
-    }
-  } catch(e) {
-    console.warn("Could not load dynamic CMS, using defaults.");
-  }
-}
-
-async function loadPublic() {
-  try {
-    const q = await F.fs.getDocs(F.fs.query(F.fs.collection(D, "posts"), F.fs.orderBy("createdAt", "desc"), F.fs.limit(30)));
-    posts = q.docs.map(d => d.data());
-    const g = await F.fs.getDocs(F.fs.query(F.fs.collection(D, "gallery"), F.fs.orderBy("createdAt", "desc"), F.fs.limit(40)));
-    gal = g.docs.map(d => d.data());
+    const [cDoc, hDocs, pDocs, achDocs, albDocs, postDocs] = await Promise.all([
+      F.fs.getDoc(dc("cms", "home")),
+      getAll("timeline", F.fs.orderBy("year", "asc")),
+      getAll("prefects", F.fs.orderBy("order", "asc")),
+      getAll("achievements", F.fs.orderBy("createdAt", "desc")),
+      getAll("albums", F.fs.orderBy("createdAt", "desc")),
+      getAll("posts", F.fs.orderBy("createdAt", "desc"), F.fs.limit(20))
+    ]);
+    if (cDoc.exists()) CMS = { ...CMS, ...cDoc.data() };
+    TIMELINE = hDocs; PREFECTS = pDocs; ACHIEVEMENTS = achDocs; ALBUMS = albDocs; POSTS = postDocs;
     renderPublic();
-  } catch(e) {}
+  } catch (e) { renderPublic(); }
 }
 
-/* Map Username to Hidden Internal Firebase Email Alias */
 function alias(raw) {
   const u = raw.trim().toUpperCase().replace(/\s/g, "");
-  let prefix;
-  if (u === "ADMIN") prefix = "admin";
-  else if (/^(\d{9}[VX]|\d{12})$/.test(u)) prefix = "t" + u.toLowerCase();
-  else if (/^\d{1,8}$/.test(u)) prefix = "s" + u;
-  else return null;
-  return `${prefix}@${CFG.domain}`;
+  let p = u === "ADMIN" ? "admin" : /^(\d{9}[VX]|\d{12})$/.test(u) ? "t" + u.toLowerCase() : /^\d{1,8}$/.test(u) ? "s" + u : null;
+  return p ? `${p}@${CFG.domain}` : null;
 }
 
 $("#lf").onsubmit = async e => {
   e.preventDefault();
-  $("#lerr").textContent = "";
-  if (!ON) return;
   const em = alias($("#u").value), pw = $("#p").value;
   if (!em || !pw) { $("#lerr").textContent = t("bad"); return; }
-  
   $("#lbtn").disabled = true;
-  try {
-    await F.au.signInWithEmailAndPassword(A, em, pw);
-  } catch(err) {
-    $("#lerr").textContent = t("bad");
-  }
-  $("#lbtn").disabled = false;
-  $("#p").value = "";
+  try { await F.au.signInWithEmailAndPassword(A, em, pw); }
+  catch { $("#lerr").textContent = t("bad"); }
+  $("#lbtn").disabled = false; $("#p").value = "";
 };
-
 $("#out").onclick = () => F.au.signOut(A);
 
-/* ================= DASHBOARD CORE ================= */
-const W = (...a) => F.fs.where(...a);
-const col = n => F.fs.collection(D, n);
-const dc = (n, i) => F.fs.doc(D, n, i);
-
-const getAll = async (n, ...c) => {
-  const s = await F.fs.getDocs(F.fs.query(col(n), ...c));
-  return s.docs.map(d => ({ id: d.id, ...d.data() }));
-};
-
-const staff = () => ["admin", "principal"].includes(me.role);
-const myG = () => staff() ? null : me.grades;
-const gopts = l => (l || [1,2,3,4,5,6,7,8,9,10,11]).map(g => `<option value="${g}">Grade ${g}</option>`).join("");
-const today = () => new Date().toISOString().slice(0, 10);
-const slug = s => s.replace(/[^A-Za-z0-9]+/g, "_");
-
-const driveOk = u => {
-  try {
-    const x = new URL(u);
-    return x.protocol === "https:" && ["drive.google.com", "docs.google.com"].includes(x.hostname);
-  } catch { return false; }
-};
-
 const ibbUp = async f => {
-  if (!CFG.imgbbKey || !/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 5e6) throw new Error("Invalid image format or size > 5MB");
-  const fd = new FormData();
-  fd.append("image", f);
-  const res = await fetch("https://api.imgbb.com/1/upload?key=" + encodeURIComponent(CFG.imgbbKey), { method: "POST", body: fd });
-  const j = await res.json();
-  if (!j.success || !safeImg(j.data.url)) throw new Error("Upload rejection");
+  if (!CFG.imgbbKey || !/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 8e6) throw new Error("JPG/PNG/WebP under 8MB required");
+  const fd = new FormData(); fd.append("image", f);
+  const r = await fetch("https://api.imgbb.com/1/upload?key=" + encodeURIComponent(CFG.imgbbKey), { method: "POST", body: fd });
+  const j = await r.json();
+  if (!j.success) throw new Error("Upload failed");
   return j.data.url;
 };
 
-const tbl = (h, r) => r.length ? `
-  <div class="tw">
-    <table>
-      <thead><tr>${h.map(x => `<th>${x}</th>`).join("")}</tr></thead>
-      <tbody>${r.map(c => `<tr>${c.map(x => `<td>${x}</td>`).join("")}</tr>`).join("")}</tbody>
-    </table>
-  </div>` : "<p style='color:var(--muted);margin-top:.8rem;'>No records present.</p>";
-
-const panel = h => { $("#panel").innerHTML = h; };
-const note = (m, ok) => {
-  const n = $("#pm");
-  if (n) { n.textContent = m; n.className = "msg " + (ok ? "o" : "e"); }
-};
-
-const rnd = max => {
-  const lim = 256 - (256 % max), b = new Uint8Array(1);
-  do { crypto.getRandomValues(b); } while (b[0] >= lim);
-  return b[0] % max;
-};
-
-const genPw = () => {
-  let s = "";
-  for (let i = 0; i < 2; i++) s += String.fromCharCode(65 + rnd(26));
-  for (let i = 0; i < 4; i++) s += rnd(10);
-  return s;
-};
-
-const TABS = {
-  student: ["home", "att", "hw", "marks", "tt", "qb", "lib", "acct"],
-  teacher: ["home", "att", "hw", "marks", "tt", "reset", "qb", "lib", "acct"],
-  admin: ["home", "cms", "create", "att", "hw", "marks", "tt", "lib", "post", "gal", "qb", "users", "acct"],
-  principal: ["home", "marks", "tt", "lib", "acct"]
-};
-
+/* ================= ADMIN DASHBOARD ================= */
+const TABS = { admin: ["cms", "history", "prefects", "achieve", "albums", "users", "acct"] };
 const NAME = {
-  home: "Profile", cms: "Website CMS", create: "Add Account", att: "Attendance", hw: "Homework",
-  marks: "Exams & Marks", tt: "Timetable", reset: "Student Password Reset", lib: "Library",
-  post: "Notices & News", gal: "Gallery CMS", qb: "Question Bank",
-  users: "User Directory", acct: "Account Settings"
+  cms: "Website CMS", history: "School History", prefects: "Prefects Board",
+  achieve: "Achievements", albums: "Gallery Albums", users: "Accounts", acct: "Account Settings"
 };
 
 function showApp() {
   $("#loginBox").classList.add("hide");
   $("#app").classList.remove("hide");
-  $("#who").textContent = `${me.name || ""} — ${me.role.toUpperCase()}`;
-  const tabs = TABS[me.role] || ["home", "acct"];
+  $("#who").textContent = `${me.name || ""} (${me.role.toUpperCase()})`;
+  const tabs = TABS[me.role] || ["acct"];
   $("#tabs").innerHTML = tabs.map(k => `<button class="btn" data-t="${k}">${NAME[k]}</button>`).join("");
-  $("#tabs").onclick = e => {
-    const b = e.target.closest("[data-t]");
-    if (b) go(b.dataset.t);
-  };
-  go("home");
+  $("#tabs").onclick = e => { const b = e.target.closest("[data-t]"); if (b) go(b.dataset.t); };
+  go(tabs[0]);
 }
-
 function go(k) {
   document.querySelectorAll("#tabs .btn").forEach(b => b.setAttribute("aria-current", b.dataset.t === k));
   P[k]();
 }
+const panel = h => { $("#panel").innerHTML = h; };
+const note = (m, ok) => { const n = $("#pm"); if (n) { n.textContent = m; n.className = "msg " + (ok ? "o" : "e"); } };
+const tbl = (h, r) => r.length ? `<div class="tw"><table><thead><tr>${h.map(x => `<th>${x}</th>`).join("")}</tr></thead><tbody>${r.map(c => `<tr>${c.map(x => `<td>${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : "<p style='color:var(--muted);margin-top:.8rem;'>No records present.</p>";
 
-/* ================= MODULE IMPLEMENTATIONS ================= */
 const P = {
-  /* 1. Profile */
-  home() {
-    let extra = "";
-    if (me.role === "student") {
-      const societies = (me.societies || []).map(s => `<li>${esc(s)}</li>`).join("") || "<li>None recorded</li>";
-      const extraCurr = (me.extracurricular || []).map(x => `<li>${esc(x)}</li>`).join("") || "<li>None recorded</li>";
-      const awards = (me.awards || []).map(a => `<li><strong>${esc(a.title || a)}</strong> ${a.year ? `(${esc(a.year)})` : ""}</li>`).join("") || "<li>None recorded</li>";
-
-      extra = `
-        <hr style="border:0;border-top:1px solid var(--border);margin:1.25rem 0;">
-        <h4>Societies & Leadership</h4>
-        <ul style="padding-left:1.2rem;margin-bottom:1rem;">${societies}</ul>
-        
-        <h4>Extracurricular History</h4>
-        <ul style="padding-left:1.2rem;margin-bottom:1rem;">${extraCurr}</ul>
-        
-        <h4>Achievements & Awards</h4>
-        <ul style="padding-left:1.2rem;">${awards}</ul>
-      `;
-    }
-
-    panel(`
-      <h3>${esc(me.name || "")}</h3>
-      <p><strong>System Role:</strong> ${esc(me.role)}</p>
-      ${me.adm ? `<p><strong>Admission Number:</strong> ${esc(me.adm)}</p>` : ""}
-      ${me.teacherId ? `<p><strong>Teacher ID:</strong> ${esc(me.teacherId)}</p>` : ""}
-      ${me.grade ? `<p><strong>Enrolled Grade:</strong> Grade ${esc(me.grade)}</p>` : ""}
-      ${me.grades ? `<p><strong>Assigned Grades:</strong> Grades ${(me.grades || []).join(", ")}</p>` : ""}
-      ${extra}
-    `);
-  },
-
-  /* 2. Website CMS (Edit Home Page directly) */
   cms() {
     panel(`
-      <h3>Website CMS — Edit Home Page</h3>
-      <p style="color:var(--muted)">Change hero texts, about sections, vision, mission, and school contact information displayed on the public landing page.</p>
-      
-      <form id="cmsForm" style="display:flex;flex-direction:column;gap:1.2rem;">
-        <div class="card">
-          <h4 style="margin-top:0;">Hero Section (Landing Top)</h4>
-          <div class="row">
-            <div><label for="c_ht_si">Hero Title (Sinhala)</label><input id="c_ht_si" value="${esc(CMS.hero_title_si || "")}" placeholder="ග/ඉහළ හෝමාදෝල විද්‍යාලය"></div>
-            <div><label for="c_ht_en">Hero Title (English)</label><input id="c_ht_en" value="${esc(CMS.hero_title_en || "")}" placeholder="G/Upper Homadola School"></div>
-          </div>
-          <div class="row">
-            <div><label for="c_hl_si">Hero Subtitle / Description (Sinhala)</label><textarea id="c_hl_si" rows="3">${esc(CMS.hero_lead_si || "")}</textarea></div>
-            <div><label for="c_hl_en">Hero Subtitle / Description (English)</label><textarea id="c_hl_en" rows="3">${esc(CMS.hero_lead_en || "")}</textarea></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h4 style="margin-top:0;">About School Sections</h4>
-          <div class="row">
-            <div><label for="c_in_si">Introduction (Sinhala)</label><textarea id="c_in_si" rows="2">${esc(CMS.intro_si || "")}</textarea></div>
-            <div><label for="c_in_en">Introduction (English)</label><textarea id="c_in_en" rows="2">${esc(CMS.intro_en || "")}</textarea></div>
-          </div>
-          <div class="row">
-            <div><label for="c_vi_si">Vision (දැක්ම - Sinhala)</label><textarea id="c_vi_si" rows="2">${esc(CMS.vision_si || "")}</textarea></div>
-            <div><label for="c_vi_en">Vision (English)</label><textarea id="c_vi_en" rows="2">${esc(CMS.vision_en || "")}</textarea></div>
-          </div>
-          <div class="row">
-            <div><label for="c_mi_si">Mission (මෙහෙවර - Sinhala)</label><textarea id="c_mi_si" rows="2">${esc(CMS.mission_si || "")}</textarea></div>
-            <div><label for="c_mi_en">Mission (English)</label><textarea id="c_mi_en" rows="2">${esc(CMS.mission_en || "")}</textarea></div>
-          </div>
-          <div class="row">
-            <div><label for="c_pr_si">Principal's Message (Sinhala)</label><textarea id="c_pr_si" rows="3">${esc(CMS.principal_si || "")}</textarea></div>
-            <div><label for="c_pr_en">Principal's Message (English)</label><textarea id="c_pr_en" rows="3">${esc(CMS.principal_en || "")}</textarea></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h4 style="margin-top:0;">School Contact Details</h4>
-          <label for="c_addr">School Postal Address</label>
-          <input id="c_addr" value="${esc(CMS.address || "")}">
-          <div class="row">
-            <div><label for="c_tel">Telephone</label><input id="c_tel" value="${esc(CMS.phone || "")}"></div>
-            <div><label for="c_mail">Official Email</label><input id="c_mail" value="${esc(CMS.email || "")}"></div>
-          </div>
-        </div>
-
-        <p class="msg" id="pm" role="alert"></p>
-        <button class="btn p" type="submit" style="align-self:flex-start;min-width:180px;">Save Website Changes</button>
-      </form>
-    `);
-
-    $("#cmsForm").onsubmit = async e => {
-      e.preventDefault();
-      note("Updating website content...", true);
-
-      const updated = {
-        hero_title_si: $("#c_ht_si").value.trim(),
-        hero_title_en: $("#c_ht_en").value.trim(),
-        hero_lead_si: $("#c_hl_si").value.trim(),
-        hero_lead_en: $("#c_hl_en").value.trim(),
-        intro_si: $("#c_in_si").value.trim(),
-        intro_en: $("#c_in_en").value.trim(),
-        vision_si: $("#c_vi_si").value.trim(),
-        vision_en: $("#c_vi_en").value.trim(),
-        mission_si: $("#c_mi_si").value.trim(),
-        mission_en: $("#c_mi_en").value.trim(),
-        principal_si: $("#c_pr_si").value.trim(),
-        principal_en: $("#c_pr_en").value.trim(),
-        address: $("#c_addr").value.trim(),
-        phone: $("#c_tel").value.trim(),
-        email: $("#c_mail").value.trim(),
-        updatedAt: F.fs.serverTimestamp(),
-        updatedBy: me.uid
-      };
-
-      try {
-        await F.fs.setDoc(dc("cms", "home"), updated, { merge: true });
-        CMS = { ...CMS, ...updated };
-        render();
-        note("Home page content updated successfully and published live!", true);
-      } catch(err) {
-        note("Failed to save changes: " + err.message);
-      }
-    };
-  },
-
-  /* 3. Account Creation */
-  create() {
-    panel(`
-      <h3>Create New Academic Account</h3>
-      <form id="cf">
-        <label for="ct">Account Role</label>
-        <select id="ct">
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-        </select>
-
-        <label for="cid">Admission Number (Student) or NIC (Teacher)</label>
-        <input id="cid" autocomplete="off" placeholder="e.g. 1052 or 198512345678" required>
-
-        <label for="cn">Full Legal Name</label>
-        <input id="cn" required placeholder="Name with initials">
-
-        <label for="cg">Grade (e.g. 7 for student, or 6,7,8 for teacher)</label>
-        <input id="cg" required placeholder="Grades 1 to 11">
-
-        <label for="cp">Cryptographic Initial Password</label>
+      <h3>Website CMS — Home Page</h3>
+      <form id="cfMain" class="card" style="display:flex;flex-direction:column;gap:1rem;">
+        <h4>1. Hero & Branding</h4>
         <div class="row">
-          <input id="cp" type="password" autocomplete="new-password" readonly required>
-          <button class="btn" type="button" id="gen">Generate</button>
-          <button class="btn" type="button" id="sh">Show</button>
+          <div><label>Hero Title (Sinhala)</label><input id="c_ht_si" value="${esc(CMS.hero_title_si||'')}"></div>
+          <div><label>Hero Title (English)</label><input id="c_ht_en" value="${esc(CMS.hero_title_en||'')}"></div>
         </div>
-
-        <p class="msg" id="pm" role="alert"></p>
-        <button class="btn p" type="submit" style="margin-top:.8rem;">Confirm & Provision Account</button>
+        <div class="row">
+          <div><label>Hero Subtitle (Sinhala)</label><textarea id="c_hl_si" rows="2">${esc(CMS.hero_lead_si||'')}</textarea></div>
+          <div><label>Hero Subtitle (English)</label><textarea id="c_hl_en" rows="2">${esc(CMS.hero_lead_en||'')}</textarea></div>
+        </div>
+        <label>School Logo (JPG/PNG/WebP, max 5MB)</label>
+        <input id="c_logo" type="file" accept="image/jpeg,image/png,image/webp">
+        <label>Hero Background Video (.mp4 https link)</label>
+        <input id="c_vid" value="${esc(CMS.hero_video||'')}">
+        <h4>2. School Song</h4>
+        <label>Song Audio URL (.mp3)</label>
+        <input id="c_surl" value="${esc(CMS.song_url||'')}">
+        <div class="row">
+          <div><label>Title (Sinhala)</label><input id="c_st_si" value="${esc(CMS.song_title_si||'')}"></div>
+          <div><label>Title (English)</label><input id="c_st_en" value="${esc(CMS.song_title_en||'')}"></div>
+        </div>
+        <div class="row">
+          <div><label>Lyrics (Sinhala)</label><textarea id="c_ly_si" rows="6">${esc(CMS.lyrics_si||'')}</textarea></div>
+          <div><label>Lyrics (English)</label><textarea id="c_ly_en" rows="6">${esc(CMS.lyrics_en||'')}</textarea></div>
+        </div>
+        <h4>3. About & Contact</h4>
+        <div class="row">
+          <div><label>Introduction</label><textarea id="c_in" rows="2">${esc(CMS.intro_si||'')}</textarea></div>
+          <div><label>Principal's Message</label><textarea id="c_pr" rows="2">${esc(CMS.principal_si||'')}</textarea></div>
+        </div>
+        <label>Address</label><input id="c_addr" value="${esc(CMS.address||'')}">
+        <div class="row">
+          <div><label>Phone</label><input id="c_ph" value="${esc(CMS.phone||'')}"></div>
+          <div><label>Email</label><input id="c_em" value="${esc(CMS.email||'')}"></div>
+        </div>
+        <p class="msg" id="pm"></p>
+        <button class="btn p" type="submit">Save & Publish</button>
       </form>
     `);
-
-    $("#gen").onclick = () => { $("#cp").value = genPw(); };
-    $("#sh").onclick = () => {
-      const p = $("#cp");
-      p.type = p.type === "password" ? "text" : "password";
-      $("#sh").textContent = p.type === "password" ? "Show" : "Hide";
-    };
-
-    $("#cf").onsubmit = async e => {
+    $("#cfMain").onsubmit = async e => {
       e.preventDefault();
-      const type = $("#ct").value;
-      const raw = $("#cid").value.trim().toUpperCase().replace(/\s/g, "");
-      const name = $("#cn").value.trim();
-      const g = $("#cg").value.trim();
-      const pw = $("#cp").value;
-
-      const okId = type === "student" ? /^\d{1,8}$/.test(raw) : /^(\d{9}[VX]|\d{12})$/.test(raw);
-      const grades = g.split(",").map(x => +x.trim()).filter(x => x >= 1 && x <= 11);
-
-      if (!okId) return note("Invalid format: Admission must be 1-8 digits, NIC must be valid Sri Lankan format.");
-      if (name.length < 2) return note("Please provide the full name.");
-      if (!grades.length) return note("Provide valid grade(s) between 1 and 11.");
-      if (!pw) return note("Click Generate to generate a secure random password.");
-      if (type === "student" && pw === raw) return note("Password must not equal the admission number.");
-
-      note("Provisioning credential...", true);
-      let secApp;
+      note("Updating...", true);
       try {
-        const em = alias(raw);
-        secApp = F.app.initializeApp(CFG.firebase, "sec_" + Date.now());
-        const secAuth = F.au.getAuth(secApp);
-        const cr = await F.au.createUserWithEmailAndPassword(secAuth, em, pw);
-        await F.au.signOut(secAuth);
-
-        const base = {
-          role: type,
-          name,
-          active: true,
-          mustChangePassword: true,
-          createdAt: F.fs.serverTimestamp(),
-          createdBy: me.uid
+        let logo = CMS.logo_url;
+        const lf = $("#c_logo").files[0];
+        if (lf) logo = await ibbUp(lf);
+        const up = {
+          hero_title_si: $("#c_ht_si").value.trim(), hero_title_en: $("#c_ht_en").value.trim(),
+          hero_lead_si: $("#c_hl_si").value.trim(), hero_lead_en: $("#c_hl_en").value.trim(),
+          logo_url: logo, hero_video: $("#c_vid").value.trim(),
+          song_url: $("#c_surl").value.trim(),
+          song_title_si: $("#c_st_si").value.trim(), song_title_en: $("#c_st_en").value.trim(),
+          lyrics_si: $("#c_ly_si").value.trim(), lyrics_en: $("#c_ly_en").value.trim(),
+          intro_si: $("#c_in").value.trim(), principal_si: $("#c_pr").value.trim(),
+          address: $("#c_addr").value.trim(), phone: $("#c_ph").value.trim(), email: $("#c_em").value.trim()
         };
-
-        if (type === "student") {
-          await F.fs.setDoc(dc("users", cr.user.uid), {
-            ...base,
-            adm: raw,
-            grade: grades[0],
-            societies: [],
-            extracurricular: [],
-            awards: []
-          });
-        } else {
-          const teacherSeqId = await F.fs.runTransaction(D, async tx => {
-            const counterRef = dc("counters", "teachers");
-            const snap = await tx.get(counterRef);
-            const nextVal = ((snap.data()?.n || 0) + 1);
-            tx.set(counterRef, { n: nextVal });
-            return "TCH-" + String(nextVal).padStart(4, "0");
-          });
-
-          await F.fs.setDoc(dc("users", cr.user.uid), {
-            ...base,
-            teacherId: teacherSeqId,
-            nicMasked: raw.slice(0, 3) + "******" + raw.slice(-2),
-            grades
-          });
-        }
-
-        note(`Account created. Copy password now (shown once): ${pw}`, true);
-        $("#cp").value = "";
-        $("#cp").type = "text";
-        $("#cf").reset();
-      } catch(err) {
-        note(err.code === "auth/email-already-in-use" ? "This Admission Number or NIC already exists." : "Account provision failed: " + err.message);
-      } finally {
-        try { if (secApp) await F.app.deleteApp(secApp); } catch {}
-      }
+        await F.fs.setDoc(dc("cms", "home"), up, { merge: true });
+        CMS = { ...CMS, ...up }; renderPublic();
+        note("Website updated!", true);
+      } catch (err) { note("Save failed: " + err.message); }
     };
   },
 
-  /* 4. Student Password Reset */
-  async reset() {
-    const isTeacher = me.role === "teacher";
+  history() {
     panel(`
-      <h3>Authorized Student Password Reset</h3>
-      <p style="color:var(--muted)">Reset credentials for enrolled students in your assigned grade(s).</p>
-      <form id="rf">
-        <label for="radm">Student Admission Number</label>
-        <input id="radm" placeholder="e.g. 1052" required>
-        <p class="msg" id="pm" role="alert"></p>
-        <button class="btn p" type="submit">Verify & Reset Student Password</button>
+      <h3>School History Timeline</h3>
+      <form id="hf" class="card" style="margin-bottom:1.5rem;">
+        <div class="row">
+          <div><label>Year</label><input id="h_yr" required></div>
+          <div><label>Title (Sinhala)</label><input id="h_tsi" required></div>
+          <div><label>Title (English)</label><input id="h_ten"></div>
+        </div>
+        <div class="row">
+          <div><label>Desc (Sinhala)</label><textarea id="h_dsi" rows="2" required></textarea></div>
+          <div><label>Desc (English)</label><textarea id="h_den" rows="2"></textarea></div>
+        </div>
+        <p class="msg" id="pm"></p>
+        <button class="btn p">Add Milestone</button>
       </form>
-      <div id="rout" style="margin-top:1.5rem;"></div>
+      <h4>Existing Milestones</h4><div id="hlList"></div>
     `);
-
-    $("#rf").onsubmit = async e => {
+    const rl = () => {
+      $("#hlList").innerHTML = TIMELINE.map(h => `
+        <div style="display:flex;align-items:center;gap:1rem;margin:.5rem 0;padding:.6rem;border-bottom:1px solid var(--border);">
+          <strong style="width:100px;">${esc(h.year)}</strong>
+          <span style="flex:1;">${esc(h.title_si || h.title_en)}</span>
+          <button class="btn" data-dh="${esc(h.id)}">Delete</button>
+        </div>`).join("") || "<p>No items.</p>";
+    };
+    rl();
+    $("#hf").onsubmit = async e => {
       e.preventDefault();
-      const adm = $("#radm").value.trim();
-      if (!/^\d{1,8}$/.test(adm)) return note("Enter a valid admission number.");
-
-      note("Verifying assignment...", true);
       try {
-        const q = await F.fs.getDocs(F.fs.query(col("users"), W("role", "==", "student"), W("adm", "==", adm)));
-        if (q.empty) return note("No student record found with this admission number.");
-
-        const student = q.docs[0].data();
-        if (isTeacher && !me.grades.includes(student.grade)) {
-          return note(`Unauthorized: Grade ${student.grade} is not in your assigned teaching grades.`);
-        }
-
-        const newPw = genPw();
-        note(`Generated Temporary Credential: ${newPw} (Provide this to student: ${student.name})`, true);
-        $("#rout").innerHTML = `
-          <div class="ph" style="border-color:var(--ok);color:var(--text);">
-            <strong>Password Reset Successful</strong>
-            Student: ${esc(student.name)} (Grade ${esc(student.grade)})<br>
-            New Temporary Password: <code style="font-size:1.1rem;color:var(--maroon);">${newPw}</code><br>
-            <small style="color:var(--muted)">Instruct student to sign in and update password immediately.</small>
-          </div>
-        `;
-      } catch(err) {
-        note("Could not execute reset workflow: " + err.message);
-      }
-    };
-  },
-
-  /* 5. Attendance Management */
-  async att() {
-    if (me.role === "student") {
-      panel("<h3>My Attendance History</h3><p>Loading records...</p>");
-      const r = (await getAll("attendance", W("adm", "==", me.adm))).sort((a,b) => b.date.localeCompare(a.date));
-      const p = r.filter(x => x.status !== "absent").length;
-      const pct = r.length ? Math.round(p / r.length * 100) : 0;
-      return panel(`
-        <h3>My Attendance History</h3>
-        <p><strong>Attendance Standing:</strong> ${r.length ? `${pct}% (${p} present / ${r.length} instructional days)` : "No records registered yet."}</p>
-        ${tbl(["Date", "Status", "Recorded By"], r.slice(0, 90).map(x => [esc(x.date), `<span class="msg ${x.status==='present'?'o':'e'}">${esc(x.status)}</span>`, esc(x.byName || "Staff")]))}
-      `);
-    }
-
-    panel(`
-      <h3>Record Daily Attendance</h3>
-      <div class="row">
-        <select id="ag" aria-label="Grade">${gopts(myG())}</select>
-        <input id="ad" type="date" value="${today()}" aria-label="Date">
-      </div>
-      <p style="margin-top:.8rem;"><button class="btn" id="al">Load Roster</button></p>
-      <div id="ab"></div>
-      <p class="msg" id="pm" role="alert"></p>
-    `);
-
-    $("#al").onclick = async () => {
-      const g = +$("#ag").value, d = $("#ad").value;
-      if (!d) return note("Select a valid date.");
-      if (me.role === "teacher" && (new Date(today()) - new Date(d)) / 864e5 > 3) {
-        return note("Attendance editing window restricted to the last 3 days.");
-      }
-
-      try {
-        const [s, ex] = await Promise.all([
-          getAll("users", W("role", "==", "student"), W("grade", "==", g)),
-          getAll("attendance", W("grade", "==", g), W("date", "==", d))
-        ]);
-        const m = Object.fromEntries(ex.map(x => [x.adm, x.status]));
-
-        $("#ab").innerHTML = s.length ? tbl(
-          ["Admission No", "Student Name", "Status"],
-          s.map(x => [
-            esc(x.adm),
-            esc(x.name),
-            `<select data-a="${esc(x.adm)}" data-n="${esc(x.name)}" aria-label="Status">
-              ${["present", "absent", "late"].map(o => `<option ${m[x.adm] === o ? "selected" : ""}>${o}</option>`).join("")}
-            </select>`
-          ])
-        ) + `<p style="margin-top:1rem;"><button class="btn p" id="as">Submit & Save Attendance</button></p>` : "<p>No enrolled students found in this grade.</p>";
-
-        if (s.length) {
-          $("#as").onclick = async () => {
-            try {
-              const b = F.fs.writeBatch(D);
-              document.querySelectorAll("[data-a]").forEach(e => {
-                b.set(dc("attendance", `${d}_${e.dataset.a}`), {
-                  date: d,
-                  grade: g,
-                  adm: e.dataset.a,
-                  name: e.dataset.n,
-                  status: e.value,
-                  by: me.uid,
-                  byName: me.name || "Teacher"
-                });
-              });
-              await b.commit();
-              note("Attendance entries successfully recorded.", true);
-            } catch(err) {
-              note("Error saving records: " + err.message);
-            }
-          };
-        }
-      } catch(err) {
-        note("Could not load student roster: " + err.message);
-      }
-    };
-  },
-
-  /* 6. Homework Management */
-  async hw() {
-    const isStaff = me.role !== "student";
-    panel(`
-      <h3>Homework & Academic Tasks</h3>
-      ${isStaff ? `
-        <form id="hf" class="card" style="margin-bottom:1.5rem;">
-          <h4 style="margin:0 0 .5rem;">Assign Homework Task</h4>
-          <div class="row">
-            <select id="hg" aria-label="Grade">${gopts(myG())}</select>
-            <input id="hs" placeholder="Subject" required aria-label="Subject">
-          </div>
-          <input id="ht" placeholder="Task Title" required aria-label="Title" style="margin-top:.5rem;">
-          <textarea id="hi" rows="3" placeholder="Detailed Instructions" aria-label="Instructions" style="margin-top:.5rem;"></textarea>
-          <label for="hd">Submission Due Date</label>
-          <input id="hd" type="date" required>
-          <input id="hk" placeholder="Reference Document Link (https://drive.google.com/...)" aria-label="Drive link" style="margin-top:.5rem;">
-          <p class="msg" id="pm" role="alert"></p>
-          <button class="btn p" style="margin-top:.6rem;">Publish Task</button>
-        </form>
-      ` : '<p class="msg" id="pm" role="alert"></p>'}
-      <div id="hlist">Loading tasks...</div>
-    `);
-
-    const load = async () => {
-      try {
-        let tasks = [];
-        if (staff()) tasks = await getAll("homework");
-        else if (me.role === "student") tasks = await getAll("homework", W("grade", "==", +me.grade));
-        else tasks = (await Promise.all(me.grades.map(g => getAll("homework", W("grade", "==", g))))).flat();
-
-        tasks.sort((a,b) => (b.due || "").localeCompare(a.due || ""));
-
-        const subs = isStaff ? {} : Object.fromEntries((await getAll("hwSubs", W("adm", "==", me.adm))).map(x => [x.hwId, x]));
-
-        $("#hlist").innerHTML = tasks.length ? tasks.map(h => `
-          <article class="card" style="margin:.8rem 0;">
-            <h4 style="margin:0 0 .2rem;">${esc(h.title)}</h4>
-            <small style="color:var(--muted)">Grade ${esc(h.grade)} • ${esc(h.subject)} • Due: ${esc(h.due)}</small>
-            <p style="margin:.6rem 0;">${esc(h.instructions)}</p>
-            ${driveOk(h.link) ? `<p><a href="${esc(h.link)}" target="_blank" rel="noopener noreferrer">📄 Reference Document</a></p>` : ""}
-            ${isStaff ? `
-              <p><button class="btn" data-v="${h.id}" data-g="${esc(h.grade)}">Review Student Submissions</button></p>
-              <div id="v${h.id}"></div>
-            ` : subs[h.id] ? `
-              <div class="notice-banner" style="border-color:var(--ok);">
-                ✓ Submitted on ${esc(subs[h.id].date || "File")}
-                ${subs[h.id].feedback ? `<br><strong>Teacher Feedback:</strong> ${esc(subs[h.id].feedback)}` : ""}
-              </div>
-            ` : `
-              <form data-s="${h.id}" data-g="${esc(h.grade)}" style="margin-top:.6rem;">
-                <textarea rows="2" placeholder="Type submission text or answer summary" aria-label="Answer"></textarea>
-                <label style="font-size:.85rem;">Upload Photo of Exercise Book (JPG/PNG/WebP, max 5MB)</label>
-                <input type="file" accept="image/jpeg,image/png,image/webp">
-                <p style="margin-top:.5rem;"><button class="btn p">Submit Solution</button></p>
-              </form>
-            `}
-          </article>
-        `).join("") : "<p>No active homework assignments found.</p>";
-      } catch(err) {
-        $("#hlist").textContent = "Could not load tasks.";
-      }
-    };
-
-    load();
-
-    if (isStaff) {
-      $("#hf").onsubmit = async e => {
-        e.preventDefault();
-        const o = {
-          grade: +$("#hg").value,
-          subject: $("#hs").value.trim(),
-          title: $("#ht").value.trim(),
-          instructions: $("#hi").value.trim(),
-          due: $("#hd").value,
-          link: $("#hk").value.trim(),
-          by: me.uid,
-          createdAt: F.fs.serverTimestamp()
-        };
-        if (!o.title || !o.due) return note("Please provide a title and due date.");
-        if (o.link && !driveOk(o.link)) return note("Resource URL must be a valid Google Drive address.");
-
-        try {
-          await F.fs.addDoc(col("homework"), o);
-          note("Homework task published.", true);
-          $("#hf").reset();
-          load();
-        } catch(err) {
-          note("Publish error: " + err.message);
-        }
-      };
-    }
-
-    $("#hlist").onclick = async e => {
-      const btnView = e.target.closest("[data-v]");
-      const btnFeedback = e.target.closest("[data-f]");
-
-      if (btnView) {
-        const box = $("#v" + btnView.dataset.v);
-        try {
-          const subs = await getAll("hwSubs", W("hwId", "==", btnView.dataset.v));
-          box.innerHTML = subs.length ? tbl(
-            ["Admission", "Student", "Answer / Upload", "Feedback", "Action"],
-            subs.map(x => [
-              esc(x.adm),
-              esc(x.name),
-              esc(x.text) + (safeImg(x.img) ? ` <br><a href="${esc(x.img)}" target="_blank" rel="noopener noreferrer">View Image</a>` : ""),
-              esc(x.feedback || "—"),
-              `<button class="btn" data-f="${x.id}">Provide Feedback</button>`
-            ])
-          ) : "<p>No submissions recorded for this assignment.</p>";
-        } catch(err) {
-          box.textContent = "Could not load submissions.";
-        }
-      }
-
-      if (btnFeedback) {
-        const fText = prompt("Enter evaluation remarks for this submission:");
-        if (fText !== null) {
-          try {
-            await F.fs.setDoc(dc("hwSubs", btnFeedback.dataset.f), { feedback: fText.slice(0, 500) }, { merge: true });
-            note("Evaluation feedback saved.", true);
-          } catch(err) {
-            note("Error recording feedback.");
-          }
-        }
-      }
-    };
-
-    $("#hlist").onsubmit = async e => {
-      const f = e.target.closest("[data-s]");
-      if (!f) return;
-      e.preventDefault();
-      const text = f.querySelector("textarea").value.trim();
-      const file = f.querySelector("input").files[0];
-      if (!text && !file) return note("Provide either a written response or an image upload.");
-
-      note("Transmitting submission...", true);
-      try {
-        let imgUrl = "";
-        if (file) imgUrl = await ibbUp(file);
-
-        await F.fs.setDoc(dc("hwSubs", `${f.dataset.s}_${me.adm}`), {
-          hwId: f.dataset.s,
-          grade: +f.dataset.g,
-          adm: me.adm,
-          name: me.name,
-          text,
-          img: imgUrl,
-          date: today(),
+        await F.fs.addDoc(col("timeline"), {
+          year: $("#h_yr").value.trim(),
+          title_si: $("#h_tsi").value.trim(), title_en: $("#h_ten").value.trim(),
+          desc_si: $("#h_dsi").value.trim(), desc_en: $("#h_den").value.trim(),
           createdAt: F.fs.serverTimestamp()
         });
-        note("Homework submission recorded successfully.", true);
-        load();
-      } catch(err) {
-        note("Submission error. Ensure image is JPG/PNG/WebP under 5MB.");
+        await loadAllData(); P.history();
+      } catch (err) { note("Add failed: " + err.message); }
+    };
+    $("#hlList").onclick = async e => {
+      const b = e.target.closest("[data-dh]");
+      if (b && confirm("Delete?")) {
+        await F.fs.deleteDoc(dc("timeline", b.dataset.dh));
+        await loadAllData(); P.history();
       }
     };
   },
 
-  /* 7. Exam Marks */
-  async marks() {
-    const isTeacher = me.role === "teacher";
-    const isStudent = me.role === "student";
-
+  prefects() {
     panel(`
-      <h3>Term Examination Records</h3>
-      ${isTeacher ? `
-        <form id="mf" class="card" style="margin-bottom:1.5rem;">
-          <h4 style="margin:0 0 .5rem;">Enter Term Marks</h4>
-          <div class="row">
-            <input id="mx" placeholder="Examination (e.g. 1st Term Evaluation)" required aria-label="Exam">
-            <select id="mt" aria-label="Term"><option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option></select>
-            <select id="mg" aria-label="Grade">${gopts(myG())}</select>
-          </div>
-          <div class="row" style="margin-top:.5rem;">
-            <input id="mu" placeholder="Subject" required aria-label="Subject">
-            <input id="ma" placeholder="Admission No" required aria-label="Admission">
-            <input id="mk" type="number" min="0" max="100" placeholder="Score (0-100)" required aria-label="Marks">
-          </div>
-          <p class="msg" id="pm" role="alert"></p>
-          <button class="btn p" style="margin-top:.6rem;">Submit to Administration for Approval</button>
-        </form>
-      ` : '<p class="msg" id="pm" role="alert"></p>'}
-      <div id="ml">Loading evaluation records...</div>
-    `);
-
-    const load = async () => {
-      try {
-        let r = [];
-        if (isStudent) {
-          r = await getAll("marks", W("adm", "==", me.adm), W("status", "==", "approved"));
-        } else if (staff()) {
-          r = await getAll("marks");
-        } else {
-          r = (await Promise.all(me.grades.map(g => getAll("marks", W("grade", "==", g))))).flat();
-        }
-
-        r.sort((a,b) => (a.exam + a.subject).localeCompare(b.exam + b.subject));
-
-        $("#ml").innerHTML = tbl(
-          ["Exam", "Term", "Grade", "Subject", "Admission", "Marks", "Status", "Approval"],
-          r.map(x => [
-            esc(x.exam),
-            `Term ${esc(x.term)}`,
-            `Grade ${esc(x.grade)}`,
-            esc(x.subject),
-            esc(x.adm),
-            `<strong>${esc(x.marks)}</strong>`,
-            `<span class="msg ${x.status==='approved'?'o':''}">${esc(x.status)}</span>`,
-            staff() && x.status !== "approved" ? `<button class="btn" data-ap="${x.id}">Approve Record</button>` : "—"
-          ])
-        );
-      } catch(err) {
-        $("#ml").textContent = "Could not load examination marks.";
-      }
-    };
-
-    load();
-
-    $("#ml").onclick = async e => {
-      const btnApprove = e.target.closest("[data-ap]");
-      if (!btnApprove) return;
-      try {
-        await F.fs.setDoc(dc("marks", btnApprove.dataset.ap), {
-          status: "approved",
-          approvedBy: me.uid,
-          approvedAt: F.fs.serverTimestamp()
-        }, { merge: true });
-        note("Mark entry approved for official publication.", true);
-        load();
-      } catch(err) {
-        note("Approval error: " + err.message);
-      }
-    };
-
-    if (isTeacher) {
-      $("#mf").onsubmit = async e => {
-        e.preventDefault();
-        const o = {
-          exam: $("#mx").value.trim(),
-          term: +$("#mt").value,
-          grade: +$("#mg").value,
-          subject: $("#mu").value.trim(),
-          adm: $("#ma").value.trim(),
-          marks: +$("#mk").value,
-          status: "submitted",
-          by: me.uid,
-          updatedAt: F.fs.serverTimestamp()
-        };
-
-        if (!o.exam || !o.subject || !/^\d{1,8}$/.test(o.adm) || isNaN(o.marks) || o.marks < 0 || o.marks > 100) {
-          return note("Verify all inputs: Marks must be within 0-100 range.");
-        }
-
-        try {
-          const docKey = slug(`${o.exam}_T${o.term}_G${o.grade}_${o.subject}_${o.adm}`);
-          await F.fs.setDoc(dc("marks", docKey), o);
-          note("Marks recorded and submitted for Principal approval.", true);
-          load();
-        } catch(err) {
-          note("Could not commit mark entry: " + err.message);
-        }
-      };
-    }
-  },
-
-  /* 8. Timetable */
-  async tt() {
-    const isAdmin = me.role === "admin";
-    const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-
-    panel(`
-      <h3>Master Class Timetable</h3>
-      ${isAdmin ? `
-        <form id="tf" class="card" style="margin-bottom:1.5rem;">
-          <h4 style="margin:0 0 .5rem;">Assign Timetable Period</h4>
-          <div class="row">
-            <select id="tg" aria-label="Grade">${gopts()}</select>
-            <select id="td" aria-label="Day">${DAYS.map(d => `<option value="${d}">${d}</option>`).join("")}</select>
-            <select id="tp" aria-label="Period">${[1,2,3,4,5,6,7,8].map(p => `<option value="${p}">Period ${p}</option>`).join("")}</select>
-          </div>
-          <div class="row" style="margin-top:.5rem;">
-            <input id="ts2" placeholder="Subject" required aria-label="Subject">
-            <input id="tn" placeholder="Teacher Name" required aria-label="Teacher">
-          </div>
-          <p class="msg" id="pm" role="alert"></p>
-          <button class="btn p" style="margin-top:.6rem;">Save Period</button>
-        </form>
-      ` : '<p class="msg" id="pm" role="alert"></p>'}
-      <p><button class="btn" id="pr">🖨️ Print Timetable</button></p>
-      <div id="tl">Loading periods...</div>
-    `);
-
-    $("#pr").onclick = () => window.print();
-
-    const load = async () => {
-      try {
-        let r = [];
-        if (staff()) r = await getAll("timetable");
-        else if (me.role === "student") r = await getAll("timetable", W("grade", "==", +me.grade));
-        else r = (await Promise.all(me.grades.map(g => getAll("timetable", W("grade", "==", g))))).flat();
-
-        r.sort((a,b) => a.grade - b.grade || DAYS.indexOf(a.day) - DAYS.indexOf(b.day) || a.period - b.period);
-
-        $("#tl").innerHTML = tbl(
-          ["Grade", "Day", "Period", "Subject", "Teacher"],
-          r.map(x => [`Grade ${esc(x.grade)}`, esc(x.day), `P${esc(x.period)}`, esc(x.subject), esc(x.teacher)])
-        );
-        return r;
-      } catch(err) {
-        $("#tl").textContent = "Could not load timetable schedules.";
-        return [];
-      }
-    };
-
-    load();
-
-    if (isAdmin) {
-      $("#tf").onsubmit = async e => {
-        e.preventDefault();
-        const o = {
-          grade: +$("#tg").value,
-          day: $("#td").value,
-          period: +$("#tp").value,
-          subject: $("#ts2").value.trim(),
-          teacher: $("#tn").value.trim()
-        };
-
-        const all = await load();
-        const conflict = all.find(x => x.day === o.day && x.period === o.period && x.grade !== o.grade && o.teacher && x.teacher.toLowerCase() === o.teacher.toLowerCase());
-        if (conflict) {
-          return note(`Scheduling Conflict: ${o.teacher} is already assigned to Grade ${conflict.grade} during ${o.day} Period ${o.period}.`);
-        }
-
-        try {
-          await F.fs.setDoc(dc("timetable", `${o.grade}_${o.day}_${o.period}`), o);
-          note("Timetable period saved.", true);
-          load();
-        } catch(err) {
-          note("Save failed: " + err.message);
-        }
-      };
-    }
-  },
-
-  /* 9. Library */
-  async lib() {
-    const isAdmin = me.role === "admin";
-    const isStudent = me.role === "student";
-    panel("<h3>School Library Resource System</h3><p>Loading catalog...</p>");
-
-    try {
-      const [books, loans] = await Promise.all([
-        getAll("books"),
-        isStudent ? getAll("loans", W("adm", "==", me.adm)) : isAdmin ? getAll("loans") : []
-      ]);
-
-      const isOverdue = l => !l.returned && l.due < today();
-      loans.sort((a,b) => b.issued.localeCompare(a.issued));
-
-      panel(`
-        <h3>School Library Resource System</h3>
-        ${isAdmin ? `
-          <div class="ph" style="margin-bottom:1.5rem;background:var(--card-bg);">
-            <strong>Library Inventory Statistics</strong>
-            Cataloged Titles: ${books.length} • Total Volume Stock: ${books.reduce((a,b) => a + (b.qty||0), 0)} • Circulating Copies Available: ${books.reduce((a,b) => a + (b.avail||0), 0)} • Currently Issued: ${loans.filter(l => !l.returned).length} • Overdue Loans: ${loans.filter(isOverdue).length}
-          </div>
-
-          <form id="bf" class="card" style="margin-bottom:1.2rem;">
-            <h4 style="margin:0 0 .5rem;">Catalog New Volume</h4>
-            <div class="row">
-              <input id="bt" placeholder="Book Title" required aria-label="Title">
-              <input id="ba" placeholder="Author" required aria-label="Author">
-              <input id="bc" placeholder="Category" aria-label="Category">
-            </div>
-            <div class="row" style="margin-top:.5rem;">
-              <input id="bs" placeholder="Shelf Location" aria-label="Shelf">
-              <input id="bq" type="number" min="1" value="1" placeholder="Quantity" required aria-label="Copies">
-              <button class="btn p">Add to Catalog</button>
-            </div>
-          </form>
-
-          <form id="ls" class="card" style="margin-bottom:1.5rem;">
-            <h4 style="margin:0 0 .5rem;">Circulate / Issue Volume (14-Day Lending)</h4>
-            <div class="row">
-              <select id="lb" aria-label="Select Book">
-                ${books.filter(b => b.avail > 0).map(b => `<option value="${esc(b.id)}">${esc(b.title)} (${esc(b.avail)} available)</option>`).join("")}
-              </select>
-              <input id="la" placeholder="Student Admission Number" required aria-label="Admission">
-              <button class="btn p">Issue Book</button>
-            </div>
-          </form>
-        ` : ""}
-        <p class="msg" id="pm" role="alert"></p>
-
-        <h4>Cataloged Volumes</h4>
-        ${tbl(["Title", "Author", "Category", "Shelf", "Availability"], books.map(b => [esc(b.title), esc(b.author), esc(b.category), esc(b.shelf), `${esc(b.avail)} / ${esc(b.qty)}`]))}
-
-        ${isAdmin || isStudent ? `
-          <h4 style="margin-top:1.5rem;">${isStudent ? "My Borrowing History" : "Active Lending Circulation"}</h4>
-          ${tbl(
-            ["Title", "Borrower Adm", "Issue Date", "Due Date", "Status", "Action"],
-            loans.map(l => [
-              esc(l.title),
-              esc(l.adm),
-              esc(l.issued),
-              esc(l.due),
-              l.returned ? "<span class='msg o'>Returned</span>" : isOverdue(l) ? "<span class='msg e'>OVERDUE</span>" : "Borrowed",
-              isAdmin && !l.returned ? `<button class="btn" data-r="${l.id}" data-b="${esc(l.bookId)}">Mark Returned</button>` : "—"
-            ])
-          )}
-        ` : ""}
-      `);
-
-      if (!isAdmin) return;
-
-      $("#bf").onsubmit = async e => {
-        e.preventDefault();
-        const q = +$("#bq").value, t = $("#bt").value.trim();
-        if (!t || q < 1) return note("Provide a title and valid stock quantity.");
-        try {
-          await F.fs.addDoc(col("books"), {
-            title: t,
-            author: $("#ba").value.trim(),
-            category: $("#bc").value.trim(),
-            shelf: $("#bs").value.trim(),
-            qty: q,
-            avail: q,
-            createdAt: F.fs.serverTimestamp()
-          });
-          P.lib();
-        } catch(err) {
-          note("Catalog error: " + err.message);
-        }
-      };
-
-      $("#ls").onsubmit = async e => {
-        e.preventDefault();
-        const a = $("#la").value.trim(), bid = $("#lb").value;
-        if (!/^\d{1,8}$/.test(a) || !bid) return note("Select a volume and enter a valid admission number.");
-
-        try {
-          const userCheck = await getAll("users", W("role", "==", "student"), W("adm", "==", a));
-          if (!userCheck.length) return note("Admission number does not match an enrolled student.");
-
-          const due = new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10);
-          await F.fs.runTransaction(D, async tx => {
-            const bRef = dc("books", bid);
-            const bSnap = await tx.get(bRef);
-            const n = bSnap.data().avail;
-            if (n <= 0) throw new Error("No circulating copies remaining.");
-            tx.update(bRef, { avail: n - 1 });
-            tx.set(F.fs.doc(col("loans")), {
-              bookId: bid,
-              title: bSnap.data().title,
-              adm: a,
-              issued: today(),
-              due,
-              returned: false
-            });
-          });
-          P.lib();
-        } catch(err) {
-          note("Lending transaction failed: " + err.message);
-        }
-      };
-
-      $("#panel").onclick = async e => {
-        const btnReturn = e.target.closest("[data-r]");
-        if (!btnReturn) return;
-        try {
-          await F.fs.runTransaction(D, async tx => {
-            const bRef = dc("books", btnReturn.dataset.b);
-            const bSnap = await tx.get(bRef);
-            tx.update(bRef, { avail: (bSnap.data()?.avail || 0) + 1 });
-            tx.update(dc("loans", btnReturn.dataset.r), { returned: true, returnedOn: today() });
-          });
-          P.lib();
-        } catch(err) {
-          note("Return transaction error: " + err.message);
-        }
-      };
-    } catch(err) {
-      panel("<h3>Library Module</h3><p>Could not load database records.</p>");
-    }
-  },
-
-  /* 10. Question Bank */
-  async qb() {
-    const isAdmin = me.role === "admin";
-    panel(`
-      <h3>Academic Question Bank & Materials</h3>
-      ${isAdmin ? `
-        <form id="qf" class="card" style="margin-bottom:1.5rem;">
-          <h4 style="margin:0 0 .5rem;">Upload Academic Resource</h4>
-          <div class="row">
-            <select id="qg" aria-label="Grade">${gopts()}</select>
-            <input id="qs" placeholder="Subject" required aria-label="Subject">
-          </div>
-          <input id="qt" placeholder="Resource Title / Exam Term" required aria-label="Title" style="margin-top:.5rem;">
-          <input id="qu" placeholder="Verified Google Drive PDF Link (https://drive.google.com/...)" required aria-label="Drive link" style="margin-top:.5rem;">
-          <p class="msg" id="pm" role="alert"></p>
-          <button class="btn p" style="margin-top:.6rem;">Publish Resource</button>
-        </form>
-      ` : ""}
-      <p style="margin:1rem 0;">
-        <a class="btn" href="https://quizhub.lk/" target="_blank" rel="noopener noreferrer">🌐 Open External QuizHub Portal</a>
-      </p>
-      <div id="ql">Loading repository...</div>
-    `);
-
-    const load = async () => {
-      try {
-        const s = await F.fs.getDocs(F.fs.query(col("qbank"), F.fs.orderBy("createdAt", "desc"), F.fs.limit(100)));
-        const r = s.docs.map(d => d.data()).filter(x => driveOk(x.url) && (staff() || me.role === "teacher" || +x.grade === +me.grade));
-        $("#ql").innerHTML = tbl(
-          ["Grade", "Subject", "Title", "Resource Access"],
-          r.map(x => [`Grade ${esc(x.grade)}`, esc(x.subject), esc(x.title), `<a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">View PDF</a>`])
-        );
-      } catch(err) {
-        $("#ql").textContent = "Could not load resources.";
-      }
-    };
-
-    load();
-
-    if (isAdmin) {
-      $("#qf").onsubmit = async e => {
-        e.preventDefault();
-        const g = +$("#qg").value, u = $("#qu").value.trim(), ti = $("#qt").value.trim();
-        if (!(g >= 1 && g <= 11) || !ti || !driveOk(u)) return note("Provide grade 1-11, title, and valid Google Drive URL.");
-        try {
-          await F.fs.addDoc(col("qbank"), {
-            grade: g,
-            subject: $("#qs").value.trim(),
-            title: ti,
-            url: u,
-            createdAt: F.fs.serverTimestamp()
-          });
-          note("Academic resource uploaded.", true);
-          $("#qf").reset();
-          load();
-        } catch(err) {
-          note("Upload failed: " + err.message);
-        }
-      };
-    }
-  },
-
-  /* 11. Notices & News */
-  post() {
-    panel(`
-      <h3>Publish Notices & News</h3>
-      <form id="pf">
-        <label for="pt">Category</label>
-        <select id="pt">
-          <option value="news">School News</option>
-          <option value="notice">Official Notice</option>
-          <option value="event">Upcoming Event</option>
-        </select>
+      <h3>Prefects Board Manager</h3>
+      <form id="prf" class="card" style="margin-bottom:1.5rem;">
         <div class="row">
-          <div><label for="te">English Title</label><input id="te"></div>
-          <div><label for="ts">Sinhala Title</label><input id="ts"></div>
+          <div><label>Name</label><input id="p_nm" required></div>
+          <div><label>Role (Sinhala)</label><input id="p_rsi" required></div>
+          <div><label>Role (English)</label><input id="p_ren"></div>
         </div>
         <div class="row">
-          <div><label for="be">English Body</label><textarea id="be" rows="3"></textarea></div>
-          <div><label for="bs">Sinhala Body</label><textarea id="bs" rows="3"></textarea></div>
+          <div><label>Order</label><input id="p_ord" type="number" value="1" required></div>
+          <div><label>Photo</label><input id="p_img" type="file" accept="image/*"></div>
         </div>
-        <label for="pd">Scheduled Date (For Events)</label>
-        <input id="pd" type="date">
-        <p class="msg" id="pm" role="alert"></p>
-        <button class="btn p" style="margin-top:.8rem;">Publish to Public Website</button>
+        <p class="msg" id="pm"></p>
+        <button class="btn p">Add Prefect</button>
       </form>
+      <div id="prList"></div>
     `);
-
-    $("#pf").onsubmit = async e => {
-      e.preventDefault();
-      const o = {
-        type: $("#pt").value,
-        title_en: $("#te").value.trim(),
-        title_si: $("#ts").value.trim(),
-        body_en: $("#be").value.trim(),
-        body_si: $("#bs").value.trim(),
-        date: $("#pd").value,
-        published: true,
-        createdAt: F.fs.serverTimestamp(),
-        author: me.uid
-      };
-      if (!o.title_en && !o.title_si) return note("Provide a title in at least one language.");
-
-      try {
-        await F.fs.addDoc(col("posts"), o);
-        note("Item successfully published.", true);
-        $("#pf").reset();
-        loadPublic();
-      } catch(err) {
-        note("Could not publish post.");
-      }
+    const rl = () => {
+      $("#prList").innerHTML = PREFECTS.map(p => `
+        <div style="display:flex;align-items:center;gap:1rem;margin:.5rem 0;padding:.6rem;border-bottom:1px solid var(--border);">
+          <img src="${esc(p.photo||'')}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+          <strong style="flex:1;">${esc(p.name)} (${esc(p.role_si || p.role_en)})</strong>
+          <button class="btn" data-dp="${esc(p.id)}">Delete</button>
+        </div>`).join("") || "<p>No prefects listed.</p>";
     };
-  },
-
-  /* 12. Gallery CMS */
-  gal() {
-    panel(`
-      <h3>Photo Gallery Manager</h3>
-      <p style="color:var(--muted)">Images are hosted via secure ImgBB CDN. Max file size: 5MB.</p>
-      <form id="gf">
-        <label for="gf1">Select Image File (JPG, PNG, WebP)</label>
-        <input id="gf1" type="file" accept="image/jpeg,image/png,image/webp" required>
-        <label for="gt">Image Caption</label>
-        <input id="gt" placeholder="Description of the event or activity">
-        <p class="msg" id="pm" role="alert"></p>
-        <button class="btn p" style="margin-top:.8rem;">Upload & Publish</button>
-      </form>
-    `);
-
-    $("#gf").onsubmit = async e => {
+    rl();
+    $("#prf").onsubmit = async e => {
       e.preventDefault();
-      const file = $("#gf1").files[0];
-      if (!CFG.imgbbKey) return note("ImgBB API key is missing in CFG.");
-      if (!file) return note("Choose an image file.");
-
-      note("Uploading file...", true);
       try {
-        const url = await ibbUp(file);
-        await F.fs.addDoc(col("gallery"), {
-          url,
-          title: $("#gt").value.trim(),
-          createdAt: F.fs.serverTimestamp(),
-          by: me.uid
+        let photo = "";
+        const f = $("#p_img").files[0];
+        if (f) photo = await ibbUp(f);
+        await F.fs.addDoc(col("prefects"), {
+          name: $("#p_nm").value.trim(),
+          role_si: $("#p_rsi").value.trim(), role_en: $("#p_ren").value.trim(),
+          order: +$("#p_ord").value, photo, createdAt: F.fs.serverTimestamp()
         });
-        note("Photograph uploaded.", true);
-        $("#gf").reset();
-        loadPublic();
-      } catch(err) {
-        note("Upload failed: " + err.message);
+        await loadAllData(); P.prefects();
+      } catch (err) { note("Error: " + err.message); }
+    };
+    $("#prList").onclick = async e => {
+      const b = e.target.closest("[data-dp]");
+      if (b && confirm("Remove?")) {
+        await F.fs.deleteDoc(dc("prefects", b.dataset.dp));
+        await loadAllData(); P.prefects();
       }
     };
   },
 
-  /* 13. User Directory */
+  achieve() {
+    panel(`
+      <h3>Achievements Manager</h3>
+      <form id="acf" class="card" style="margin-bottom:1.5rem;">
+        <div class="row">
+          <div><label>Title (Sinhala)</label><input id="a_tsi" required></div>
+          <div><label>Title (English)</label><input id="a_ten"></div>
+          <div><label>Year</label><input id="a_yr"></div>
+        </div>
+        <div class="row">
+          <div><label>Desc (Sinhala)</label><textarea id="a_dsi" rows="2"></textarea></div>
+          <div><label>Desc (English)</label><textarea id="a_den" rows="2"></textarea></div>
+        </div>
+        <label>Photo</label><input id="a_img" type="file" accept="image/*">
+        <p class="msg" id="pm"></p>
+        <button class="btn p">Publish</button>
+      </form>
+      <div id="acList"></div>
+    `);
+    const rl = () => {
+      $("#acList").innerHTML = ACHIEVEMENTS.map(a => `
+        <div style="display:flex;align-items:center;gap:1rem;margin:.5rem 0;padding:.6rem;border-bottom:1px solid var(--border);">
+          ${a.image ? `<img src="${esc(a.image)}" style="width:60px;aspect-ratio:16/10;object-fit:cover;border-radius:6px;">` : ''}
+          <strong style="flex:1;">${esc(a.title_si || a.title_en)} (${esc(a.year||'')})</strong>
+          <button class="btn" data-da="${esc(a.id)}">Delete</button>
+        </div>`).join("") || "<p>No achievements listed.</p>";
+    };
+    rl();
+    $("#acf").onsubmit = async e => {
+      e.preventDefault();
+      try {
+        let img = "";
+        const f = $("#a_img").files[0];
+        if (f) img = await ibbUp(f);
+        await F.fs.addDoc(col("achievements"), {
+          title_si: $("#a_tsi").value.trim(), title_en: $("#a_ten").value.trim(),
+          desc_si: $("#a_dsi").value.trim(), desc_en: $("#a_den").value.trim(),
+          year: $("#a_yr").value.trim(), image: img, createdAt: F.fs.serverTimestamp()
+        });
+        await loadAllData(); P.achieve();
+      } catch (err) { note("Error: " + err.message); }
+    };
+    $("#acList").onclick = async e => {
+      const b = e.target.closest("[data-da]");
+      if (b && confirm("Delete?")) {
+        await F.fs.deleteDoc(dc("achievements", b.dataset.da));
+        await loadAllData(); P.achieve();
+      }
+    };
+  },
+
+  albums() {
+    panel(`
+      <h3>Gallery Albums Manager</h3>
+      <form id="af2" class="card" style="margin-bottom:1.5rem;">
+        <label>Album Title</label><input id="a_t" required>
+        <label>Photos (max 20)</label>
+        <input id="a_f" type="file" accept="image/*" multiple required>
+        <p class="msg" id="pm"></p>
+        <button class="btn p" id="abtn">Upload Album</button>
+      </form>
+      <div id="albList"></div>
+    `);
+    const rl = () => {
+      $("#albList").innerHTML = ALBUMS.map(a => `
+        <div style="display:flex;align-items:center;gap:1rem;margin:.5rem 0;padding:.6rem;border-bottom:1px solid var(--border);">
+          <img src="${esc(a.cover || a.urls[0])}" style="width:60px;height:45px;object-fit:cover;border-radius:6px;">
+          <strong style="flex:1;">${esc(a.title)} (${a.urls.length} photos)</strong>
+          <button class="btn" data-dal="${esc(a.id)}">Delete</button>
+        </div>`).join("") || "<p>No albums published.</p>";
+    };
+    rl();
+    $("#af2").onsubmit = async e => {
+      e.preventDefault();
+      const files = [...$("#a_f").files];
+      if (!files.length) return;
+      $("#abtn").disabled = true; note("Uploading...", true);
+      try {
+        const urls = [];
+        for (let i = 0; i < files.length; i++) urls.push(await ibbUp(files[i]));
+        await F.fs.addDoc(col("albums"), {
+          title: $("#a_t").value.trim(), urls, cover: urls[0], count: urls.length,
+          createdAt: F.fs.serverTimestamp()
+        });
+        await loadAllData(); P.albums();
+      } catch (err) { note("Upload failed: " + err.message); }
+      $("#abtn").disabled = false;
+    };
+    $("#albList").onclick = async e => {
+      const b = e.target.closest("[data-dal]");
+      if (b && confirm("Delete album?")) {
+        await F.fs.deleteDoc(dc("albums", b.dataset.dal));
+        await loadAllData(); P.albums();
+      }
+    };
+  },
+
   async users() {
-    panel("<h3>Registered Academic Users</h3><div id='ul'>Loading accounts...</div>");
+    panel("<h3>User Directory</h3><div id='ul'>Loading...</div>");
     try {
-      const s = await F.fs.getDocs(F.fs.query(col("users"), F.fs.limit(250)));
-      $("#ul").innerHTML = tbl(
-        ["Full Name", "Role", "Identifier", "Grade Scope", "Status"],
+      const s = await F.fs.getDocs(col("users"));
+      $("#ul").innerHTML = tbl(["Name","Role","Identifier","Grade","Status"],
         s.docs.map(d => d.data()).map(u => [
-          esc(u.name),
-          esc(u.role),
-          esc(u.adm || u.teacherId || u.nicMasked || "Staff"),
-          esc(u.grade ? `Grade ${u.grade}` : (u.grades || []).join(", ") || "—"),
+          esc(u.name), esc(u.role), esc(u.adm||u.teacherId||"—"),
+          esc(u.grade?`Grade ${u.grade}`:(u.grades||[]).join(", ")||"—"),
           u.active !== false ? "<span class='msg o'>Active</span>" : "<span class='msg e'>Disabled</span>"
-        ])
-      );
-    } catch(err) {
-      $("#ul").textContent = "Could not load user accounts.";
-    }
+        ]));
+    } catch { $("#ul").textContent = "Could not load users."; }
   },
 
-  /* 14. Account Settings */
   acct() {
     panel(`
-      <h3>Security & Password Management</h3>
+      <h3>Account Settings</h3>
       <form id="af">
-        <label for="op">Current Password</label>
-        <input id="op" type="password" autocomplete="current-password" required>
-        <label for="np">New Password (Minimum 10 Characters)</label>
-        <input id="np" type="password" autocomplete="new-password" required>
-        <p class="msg" id="pm" role="alert"></p>
-        <button class="btn p" style="margin-top:.8rem;">Update Password</button>
+        <label>Current Password</label><input id="op" type="password" required>
+        <label>New Password (min 10)</label><input id="np" type="password" required>
+        <p class="msg" id="pm"></p>
+        <button class="btn p" style="margin-top:.8rem;">Update</button>
       </form>
     `);
-
     $("#af").onsubmit = async e => {
       e.preventDefault();
       const np = $("#np").value;
-      if (np.length < 10) return note("Password length must be at least 10 characters.");
-
+      if (np.length < 10) return note("Password must be 10+ characters.");
       try {
         const u = A.currentUser;
         const cred = F.au.EmailAuthProvider.credential(u.email, $("#op").value);
         await F.au.reauthenticateWithCredential(u, cred);
         await F.au.updatePassword(u, np);
         await F.fs.setDoc(dc("users", u.uid), { mustChangePassword: false }, { merge: true });
-        note("Your password has been updated.", true);
-        $("#af").reset();
-      } catch(err) {
-        note("Authentication error: Verify current password.");
-      }
+        note("Password updated.", true); $("#af").reset();
+      } catch { note("Authentication error."); }
     };
   }
 };
+
+/* ===== Lightbox ===== */
+let curUrls = [], curIdx = 0;
+const showLb = i => {
+  curIdx = (i + curUrls.length) % curUrls.length;
+  $("#lbi").src = curUrls[curIdx];
+  $("#lb").hidden = false;
+};
+$("#galList").onclick = e => {
+  const b = e.target.closest(".alb");
+  if (!b) return;
+  const a = ALBUMS[+b.dataset.i];
+  curUrls = a.urls;
+  $("#ovt").textContent = pick(a, "title") || a.title;
+  $("#ovg").innerHTML = curUrls.map((u, i) => `<img src="${esc(u)}" data-k="${i}">`).join("");
+  $("#albOv").hidden = false;
+  document.body.style.overflow = "hidden";
+};
+$("#ovg").onclick = e => { const im = e.target.closest("[data-k]"); if (im) showLb(+im.dataset.k); };
+$("#lbp").onclick = () => showLb(curIdx - 1);
+$("#lbn").onclick = () => showLb(curIdx + 1);
+$("#lbc").onclick = () => { $("#lb").hidden = true; };
+$("#ovx").onclick = () => { $("#albOv").hidden = true; $("#lb").hidden = true; document.body.style.overflow = ""; };
+addEventListener("keydown", e => {
+  if ($("#albOv").hidden) return;
+  if (e.key === "Escape") { if (!$("#lb").hidden) { $("#lb").hidden = true; } else { $("#albOv").hidden = true; document.body.style.overflow = ""; } }
+  if (!$("#lb").hidden && e.key === "ArrowLeft") showLb(curIdx - 1);
+  if (!$("#lb").hidden && e.key === "ArrowRight") showLb(curIdx + 1);
+});
+
+boot();
 </script>
 </body>
 </html>
