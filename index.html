@@ -625,6 +625,195 @@ try {
 } catch (e) { console.warn("Add-on media load skipped", e); }
 </script>
 <!-- ===== END ADD-ON ===== -->
+
+<!-- ===== GALLERY ALBUMS ADD-ON: paste right before </body> (after the first add-on) ===== -->
+<style>
+.albs { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.2rem; }
+.alb { all: unset; box-sizing: border-box; cursor: pointer; display: block; position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); background: var(--card-bg);
+  box-shadow: 0 2px 4px rgba(101,15,42,.08), 0 18px 36px -14px rgba(101,15,42,.3); transition: transform .3s ease, box-shadow .3s ease; }
+.alb:hover, .alb:focus-visible { transform: translateY(-8px) rotateX(4deg); box-shadow: 0 30px 50px -18px rgba(101,15,42,.45); outline: 3px solid var(--ink); outline-offset: 2px; }
+.alb img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; transition: transform .5s ease; }
+.alb:hover img { transform: scale(1.06); }
+.alb b { display: block; padding: .9rem 1rem 1rem; font-weight: 700; color: var(--text); line-height: 1.4; }
+.alb .albc { position: absolute; top: .7rem; right: .7rem; padding: .25rem .65rem; border-radius: 99px; font: 600 .78rem var(--font-sans); color: #fff; background: rgba(40,6,20,.72); backdrop-filter: blur(6px); }
+
+.ov { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 1rem; background: rgba(20,6,13,.78); backdrop-filter: blur(8px); animation: ovin .25s ease; }
+.ov[hidden], .lb[hidden] { display: none; }
+@keyframes ovin { from { opacity: 0; } }
+.ovb { width: min(1100px, 100%); max-height: 92vh; overflow: auto; background: var(--bg); border-radius: 22px; padding: 0 1.2rem 1.2rem; box-shadow: 0 40px 80px -20px rgba(0,0,0,.7); }
+.ovh { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; background: var(--bg); }
+.ovh h3 { margin: 0; }
+.ovg { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .7rem; }
+.ovg img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 12px; cursor: zoom-in; border: 1px solid var(--border); transition: transform .25s ease, box-shadow .25s ease; }
+.ovg img:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 16px 28px -12px rgba(0,0,0,.5); }
+.lb { position: absolute; inset: 0; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .5rem; padding: 1rem; background: rgba(10,3,7,.95); }
+.lb img { max-width: 100%; max-height: 88vh; margin: auto; object-fit: contain; border-radius: 10px; }
+.lbx { position: absolute; top: 1rem; right: 1rem; }
+</style>
+
+<script type="module">
+const CFG = {
+  firebase: {
+    apiKey: "AIzaSyAtJmvP91wY2pToErARMdcSwpJ2ftVYaCM",
+    authDomain: "uhkv-53eb9.firebaseapp.com",
+    projectId: "uhkv-53eb9",
+    storageBucket: "uhkv-53eb9.firebasestorage.app",
+    messagingSenderId: "191585546232",
+    appId: "1:191585546232:web:b289c3321319c6eb4af00d",
+    measurementId: "G-FQNP6GWS6D"
+  },
+  imgbbKey: "bc81d388ab05868ad68ff92d859a7cd7"
+};
+const $ = s => document.querySelector(s), root = document.documentElement;
+const lang = () => root.lang === "en" ? "en" : "si";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const iOk = u => /^https:\/\/i\.ibb\.co\//.test(u || "");
+const TX = { en: { none: "No gallery albums published yet", ph: "photos" }, si: { none: "තවම ඡායාරූප ඇල්බම් පළ කර නැත", ph: "ඡායාරූප" } };
+const ttl = a => lang() === "en" ? (a.title_en || a.title || "") : (a.title || a.title_en || "");
+
+const B = "https://www.gstatic.com/firebasejs/10.12.2/";
+const [app, fs] = await Promise.all([import(B + "firebase-app.js"), import(B + "firebase-firestore.js")]);
+const D = fs.getFirestore(app.initializeApp(CFG.firebase));
+let A = [];
+
+async function loadAlbums() {
+  try {
+    const s = await fs.getDocs(fs.query(fs.collection(D, "albums"), fs.orderBy("createdAt", "desc"), fs.limit(60)));
+    A = s.docs.map(d => ({ id: d.id, ...d.data() })).filter(a => Array.isArray(a.urls) && a.urls.some(iOk));
+  } catch { A = []; }
+  paint();
+}
+
+/* ---------- Public: album cards ---------- */
+function paint() {
+  const box = $("#galList"); if (!box) return;
+  if (!A.length) { box.innerHTML = `<div class="alb-root ph"><p>${TX[lang()].none}</p></div>`; return; }
+  box.innerHTML = '<div class="alb-root albs">' + A.map((a, i) => {
+    const n = a.urls.filter(iOk).length;
+    return `<button class="alb" data-i="${i}" aria-label="${esc(ttl(a))}">
+      <img loading="lazy" src="${esc(iOk(a.cover) ? a.cover : a.urls.find(iOk))}" alt="">
+      <span class="albc">${n} ${TX[lang()].ph}</span><b>${esc(ttl(a))}</b></button>`;
+  }).join("") + "</div>";
+}
+// the original script re-renders #galList (language switch etc.) — put albums back
+new MutationObserver(() => { if (!$("#galList .alb-root")) paint(); }).observe($("#galList"), { childList: true });
+paint();
+
+/* ---------- Public: album viewer + lightbox ---------- */
+document.body.insertAdjacentHTML("beforeend", `
+  <div id="albOv" class="ov" hidden role="dialog" aria-modal="true">
+    <div class="ovb"><div class="ovh"><h3 id="ovt"></h3><button class="btn" id="ovx" aria-label="Close">✕</button></div><div class="ovg" id="ovg"></div></div>
+    <div class="lb" id="lb" hidden><button class="btn" id="lbp" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="btn" id="lbn" aria-label="Next">›</button><button class="btn lbx" id="lbc" aria-label="Close photo">✕</button></div>
+  </div>`);
+let cur = [], k = 0;
+const showLb = i => { k = (i + cur.length) % cur.length; $("#lbi").src = cur[k]; $("#lb").hidden = false; };
+const closeOv = () => { $("#albOv").hidden = true; $("#lb").hidden = true; document.body.style.overflow = ""; };
+$("#galList").addEventListener("click", e => {
+  const b = e.target.closest(".alb"); if (!b) return;
+  const a = A[+b.dataset.i]; cur = a.urls.filter(iOk);
+  $("#ovt").textContent = ttl(a);
+  $("#ovg").innerHTML = cur.map((u, i) => `<img loading="lazy" data-k="${i}" src="${esc(u)}" alt="${esc(ttl(a))} ${i + 1}">`).join("");
+  $("#albOv").hidden = false; $("#ovg").parentElement.scrollTop = 0; document.body.style.overflow = "hidden";
+});
+$("#ovg").onclick = e => { const im = e.target.closest("[data-k]"); if (im) showLb(+im.dataset.k); };
+$("#lbp").onclick = () => showLb(k - 1);
+$("#lbn").onclick = () => showLb(k + 1);
+$("#lbc").onclick = () => { $("#lb").hidden = true; };
+$("#ovx").onclick = closeOv;
+$("#albOv").addEventListener("click", e => { if (e.target.id === "albOv") closeOv(); });
+addEventListener("keydown", e => {
+  if ($("#albOv").hidden) return;
+  if (e.key === "Escape") { $("#lb").hidden ? closeOv() : ($("#lb").hidden = true); }
+  if (!$("#lb").hidden && e.key === "ArrowLeft") showLb(k - 1);
+  if (!$("#lb").hidden && e.key === "ArrowRight") showLb(k + 1);
+});
+
+/* ---------- Admin: "Gallery Albums" tab (replaces the single-photo Gallery CMS tab) ---------- */
+const shrink = f => new Promise(r => {          // resize to max 1600px so 20 phone photos upload fast
+  const i = new Image();
+  i.onload = () => {
+    const s = Math.min(1, 1600 / Math.max(i.width, i.height)), c = document.createElement("canvas");
+    c.width = Math.round(i.width * s); c.height = Math.round(i.height * s);
+    c.getContext("2d").drawImage(i, 0, 0, c.width, c.height);
+    c.toBlob(b => r(b || f), "image/jpeg", .85);
+  };
+  i.onerror = () => r(f); i.src = URL.createObjectURL(f);
+});
+const upload = async f => {
+  const fd = new FormData(); fd.append("image", await shrink(f), "photo.jpg");
+  const j = await (await fetch("https://api.imgbb.com/1/upload?key=" + encodeURIComponent(CFG.imgbbKey), { method: "POST", body: fd })).json();
+  if (!j.success || !iOk(j.data.url)) throw new Error("Upload rejected");
+  return j.data.url;
+};
+
+function listAdmin() {
+  $("#a_l").innerHTML = A.length ? A.map(a => `
+    <div style="display:flex;gap:.8rem;align-items:center;margin:.6rem 0;">
+      <img src="${esc(iOk(a.cover) ? a.cover : a.urls[0])}" alt="" style="width:72px;height:54px;object-fit:cover;border-radius:8px;">
+      <span style="flex:1;"><strong>${esc(a.title || a.title_en)}</strong><br><small style="color:var(--muted)">${a.urls.length} photos</small></span>
+      <button class="btn" data-del="${esc(a.id)}">Delete</button>
+    </div>`).join("") : "<p style='color:var(--muted)'>No albums yet.</p>";
+}
+
+function adminPanel() {
+  $("#panel").innerHTML = `
+    <h3>Gallery Albums</h3>
+    <p style="color:var(--muted)">One event = one album. Pick up to 20 photos; visitors see the album title, and photos load when they click it.</p>
+    <form id="af2" class="card" style="margin-bottom:1.5rem;">
+      <label for="a_t">Album title (Sinhala or any language)</label><input id="a_t" required>
+      <label for="a_e">English title (optional)</label><input id="a_e">
+      <label for="a_f">Photos (max 20 — JPG / PNG / WebP)</label>
+      <input id="a_f" type="file" accept="image/jpeg,image/png,image/webp" multiple required>
+      <p class="msg" id="a_m" role="alert"></p>
+      <button class="btn p" id="a_b">Upload Album</button>
+    </form>
+    <h4>Published albums</h4><div id="a_l"></div>`;
+  listAdmin();
+  const msg = (t, g) => { $("#a_m").textContent = t; $("#a_m").className = "msg " + (g ? "o" : "e"); };
+
+  $("#af2").onsubmit = async e => {
+    e.preventDefault();
+    const files = [...$("#a_f").files], title = $("#a_t").value.trim();
+    if (!title) return msg("Enter an album title.");
+    if (!files.length) return msg("Choose at least one photo.");
+    if (files.length > 20) return msg("Maximum 20 photos per album. You chose " + files.length + ".");
+    if (files.some(f => !/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 15e6)) return msg("Only JPG/PNG/WebP images under 15MB each.");
+    $("#a_b").disabled = true;
+    try {
+      const urls = new Array(files.length); let next = 0, done = 0;
+      msg(`Uploading 0/${files.length}...`, 1);
+      await Promise.all([0, 1, 2].map(async () => {            // 3 uploads at a time
+        while (next < files.length) { const i = next++; urls[i] = await upload(files[i]); msg(`Uploading ${++done}/${files.length}...`, 1); }
+      }));
+      await fs.addDoc(fs.collection(D, "albums"), { title, title_en: $("#a_e").value.trim(), urls, cover: urls[0], count: urls.length, createdAt: fs.serverTimestamp() });
+      $("#af2").reset(); msg("Album published on the home page.", 1);
+      await loadAlbums(); listAdmin();
+    } catch (err) { msg("Upload failed: " + err.message); }
+    $("#a_b").disabled = false;
+  };
+
+  $("#a_l").onclick = async e => {
+    const b = e.target.closest("[data-del]"); if (!b || !confirm("Delete this album from the website?")) return;
+    try { await fs.deleteDoc(fs.doc(D, "albums", b.dataset.del)); await loadAlbums(); listAdmin(); }
+    catch (err) { msg("Delete failed: " + err.message); }
+  };
+}
+
+new MutationObserver(() => {
+  const g = $('#tabs [data-t="gal"]');
+  if (!g || $("#albTab")) return;
+  g.style.display = "none";
+  g.insertAdjacentHTML("afterend", '<button class="btn" id="albTab">Gallery Albums</button>');
+  $("#albTab").onclick = () => {
+    document.querySelectorAll("#tabs .btn").forEach(b => b.setAttribute("aria-current", b.id === "albTab"));
+    adminPanel();
+  };
+}).observe($("#tabs"), { childList: true });
+
+loadAlbums();
+</script>
+<!-- ===== END GALLERY ADD-ON ===== -->
+  
 <body>
 
 <div class="prog" id="pbar" aria-hidden="true"></div>
