@@ -278,12 +278,15 @@ section.alt { background: var(--surface); }
 .card:hover { box-shadow: 0 16px 36px -12px rgba(101,15,42,.28); }
 
 .ph {
-  border: 1.5px dashed var(--border);
+  border: 1px solid var(--border);
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1.2rem;
-  color: var(--muted);
+  box-shadow: var(--shadow);
 }
-.ph strong { color: var(--text); display: block; margin-bottom: .25rem; }
+.ph strong { color: var(--maroon); display: block; margin-bottom: .4rem; font-size: 1.1rem; }
+[data-theme="dark"] .ph strong { color: var(--ink); }
+.ph p { color: var(--text); margin: 0; }
 
 .grades {
   display: grid;
@@ -450,8 +453,8 @@ footer {
   <div class="hero" id="top">
     <div class="wrap">
       <div>
-        <h1 data-i="h1"></h1>
-        <p class="lead" data-i="lead"></p>
+        <h1 id="heroH1" data-i="h1"></h1>
+        <p class="lead" id="heroLead" data-i="lead"></p>
         <div class="cta">
           <a class="btn p" href="#about" data-i="explore"></a>
           <a class="btn" href="#login" data-i="portal"></a>
@@ -460,7 +463,7 @@ footer {
       <div class="steps-box" aria-hidden="true">
         <div class="steps">
           <b style="--i:0">1</b><b style="--i:1">2</b><b style="--i:2">3</b><b style="--i:3">4</b>
-          <b style="--i:4">5</b><b style="--i:5">6</b><b style="--i:6">7</b><b style="--i:7">8</b>
+          <b style="--i:4">5</b><b style="--i:5">6</b><b style="--i:7">7</b><b style="--i:7">8</b>
           <b style="--i:8">9</b><b style="--i:9">10</b><b style="--i:10">11</b>
         </div>
         <p class="cap" data-i="cap"></p>
@@ -543,7 +546,7 @@ footer {
 </main>
 
 <footer>
-  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:gap:1rem;">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
     <div data-i="foot"></div>
     <div style="font-weight:600;color:var(--ink);">G/Upper Homadola School • Southern Province</div>
   </div>
@@ -565,7 +568,13 @@ const CFG = {
   domain: "uhkv.internal"
 };
 
-const SCHOOL = {
+let CMS = {
+  hero_title_si: "", hero_title_en: "",
+  hero_lead_si: "", hero_lead_en: "",
+  intro_si: "", intro_en: "",
+  vision_si: "", vision_en: "",
+  mission_si: "", mission_en: "",
+  principal_si: "", principal_en: "",
   address: "G/Upper Homadola School, Southern Province, Sri Lanka",
   phone: "",
   email: ""
@@ -622,7 +631,7 @@ const pick = (o, k) => o[k + "_" + lang] || o[k + "_en"] || o[k + "_si"] || "";
 const safeImg = u => /^https:\/\/(i\.ibb\.co|images\.unsplash\.com)\//.test(u || "");
 
 function empty(a, b) {
-  return `<div class="ph"><strong>${esc(t(a))}</strong>${esc(t(b))}</div>`;
+  return `<div class="ph"><strong>${esc(t(a))}</strong><p>${esc(t(b))}</p></div>`;
 }
 
 function cards(list) {
@@ -657,19 +666,38 @@ function render() {
   document.querySelectorAll("[data-i]").forEach(e => {
     if (T[lang][e.dataset.i]) e.textContent = T[lang][e.dataset.i];
   });
+
+  // Dynamic Hero text from CMS (or fallback to defaults)
+  const heroH1 = CMS["hero_title_" + lang] || t("h1");
+  const heroLead = CMS["hero_lead_" + lang] || t("lead");
+  $("#heroH1").textContent = heroH1;
+  $("#heroLead").textContent = heroLead;
+
+  // Dynamic About Section
+  const aboutKeys = ["intro", "vision", "mission", "principal"];
+  $("#aboutBox").innerHTML = aboutKeys.map(k => {
+    const val = CMS[k + "_" + lang] || t("ph");
+    return `
+      <div class="ph">
+        <strong>${esc(t(k))}</strong>
+        <p>${esc(val)}</p>
+      </div>
+    `;
+  }).join("");
+
+  // Dynamic Contact Section
+  $("#contactBox").innerHTML = [
+    ["addr", CMS.address || t("tbd")],
+    ["tel", CMS.phone || t("tbd")],
+    ["mail", CMS.email || t("tbd")]
+  ].map(([k, val]) => `
+    <div class="ph">
+      <strong>${esc(t(k))}</strong>
+      <p>${esc(val)}</p>
+    </div>
+  `).join("");
+
   $("#grades").innerHTML = [...Array(11)].map((_, i) => `<div class="grade-pill">${t("grade")} ${i + 1}</div>`).join("");
-  $("#aboutBox").innerHTML = ["intro", "vision", "mission", "principal"].map(k => `
-    <div class="ph">
-      <strong>${esc(t(k))}</strong>
-      ${esc(t("ph"))}
-    </div>
-  `).join("");
-  $("#contactBox").innerHTML = [["addr", "address"], ["tel", "phone"], ["mail", "email"]].map(([k, f]) => `
-    <div class="ph">
-      <strong>${esc(t(k))}</strong>
-      ${esc(SCHOOL[f] || t("tbd"))}
-    </div>
-  `).join("");
   $("#lang").textContent = lang === "en" ? "සිං" : "EN";
   renderPublic();
 }
@@ -730,6 +758,8 @@ async function boot() {
     A = au.getAuth(a);
     D = fs.getFirestore(a);
 
+    // Load CMS Data & Public Posts
+    await loadCMS();
     loadPublic();
 
     au.onAuthStateChanged(A, async u => {
@@ -755,6 +785,18 @@ async function boot() {
   } catch(err) {
     $("#cfgMsg").textContent = "Error loading secure authentication components.";
     $("#cfgMsg").className = "msg e";
+  }
+}
+
+async function loadCMS() {
+  try {
+    const snap = await F.fs.getDoc(F.fs.doc(D, "cms", "home"));
+    if (snap.exists()) {
+      CMS = { ...CMS, ...snap.data() };
+      render();
+    }
+  } catch(e) {
+    console.warn("Could not load dynamic CMS, using defaults.");
   }
 }
 
@@ -845,7 +887,6 @@ const note = (m, ok) => {
   if (n) { n.textContent = m; n.className = "msg " + (ok ? "o" : "e"); }
 };
 
-/* Unbiased Rejection Sampling RNG for Passwords */
 const rnd = max => {
   const lim = 256 - (256 % max), b = new Uint8Array(1);
   do { crypto.getRandomValues(b); } while (b[0] >= lim);
@@ -862,12 +903,12 @@ const genPw = () => {
 const TABS = {
   student: ["home", "att", "hw", "marks", "tt", "qb", "lib", "acct"],
   teacher: ["home", "att", "hw", "marks", "tt", "reset", "qb", "lib", "acct"],
-  admin: ["home", "create", "att", "hw", "marks", "tt", "lib", "post", "gal", "qb", "users", "acct"],
+  admin: ["home", "cms", "create", "att", "hw", "marks", "tt", "lib", "post", "gal", "qb", "users", "acct"],
   principal: ["home", "marks", "tt", "lib", "acct"]
 };
 
 const NAME = {
-  home: "Profile", create: "Add Account", att: "Attendance", hw: "Homework",
+  home: "Profile", cms: "Website CMS", create: "Add Account", att: "Attendance", hw: "Homework",
   marks: "Exams & Marks", tt: "Timetable", reset: "Student Password Reset", lib: "Library",
   post: "Notices & News", gal: "Gallery CMS", qb: "Question Bank",
   users: "User Directory", acct: "Account Settings"
@@ -893,7 +934,7 @@ function go(k) {
 
 /* ================= MODULE IMPLEMENTATIONS ================= */
 const P = {
-  /* 1. Profile: Enforces Order (Societies -> Extracurricular -> Achievements Last) */
+  /* 1. Profile */
   home() {
     let extra = "";
     if (me.role === "student") {
@@ -925,7 +966,96 @@ const P = {
     `);
   },
 
-  /* 2. Account Creation (Admin Only) */
+  /* 2. Website CMS (Edit Home Page directly) */
+  cms() {
+    panel(`
+      <h3>Website CMS — Edit Home Page</h3>
+      <p style="color:var(--muted)">Change hero texts, about sections, vision, mission, and school contact information displayed on the public landing page.</p>
+      
+      <form id="cmsForm" style="display:flex;flex-direction:column;gap:1.2rem;">
+        <div class="card">
+          <h4 style="margin-top:0;">Hero Section (Landing Top)</h4>
+          <div class="row">
+            <div><label for="c_ht_si">Hero Title (Sinhala)</label><input id="c_ht_si" value="${esc(CMS.hero_title_si || "")}" placeholder="ග/ඉහළ හෝමාදෝල විද්‍යාලය"></div>
+            <div><label for="c_ht_en">Hero Title (English)</label><input id="c_ht_en" value="${esc(CMS.hero_title_en || "")}" placeholder="G/Upper Homadola School"></div>
+          </div>
+          <div class="row">
+            <div><label for="c_hl_si">Hero Subtitle / Description (Sinhala)</label><textarea id="c_hl_si" rows="3">${esc(CMS.hero_lead_si || "")}</textarea></div>
+            <div><label for="c_hl_en">Hero Subtitle / Description (English)</label><textarea id="c_hl_en" rows="3">${esc(CMS.hero_lead_en || "")}</textarea></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-top:0;">About School Sections</h4>
+          <div class="row">
+            <div><label for="c_in_si">Introduction (Sinhala)</label><textarea id="c_in_si" rows="2">${esc(CMS.intro_si || "")}</textarea></div>
+            <div><label for="c_in_en">Introduction (English)</label><textarea id="c_in_en" rows="2">${esc(CMS.intro_en || "")}</textarea></div>
+          </div>
+          <div class="row">
+            <div><label for="c_vi_si">Vision (දැක්ම - Sinhala)</label><textarea id="c_vi_si" rows="2">${esc(CMS.vision_si || "")}</textarea></div>
+            <div><label for="c_vi_en">Vision (English)</label><textarea id="c_vi_en" rows="2">${esc(CMS.vision_en || "")}</textarea></div>
+          </div>
+          <div class="row">
+            <div><label for="c_mi_si">Mission (මෙහෙවර - Sinhala)</label><textarea id="c_mi_si" rows="2">${esc(CMS.mission_si || "")}</textarea></div>
+            <div><label for="c_mi_en">Mission (English)</label><textarea id="c_mi_en" rows="2">${esc(CMS.mission_en || "")}</textarea></div>
+          </div>
+          <div class="row">
+            <div><label for="c_pr_si">Principal's Message (Sinhala)</label><textarea id="c_pr_si" rows="3">${esc(CMS.principal_si || "")}</textarea></div>
+            <div><label for="c_pr_en">Principal's Message (English)</label><textarea id="c_pr_en" rows="3">${esc(CMS.principal_en || "")}</textarea></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-top:0;">School Contact Details</h4>
+          <label for="c_addr">School Postal Address</label>
+          <input id="c_addr" value="${esc(CMS.address || "")}">
+          <div class="row">
+            <div><label for="c_tel">Telephone</label><input id="c_tel" value="${esc(CMS.phone || "")}"></div>
+            <div><label for="c_mail">Official Email</label><input id="c_mail" value="${esc(CMS.email || "")}"></div>
+          </div>
+        </div>
+
+        <p class="msg" id="pm" role="alert"></p>
+        <button class="btn p" type="submit" style="align-self:flex-start;min-width:180px;">Save Website Changes</button>
+      </form>
+    `);
+
+    $("#cmsForm").onsubmit = async e => {
+      e.preventDefault();
+      note("Updating website content...", true);
+
+      const updated = {
+        hero_title_si: $("#c_ht_si").value.trim(),
+        hero_title_en: $("#c_ht_en").value.trim(),
+        hero_lead_si: $("#c_hl_si").value.trim(),
+        hero_lead_en: $("#c_hl_en").value.trim(),
+        intro_si: $("#c_in_si").value.trim(),
+        intro_en: $("#c_in_en").value.trim(),
+        vision_si: $("#c_vi_si").value.trim(),
+        vision_en: $("#c_vi_en").value.trim(),
+        mission_si: $("#c_mi_si").value.trim(),
+        mission_en: $("#c_mi_en").value.trim(),
+        principal_si: $("#c_pr_si").value.trim(),
+        principal_en: $("#c_pr_en").value.trim(),
+        address: $("#c_addr").value.trim(),
+        phone: $("#c_tel").value.trim(),
+        email: $("#c_mail").value.trim(),
+        updatedAt: F.fs.serverTimestamp(),
+        updatedBy: me.uid
+      };
+
+      try {
+        await F.fs.setDoc(dc("cms", "home"), updated, { merge: true });
+        CMS = { ...CMS, ...updated };
+        render();
+        note("Home page content updated successfully and published live!", true);
+      } catch(err) {
+        note("Failed to save changes: " + err.message);
+      }
+    };
+  },
+
+  /* 3. Account Creation */
   create() {
     panel(`
       <h3>Create New Academic Account</h3>
@@ -1037,7 +1167,7 @@ const P = {
     };
   },
 
-  /* 3. Class Teacher & Admin Password Reset */
+  /* 4. Student Password Reset */
   async reset() {
     const isTeacher = me.role === "teacher";
     panel(`
@@ -1083,7 +1213,7 @@ const P = {
     };
   },
 
-  /* 4. Attendance Management */
+  /* 5. Attendance Management */
   async att() {
     if (me.role === "student") {
       panel("<h3>My Attendance History</h3><p>Loading records...</p>");
@@ -1161,7 +1291,7 @@ const P = {
     };
   },
 
-  /* 5. Homework Management */
+  /* 6. Homework Management */
   async hw() {
     const isStaff = me.role !== "student";
     panel(`
@@ -1321,7 +1451,7 @@ const P = {
     };
   },
 
-  /* 6. Examination Marks & Principal Approvals */
+  /* 7. Exam Marks */
   async marks() {
     const isTeacher = me.role === "teacher";
     const isStudent = me.role === "student";
@@ -1428,7 +1558,7 @@ const P = {
     }
   },
 
-  /* 7. Class Timetable Management (Conflict Detection Enabled) */
+  /* 8. Timetable */
   async tt() {
     const isAdmin = me.role === "admin";
     const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -1507,7 +1637,7 @@ const P = {
     }
   },
 
-  /* 8. Library Management & Circulation (Strictly in Module) */
+  /* 9. Library */
   async lib() {
     const isAdmin = me.role === "admin";
     const isStudent = me.role === "student";
@@ -1649,7 +1779,7 @@ const P = {
     }
   },
 
-  /* 9. Question Bank */
+  /* 10. Question Bank */
   async qb() {
     const isAdmin = me.role === "admin";
     panel(`
@@ -1711,7 +1841,7 @@ const P = {
     }
   },
 
-  /* 10. Notices & News CMS */
+  /* 11. Notices & News */
   post() {
     panel(`
       <h3>Publish Notices & News</h3>
@@ -1763,7 +1893,7 @@ const P = {
     };
   },
 
-  /* 11. Gallery CMS (ImgBB Upload) */
+  /* 12. Gallery CMS */
   gal() {
     panel(`
       <h3>Photo Gallery Manager</h3>
@@ -1802,7 +1932,7 @@ const P = {
     };
   },
 
-  /* 12. User Directory (Admin Only) */
+  /* 13. User Directory */
   async users() {
     panel("<h3>Registered Academic Users</h3><div id='ul'>Loading accounts...</div>");
     try {
@@ -1822,7 +1952,7 @@ const P = {
     }
   },
 
-  /* 13. Account Settings (Password Update) */
+  /* 14. Account Settings */
   acct() {
     panel(`
       <h3>Security & Password Management</h3>
