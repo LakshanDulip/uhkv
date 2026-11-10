@@ -1,365 +1,1860 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Upper Homadola Smart School</title>
-<meta name="description" content="G/Upper Homadola School, Sri Lanka. Grades 1–11.">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;800&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Upper Homadola Smart School — G/Upper Homadola School</title>
+<meta name="description" content="G/Upper Homadola School, Sri Lanka. Smart School Management System for Grades 1 to 11.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-:root{--maroon:#650F2A;--maroon2:#800020;--bg:#fff;--surface:#F8F6F7;--text:#1b1418;--muted:#716970;--border:#E9DFE3;--ok:#21734A;--err:#B3324F;--ink:#650F2A;--shadow:0 1px 2px rgba(101,15,42,.08),0 12px 32px -12px rgba(101,15,42,.22)}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#120D12;--surface:#1c141b;--text:#f4eef1;--muted:#b5a9b0;--border:#35272f;--ink:#e58fa7;--err:#ff8da5;--ok:#6fd39f}}
-:root[data-theme=dark]{color-scheme:dark;--bg:#120D12;--surface:#1c141b;--text:#f4eef1;--muted:#b5a9b0;--border:#35272f;--ink:#e58fa7;--err:#ff8da5;--ok:#6fd39f}
-*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:76px}
-body{margin:0;background:var(--bg);color:var(--text);font:400 1rem/1.65 Inter,"Noto Sans Sinhala",system-ui,sans-serif;overflow-x:hidden;padding-top:env(safe-area-inset-top,0px)}
-html[lang=si] body{font-family:"Noto Sans Sinhala",Inter,sans-serif;line-height:1.8}
-h1,h2,h3{font-family:Fraunces,"Noto Sans Sinhala",serif;line-height:1.2;margin:0 0 .5em}
-html[lang=si] h1,html[lang=si] h2,html[lang=si] h3{font-family:"Noto Sans Sinhala",serif;line-height:1.45}
-a{color:var(--ink)}:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
-.wrap{width:min(1120px,100% - 2rem);margin-inline:auto}
-header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
-.bar{display:flex;align-items:center;gap:1rem;min-height:68px;position:relative}
-.brand{display:flex;align-items:center;gap:.7rem;font-weight:600;text-decoration:none;color:var(--text)}
-.mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--maroon),var(--maroon2));display:grid;place-items:center}
-nav{margin-inline-start:auto;display:flex;align-items:center;gap:.25rem}
-nav a.l{padding:.5rem .6rem;text-decoration:none;color:var(--text);font-size:.92rem;position:relative}
-nav a.l::after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:.2rem;height:2px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .25s}
-nav a.l:hover::after{transform:scaleX(1)}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .2s}
-.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:var(--shadow)}.btn:disabled{opacity:.55;cursor:not-allowed}
-.btn.p{background:var(--maroon);border-color:var(--maroon);color:#fff}
-#menu{display:none}
-@media(max-width:900px){#menu{display:inline-flex;margin-inline-start:auto}nav{position:absolute;top:68px;left:-1rem;right:-1rem;margin:0;background:var(--bg);flex-direction:column;align-items:stretch;padding:1rem;border-bottom:1px solid var(--border);transform:translateY(-130%);transition:transform .3s;z-index:-1}nav.open{transform:none}}
-.hero{padding:clamp(3rem,9vw,6rem) 0 3rem;background:radial-gradient(900px 400px at 85% 0,color-mix(in srgb,var(--maroon) 14%,transparent),transparent)}
-.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:2rem;align-items:end}
-@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}}
-.hero h1{font-size:clamp(2.1rem,6vw,4rem);font-weight:800}.hero p{color:var(--muted);max-width:52ch}
-.cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.4rem}
-.rise>*{opacity:0;transform:translateY(16px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}.rise>*:nth-child(2){animation-delay:.12s}.rise>*:nth-child(3){animation-delay:.24s}.rise>*:nth-child(4){animation-delay:.36s}
-@keyframes rise{to{opacity:1;transform:none}}
-.steps{display:flex;align-items:flex-end;gap:6px;height:250px}
-.steps b{flex:1;border-radius:8px 8px 0 0;background:linear-gradient(180deg,var(--maroon2),var(--maroon));color:#fff;font:600 .8rem/1 Inter,sans-serif;display:flex;justify-content:center;padding-top:8px;transform-origin:bottom;transform:scaleY(0);animation:grow .8s cubic-bezier(.2,.7,.2,1) forwards;height:calc(14% + var(--i)*7.6%);animation-delay:calc(.3s + var(--i)*.06s)}
-@keyframes grow{to{transform:scaleY(1)}}
-.cap{font-size:.85rem;color:var(--muted);margin-top:.6rem}
-section{padding:3.5rem 0}section.alt{background:var(--surface)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
-.card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:1.2rem;box-shadow:var(--shadow)}
-.ph{border:1.5px dashed var(--muted);border-radius:14px;padding:1.1rem;color:var(--muted)}.ph strong{color:var(--text);display:block}
-.grades{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem}
-.grades span{border:1px solid var(--border);background:var(--bg);border-radius:10px;padding:.7rem;text-align:center;font-weight:600}
-.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem}.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}
-.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}.reveal.in{opacity:1;transform:none}
-label{display:block;font-weight:600;margin:.8rem 0 .3rem}
-input,select,textarea{width:100%;min-height:44px;padding:.6rem .8rem;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit}
-.login{max-width:460px}.msg{min-height:1.4em;font-weight:600}.msg.e{color:var(--err)}.msg.o{color:var(--ok)}
-.row{display:flex;gap:.5rem;flex-wrap:wrap}.row>*{flex:1}
-.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin:1rem 0}.tabs .btn[aria-current=true]{background:var(--maroon);color:#fff;border-color:var(--maroon)}
-.tw{overflow-x:auto}table{border-collapse:collapse;width:100%}th,td{text-align:start;padding:.5rem;border-bottom:1px solid var(--border)}
-.hide{display:none!important}
-footer{border-top:1px solid var(--border);padding:2rem 0;color:var(--muted);font-size:.9rem}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}.rise>*,.reveal{opacity:1;transform:none}.steps b{transform:none}}
-@media print{header,footer,.tabs,.btn,#out,.hero,section:not(#login){display:none!important}}
-.hero{position:relative;overflow:hidden}
-.blob{position:absolute;border-radius:50%;filter:blur(44px);opacity:.3;background:var(--maroon2);pointer-events:none;animation:float 9s ease-in-out infinite;translate:var(--px,0) var(--py,0);transition:translate .5s ease-out}
-@keyframes float{50%{transform:translate(18px,-22px) scale(1.08)}}
-.hero .wrap{position:relative}.hero .wrap>.rise:last-child{translate:var(--sx,0) var(--sy,0);transition:translate .4s ease-out}
-.glow{position:fixed;left:0;top:0;width:440px;height:440px;margin:-220px 0 0 -220px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ink) 16%,transparent),transparent 65%);pointer-events:none;z-index:1;opacity:0;transition:opacity .4s;will-change:transform}
-.ring{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border:1.5px solid var(--ink);border-radius:50%;pointer-events:none;z-index:50;opacity:0;transition:opacity .3s,width .2s,height .2s,margin .2s,background .2s;will-change:transform}
-.ring.big{width:62px;height:62px;margin:-31px 0 0 -31px;background:color-mix(in srgb,var(--ink) 12%,transparent)}
-.prog{position:fixed;top:0;left:0;height:3px;width:100%;background:linear-gradient(90deg,var(--maroon),var(--ink));transform:scaleX(0);transform-origin:left;z-index:60;pointer-events:none}
-.card,.grades span{transition:transform .18s ease-out,box-shadow .2s;will-change:transform}
-.card:hover,.grades span:hover{box-shadow:0 18px 40px -16px rgba(101,15,42,.45)}
-.cta .btn{transition:translate .2s ease-out,transform .15s,box-shadow .2s}
-.btn{position:relative;overflow:hidden}
-.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.45);transform:scale(0);animation:rp .6s linear forwards;pointer-events:none}
-@keyframes rp{to{transform:scale(3.5);opacity:0}}
-.mark{animation:pulse 3.5s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--maroon) 0%,transparent),0 0 18px color-mix(in srgb,var(--maroon) 55%,transparent)}}
-@media(prefers-reduced-motion:reduce){.blob,.mark{animation:none}.glow,.ring{display:none}}
+:root {
+  --maroon: #650F2A;
+  --maroon2: #800020;
+  --bg: #FFFFFF;
+  --surface: #F8F6F7;
+  --text: #1B1418;
+  --muted: #716970;
+  --border: #E9DFE3;
+  --ok: #21734A;
+  --err: #B3324F;
+  --ink: #650F2A;
+  --card-bg: #FFFFFF;
+  --shadow: 0 1px 3px rgba(101,15,42,.06), 0 12px 32px -12px rgba(101,15,42,.18);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sinhala: 'Noto Sans Sinhala', 'Inter', system-ui, sans-serif;
+  --font-serif: 'Fraunces', 'Noto Sans Sinhala', serif;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #120D12;
+  --surface: #1C141B;
+  --text: #F4EEF1;
+  --muted: #B5A9B0;
+  --border: #35272F;
+  --ink: #E58FA7;
+  --err: #FF8DA5;
+  --ok: #6FD39F;
+  --card-bg: #1A131A;
+  --shadow: 0 2px 6px rgba(0,0,0,.4), 0 16px 36px -12px rgba(0,0,0,.6);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 1rem/1.65 var(--font-sinhala);
+  overflow-x: hidden;
+  padding-top: env(safe-area-inset-top, 0px);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+html[lang="en"] body { font-family: var(--font-sans); }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  line-height: 1.25;
+  margin: 0 0 .5em;
+  color: var(--text);
+}
+
+html[lang="si"] h1, html[lang="si"] h2, html[lang="si"] h3, html[lang="si"] h4 {
+  font-family: var(--font-sinhala);
+  line-height: 1.45;
+}
+
+a { color: var(--ink); text-decoration: none; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+
+.wrap { width: min(1140px, 100% - 2rem); margin-inline: auto; }
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 68px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  font-weight: 700;
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--maroon), var(--maroon2));
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+nav {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+nav a.l {
+  padding: .5rem .7rem;
+  color: var(--text);
+  font-size: .92rem;
+  font-weight: 500;
+  position: relative;
+}
+
+nav a.l::after {
+  content: "";
+  position: absolute;
+  left: .7rem;
+  right: .7rem;
+  bottom: .2rem;
+  height: 2px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+
+nav a.l:hover::after { transform: scaleX(1); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  min-height: 42px;
+  padding: .55rem 1.15rem;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  font-size: .92rem;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.btn:active:not(:disabled) { transform: translateY(0); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn.p { background: var(--maroon); border-color: var(--maroon); color: #FFFFFF; }
+.btn.p:hover:not(:disabled) { background: var(--maroon2); border-color: var(--maroon2); }
+
+#menu { display: none; }
+
+@media(max-width: 920px) {
+  #menu { display: inline-flex; margin-inline-start: auto; }
+  nav {
+    position: absolute;
+    top: 68px;
+    left: 0;
+    right: 0;
+    margin: 0;
+    background: var(--bg);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-140%);
+    transition: transform .3s ease;
+    z-index: -1;
+  }
+  nav.open { transform: translateY(0); }
+}
+
+.hero {
+  position: relative;
+  padding: clamp(3rem, 8vw, 5.5rem) 0 3.5rem;
+  background: radial-gradient(800px 420px at 85% 10%, color-mix(in srgb, var(--maroon) 12%, transparent), transparent);
+  overflow: hidden;
+}
+
+.hero .wrap {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+@media(max-width: 860px) {
+  .hero .wrap { grid-template-columns: 1fr; }
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5.5vw, 3.6rem);
+  font-weight: 800;
+  color: var(--maroon);
+}
+
+[data-theme="dark"] .hero h1 { color: #FFFFFF; }
+
+.hero p.lead {
+  color: var(--muted);
+  font-size: 1.05rem;
+  max-width: 52ch;
+  margin: 1rem 0 1.6rem;
+}
+
+.cta { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+.steps-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.steps {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  height: 220px;
+}
+
+.steps b {
+  flex: 1;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, var(--maroon2), var(--maroon));
+  color: #FFFFFF;
+  font: 600 .75rem/1 var(--font-sans);
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+  height: calc(18% + var(--i) * 7.4%);
+}
+
+.cap { font-size: .85rem; color: var(--muted); margin-top: .9rem; text-align: center; }
+
+section { padding: 3.8rem 0; }
+section.alt { background: var(--surface); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.4rem;
+  box-shadow: var(--shadow);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover { box-shadow: 0 16px 36px -12px rgba(101,15,42,.28); }
+
+.ph {
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  padding: 1.2rem;
+  color: var(--muted);
+}
+.ph strong { color: var(--text); display: block; margin-bottom: .25rem; }
+
+.grades {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: .75rem;
+  margin: 1.5rem 0;
+}
+
+.grade-pill {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: .85rem .5rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--maroon);
+  box-shadow: var(--shadow);
+  transition: transform .15s ease;
+}
+
+[data-theme="dark"] .grade-pill { color: #FFFFFF; }
+.grade-pill:hover { transform: translateY(-2px); }
+
+.notice-banner {
+  padding: .85rem 1.1rem;
+  background: color-mix(in srgb, var(--maroon) 6%, transparent);
+  border-left: 4px solid var(--maroon);
+  border-radius: 0 8px 8px 0;
+  font-size: .9rem;
+  color: var(--muted);
+}
+
+.gal {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: .8rem;
+}
+
+.gal figure { margin: 0; }
+.gal img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.gal figcaption {
+  font-size: .8rem;
+  color: var(--muted);
+  margin-top: .4rem;
+  text-align: center;
+}
+
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+label { display: block; font-weight: 600; font-size: .9rem; margin: .8rem 0 .3rem; }
+input, select, textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: .6rem .8rem;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  transition: border-color .2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--maroon);
+}
+
+.login { max-width: 480px; margin: 0 auto; }
+.msg { min-height: 1.4em; font-weight: 600; font-size: .9rem; margin: .5rem 0; }
+.msg.e { color: var(--err); }
+.msg.o { color: var(--ok); }
+
+.row { display: flex; gap: .6rem; flex-wrap: wrap; }
+.row > * { flex: 1; }
+
+.tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin: 1.2rem 0; }
+.tabs .btn[aria-current="true"] {
+  background: var(--maroon);
+  color: #FFFFFF;
+  border-color: var(--maroon);
+}
+
+.tw { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: start; padding: .65rem .75rem; border-bottom: 1px solid var(--border); }
+th { background: color-mix(in srgb, var(--maroon) 5%, transparent); color: var(--text); font-weight: 700; }
+
+.hide { display: none !important; }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 0;
+  color: var(--muted);
+  font-size: .9rem;
+  background: var(--bg);
+}
+
+.prog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--maroon), var(--maroon2));
+  transform: scaleX(0);
+  transform-origin: left;
+  z-index: 60;
+  pointer-events: none;
+}
+
+@media(prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+@media print {
+  header, footer, .tabs, .btn, #out, .hero, section:not(#login) { display: none !important; }
+}
 </style>
 </head>
 <body>
-<header><div class="wrap bar">
-<a class="brand" href="#top"><span class="mark" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5-9 5-9-5z"/><path d="M7 11.5V16c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-4.5"/></svg></span>Upper Homadola</a>
-<button class="btn" id="menu" aria-expanded="false" aria-controls="nav" data-i="menu">Menu</button>
-<nav id="nav" aria-label="Main">
-<a class="l" href="#about" data-i="nAbout">About</a><a class="l" href="#academics" data-i="nAcad">Academics</a><a class="l" href="#news" data-i="nNews">School News</a><a class="l" href="#events" data-i="nEvents">Events</a><a class="l" href="#gallery" data-i="nGal">Gallery</a><a class="l" href="#contact" data-i="nContact">Contact</a>
-<a class="btn p" href="#login" data-i="nLogin">Student/Teacher Login</a>
-<button class="btn" id="lang" aria-label="Language">සිං</button><button class="btn" id="theme" aria-label="Toggle theme">◐</button>
-</nav></div></header>
+
+<div class="prog" id="pbar" aria-hidden="true"></div>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top">
+      <span class="mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-5 9 5-9 5-9-5z"/>
+          <path d="M7 11.5V16c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-4.5"/>
+        </svg>
+      </span>
+      <span data-i="bName">Upper Homadola</span>
+    </a>
+    <button class="btn" id="menu" aria-expanded="false" aria-controls="nav" data-i="menu">Menu</button>
+    <nav id="nav" aria-label="Main Navigation">
+      <a class="l" href="#about" data-i="nAbout">About</a>
+      <a class="l" href="#academics" data-i="nAcad">Academics</a>
+      <a class="l" href="#news" data-i="nNews">School News</a>
+      <a class="l" href="#events" data-i="nEvents">Events</a>
+      <a class="l" href="#gallery" data-i="nGal">Gallery</a>
+      <a class="l" href="#contact" data-i="nContact">Contact</a>
+      <a class="btn p" href="#login" data-i="nLogin">Student/Teacher Login</a>
+      <button class="btn" id="lang" aria-label="Toggle language">සිං</button>
+      <button class="btn" id="theme" aria-label="Toggle dark/light mode">◐</button>
+    </nav>
+  </div>
+</header>
+
 <main>
-<div class="hero" id="top"><div class="wrap">
-<div class="rise"><h1 data-i="h1"></h1><p data-i="lead"></p><div class="cta"><a class="btn p" href="#about" data-i="explore"></a><a class="btn" href="#login" data-i="portal"></a></div></div>
-<div class="rise" aria-hidden="true"><div class="steps"><b style="--i:0">1</b><b style="--i:1">2</b><b style="--i:2">3</b><b style="--i:3">4</b><b style="--i:4">5</b><b style="--i:5">6</b><b style="--i:6">7</b><b style="--i:7">8</b><b style="--i:8">9</b><b style="--i:9">10</b><b style="--i:10">11</b></div><p class="cap" data-i="cap"></p></div>
-</div></div>
-<section id="about" class="alt"><div class="wrap"><h2 data-i="nAbout"></h2><div class="grid reveal" id="aboutBox"></div></div></section>
-<section id="academics"><div class="wrap"><h2 data-i="nAcad"></h2><p style="color:var(--muted)" data-i="acadP"></p><div class="grades reveal" id="grades"></div></div></section>
-<section id="news" class="alt"><div class="wrap"><h2 data-i="nNews"></h2><div class="grid" id="newsList"></div></div></section>
-<section id="events"><div class="wrap"><h2 data-i="nEvents"></h2><div class="grid" id="evList"></div></div></section>
-<section id="gallery" class="alt"><div class="wrap"><h2 data-i="nGal"></h2><div id="galList"></div></div></section>
-<section id="contact"><div class="wrap"><h2 data-i="nContact"></h2><div class="grid reveal" id="contactBox"></div></div></section>
-<section id="login" class="alt"><div class="wrap">
-<h2 data-i="nLogin"></h2>
-<div class="card login" id="loginBox">
-<p class="msg" id="cfgMsg"></p>
-<form id="lf" novalidate>
-<label for="u" data-i="user"></label><input id="u" autocomplete="username" autocapitalize="off">
-<label for="p" data-i="pass"></label><input id="p" type="password" autocomplete="current-password">
-<p class="msg e" id="lerr" role="alert"></p>
-<button class="btn p" id="lbtn" type="submit" data-i="signin"></button>
-</form></div>
-<div id="app" class="hide">
-<div class="row" style="align-items:center"><h3 id="who" style="margin:0;flex:3"></h3><button class="btn" id="out" style="flex:0 0 auto">Sign out</button></div>
-<div class="tabs" id="tabs" role="tablist"></div><div class="card" id="panel" aria-live="polite"></div>
-</div></div></section>
+  <div class="hero" id="top">
+    <div class="wrap">
+      <div>
+        <h1 data-i="h1"></h1>
+        <p class="lead" data-i="lead"></p>
+        <div class="cta">
+          <a class="btn p" href="#about" data-i="explore"></a>
+          <a class="btn" href="#login" data-i="portal"></a>
+        </div>
+      </div>
+      <div class="steps-box" aria-hidden="true">
+        <div class="steps">
+          <b style="--i:0">1</b><b style="--i:1">2</b><b style="--i:2">3</b><b style="--i:3">4</b>
+          <b style="--i:4">5</b><b style="--i:5">6</b><b style="--i:6">7</b><b style="--i:7">8</b>
+          <b style="--i:8">9</b><b style="--i:9">10</b><b style="--i:10">11</b>
+        </div>
+        <p class="cap" data-i="cap"></p>
+      </div>
+    </div>
+  </div>
+
+  <section id="about" class="alt">
+    <div class="wrap">
+      <h2 data-i="nAbout"></h2>
+      <div class="grid reveal" id="aboutBox"></div>
+    </div>
+  </section>
+
+  <section id="academics">
+    <div class="wrap">
+      <h2 data-i="nAcad"></h2>
+      <p style="color:var(--muted)" data-i="acadP"></p>
+      <div class="grades reveal" id="grades"></div>
+      <div class="notice-banner" data-i="divNote"></div>
+    </div>
+  </section>
+
+  <section id="news" class="alt">
+    <div class="wrap">
+      <h2 data-i="nNews"></h2>
+      <div class="grid" id="newsList"></div>
+    </div>
+  </section>
+
+  <section id="events">
+    <div class="wrap">
+      <h2 data-i="nEvents"></h2>
+      <div class="grid" id="evList"></div>
+    </div>
+  </section>
+
+  <section id="gallery" class="alt">
+    <div class="wrap">
+      <h2 data-i="nGal"></h2>
+      <div id="galList"></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <h2 data-i="nContact"></h2>
+      <div class="grid reveal" id="contactBox"></div>
+    </div>
+  </section>
+
+  <section id="login" class="alt">
+    <div class="wrap">
+      <h2 data-i="nLogin" style="text-align:center;"></h2>
+      
+      <div class="card login" id="loginBox">
+        <p class="msg" id="cfgMsg"></p>
+        <form id="lf" novalidate>
+          <label for="u" data-i="user"></label>
+          <input id="u" autocomplete="username" autocapitalize="off" required>
+          
+          <label for="p" data-i="pass"></label>
+          <input id="p" type="password" autocomplete="current-password" required>
+          
+          <p class="msg e" id="lerr" role="alert"></p>
+          <button class="btn p" id="lbtn" type="submit" style="width:100%;margin-top:.6rem;" data-i="signin"></button>
+        </form>
+      </div>
+
+      <div id="app" class="hide">
+        <div class="row" style="align-items:center;margin-bottom:1rem;">
+          <h3 id="who" style="margin:0;flex:3;"></h3>
+          <button class="btn" id="out" style="flex:0 0 auto;">Sign out</button>
+        </div>
+        <div class="tabs" id="tabs" role="tablist"></div>
+        <div class="card" id="panel" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
 </main>
-<footer><div class="wrap" data-i="foot"></div></footer>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:gap:1rem;">
+    <div data-i="foot"></div>
+    <div style="font-weight:600;color:var(--ink);">G/Upper Homadola School • Southern Province</div>
+  </div>
+</footer>
 
 <script type="module">
-/* ====== CONFIG: fill these in (see setup steps) ====== */
-const CFG={
-  firebase:{apiKey:"",authDomain:"",projectId:"",appId:""},   // Firebase console > Project settings > Web app
-  imgbbKey:"",                                                  // https://api.imgbb.com/
-  domain:"uhs-login.example.com"                               // any fake domain; used only to map usernames to Firebase emails
-};
-const SCHOOL={address:"",phone:"",email:""}; // fill with real contact details
-/* ===================================================== */
-const T={en:{menu:"Menu",nAbout:"About",nAcad:"Academics",nNews:"School News",nEvents:"Events",nGal:"Gallery",nContact:"Contact",nLogin:"Student/Teacher Login",
-h1:"A school community, organised in one secure place.",lead:"G/Upper Homadola School, Grades 1 to 11. News, notices and school services in Sinhala and English.",explore:"Explore school",portal:"Login portal",cap:"Grade 1 to Grade 11",
-intro:"Introduction",vision:"Vision",mission:"Mission",principal:"Principal’s message",ph:"Not added yet.",acadP:"The school teaches Grades 1 to 11. Classes are organised by grade only.",grade:"Grade",
-noNews:"No news published yet",noEv:"No upcoming events",noGal:"No albums published yet",noP:"Content appears here once the administration publishes it.",
-addr:"Address",tel:"Telephone",mail:"Email",tbd:"To be provided by the school.",user:"Admission number or NIC",pass:"Password",signin:"Sign in",
-bad:"Incorrect username or password.",off:"Firebase is not configured yet. Fill in CFG at the top of index.html.",foot:"© G/Upper Homadola School. Content is placeholder until supplied by the school."},
-si:{menu:"මෙනුව",nAbout:"පාසල ගැන",nAcad:"අධ්‍යාපනය",nNews:"පාසල් ප්‍රවෘත්ති",nEvents:"සිදුවීම්",nGal:"ඡායාරූප",nContact:"සම්බන්ධ වන්න",nLogin:"ශිෂ්‍ය/ගුරු පිවිසුම",
-h1:"පාසල් ප්‍රජාව, ආරක්ෂිත එක් තැනක.",lead:"ජී/අප්පර් හෝමාදොල පාසල, 1 සිට 11 දක්වා ශ්‍රේණි. ප්‍රවෘත්ති, නිවේදන සහ පාසල් සේවා සිංහල සහ ඉංග්‍රීසියෙන්.",explore:"පාසල බලන්න",portal:"පිවිසුම් ද්වාරය",cap:"1 ශ්‍රේණියේ සිට 11 ශ්‍රේණිය දක්වා",
-intro:"හැඳින්වීම",vision:"දැක්ම",mission:"මෙහෙවර",principal:"විදුහල්පති පණිවිඩය",ph:"තවම ඇතුළත් කර නැත.",acadP:"පාසලේ 1 සිට 11 දක්වා ශ්‍රේණි ඇත. පන්ති සංවිධානය කරන්නේ ශ්‍රේණි අනුව පමණි.",grade:"ශ්‍රේණිය",
-noNews:"තවම ප්‍රවෘත්ති පළ කර නැත",noEv:"ඉදිරි සිදුවීම් නැත",noGal:"තවම ඇල්බම පළ කර නැත",noP:"පරිපාලනය පළ කළ පසු අන්තර්ගතය මෙහි පෙන්වයි.",
-addr:"ලිපිනය",tel:"දුරකථනය",mail:"විද්‍යුත් තැපෑල",tbd:"පාසල විසින් සපයනු ඇත.",user:"ඇතුළත් වීමේ අංකය හෝ ජා.හැ.අ.",pass:"මුරපදය",signin:"පිවිසෙන්න",
-bad:"පරිශීලක නාමය හෝ මුරපදය වැරදියි.",off:"Firebase තවම සකසා නැත. index.html මුදුනේ CFG පුරවන්න.",foot:"© ජී/අප්පර් හෝමාදොල පාසල. පාසල සපයන තෙක් අන්තර්ගතය තාවකාලිකයි."}};
-const $=s=>document.querySelector(s),root=document.documentElement;
-const st=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){return null}};
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let lang=st("lang")||"en",posts=[],gal=[];
-const t=k=>T[lang][k]||k;
-const pick=(o,k)=>o[k+"_"+lang]||o[k+"_en"]||o[k+"_si"]||"";
-const safeImg=u=>/^https:\/\/i\.ibb\.co\//.test(u||"");
-function empty(a,b){return `<div class="ph"><strong>${esc(t(a))}</strong>${esc(t(b))}</div>`}
-function cards(list){return list.map(p=>`<article class="card"><h3>${esc(pick(p,"title"))}</h3><p>${esc(pick(p,"body"))}</p>${p.date?`<small>${esc(p.date)}</small>`:""}</article>`).join("")}
-function renderPublic(){
- const n=posts.filter(p=>p.published&&p.type!=="event"),e=posts.filter(p=>p.published&&p.type==="event");
- $("#newsList").innerHTML=n.length?cards(n):empty("noNews","noP");
- $("#evList").innerHTML=e.length?cards(e):empty("noEv","noP");
- $("#galList").innerHTML=gal.length?`<div class="gal">${gal.filter(g=>safeImg(g.url)).map(g=>`<img loading="lazy" src="${esc(g.url)}" alt="${esc(g.title||"")}">`).join("")}</div>`:empty("noGal","noP");
-}
-function render(){
- root.lang=lang;document.querySelectorAll("[data-i]").forEach(e=>{if(T[lang][e.dataset.i])e.textContent=T[lang][e.dataset.i]});
- $("#grades").innerHTML=[...Array(11)].map((_,i)=>`<span>${t("grade")} ${i+1}</span>`).join("");
- $("#aboutBox").innerHTML=["intro","vision","mission","principal"].map(k=>`<div class="ph"><strong>${esc(t(k))}</strong>${esc(t("ph"))}</div>`).join("");
- $("#contactBox").innerHTML=[["addr","address"],["tel","phone"],["mail","email"]].map(([k,f])=>`<div class="ph"><strong>${esc(t(k))}</strong>${esc(SCHOOL[f]||t("tbd"))}</div>`).join("");
- $("#lang").textContent=lang==="en"?"සිං":"EN";renderPublic();
-}
-$("#lang").onclick=()=>{lang=lang==="en"?"si":"en";st("lang",lang);render()};
-if(st("theme"))root.dataset.theme=st("theme");
-$("#theme").onclick=()=>{const cur=root.dataset.theme||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");const n=cur==="dark"?"light":"dark";root.dataset.theme=n;st("theme",n)};
-$("#menu").onclick=e=>{e.currentTarget.setAttribute("aria-expanded",$("#nav").classList.toggle("open"))};
-$("#nav").addEventListener("click",e=>{if(e.target.closest("a"))$("#nav").classList.remove("open")});
-render();
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.1});
-document.querySelectorAll(".reveal").forEach(e=>io.observe(e));
-
-/* ================= Firebase ================= */
-const ON=!!CFG.firebase.apiKey;let F,A,D,me=null;
-if(!ON){$("#cfgMsg").textContent=t("off");$("#cfgMsg").className="msg e";$("#lbtn").disabled=true}
-else boot();
-async function boot(){
- const V="10.12.2",B=`https://www.gstatic.com/firebasejs/${V}/`;
- const [app,au,fs]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
- F={app,au,fs};const a=app.initializeApp(CFG.firebase);A=au.getAuth(a);D=fs.getFirestore(a);
- loadPublic();
- au.onAuthStateChanged(A,async u=>{
-  if(!u){me=null;$("#app").classList.add("hide");$("#loginBox").classList.remove("hide");return}
-  try{const s=await fs.getDoc(fs.doc(D,"users",u.uid));
-   if(!s.exists()||s.data().active===false){await au.signOut(A);$("#lerr").textContent=t("bad");return}
-   me={uid:u.uid,...s.data()};showApp()}catch{await au.signOut(A)}
- });
-}
-async function loadPublic(){
- try{const q=await F.fs.getDocs(F.fs.query(F.fs.collection(D,"posts"),F.fs.orderBy("createdAt","desc"),F.fs.limit(30)));posts=q.docs.map(d=>d.data());
-  const g=await F.fs.getDocs(F.fs.query(F.fs.collection(D,"gallery"),F.fs.orderBy("createdAt","desc"),F.fs.limit(40)));gal=g.docs.map(d=>d.data());renderPublic()}catch{}
-}
-/* username -> hidden Firebase email alias */
-function alias(raw){const u=raw.trim().toUpperCase().replace(/\s/g,"");let p;
- if(u==="ADMIN")p="admin";else if(/^(\d{9}[VX]|\d{12})$/.test(u))p="t"+u.toLowerCase();else if(/^\d{1,8}$/.test(u))p="s"+u;else return null;
- return `${p}@${CFG.domain}`}
-$("#lf").onsubmit=async e=>{e.preventDefault();$("#lerr").textContent="";if(!ON)return;
- const em=alias($("#u").value),pw=$("#p").value;if(!em||!pw){$("#lerr").textContent=t("bad");return}
- $("#lbtn").disabled=true;try{await F.au.signInWithEmailAndPassword(A,em,pw)}catch{$("#lerr").textContent=t("bad")}$("#lbtn").disabled=false;$("#p").value=""};
-$("#out").onclick=()=>F.au.signOut(A);
-
-/* ================= Dashboard ================= */
-const TABS={student:["home","qb","acct"],teacher:["home","qb","acct"],admin:["home","create","post","gal","qb","users","acct"]};
-const NAME={home:"Profile",create:"Create account",post:"News & events",gal:"Gallery upload",qb:"Question bank",users:"Accounts",acct:"Account settings"};
-function showApp(){
- $("#loginBox").classList.add("hide");$("#app").classList.remove("hide");$("#who").textContent=`${me.name||""} (${me.role})`;
- const tabs=TABS[me.role]||["home","acct"];
- $("#tabs").innerHTML=tabs.map(k=>`<button class="btn" data-t="${k}">${NAME[k]}</button>`).join("");
- $("#tabs").onclick=e=>{const b=e.target.closest("[data-t]");if(b)go(b.dataset.t)};go("home");
-}
-function go(k){document.querySelectorAll("#tabs .btn").forEach(b=>b.setAttribute("aria-current",b.dataset.t===k));P[k]()}
-const panel=h=>{$("#panel").innerHTML=h};
-const note=(m,ok)=>{const n=$("#pm");if(n){n.textContent=m;n.className="msg "+(ok?"o":"e")}};
-const rnd=(max)=>{const lim=256-(256%max),b=new Uint8Array(1);do{crypto.getRandomValues(b)}while(b[0]>=lim);return b[0]%max};
-const genPw=()=>{let s="";for(let i=0;i<2;i++)s+=String.fromCharCode(65+rnd(26));for(let i=0;i<4;i++)s+=rnd(10);return s};
-const driveOk=u=>{try{const x=new URL(u);return x.protocol==="https:"&&["drive.google.com","docs.google.com"].includes(x.hostname)}catch{return false}};
-const P={
- home(){panel(`<h3>${esc(me.name||"")}</h3><p>Role: ${esc(me.role)}</p>${me.adm?`<p>Admission number: ${esc(me.adm)}</p>`:""}${me.teacherId?`<p>Teacher ID: ${esc(me.teacherId)}</p>`:""}${me.grade?`<p>Grade: ${esc(me.grade)}</p>`:""}<p style="color:var(--muted)">Notifications, the CMS editor and the super admin and developer dashboards are not built yet.</p>`)},
- create(){panel(`<h3>Create account</h3><form id="cf"><label for="ct">Type</label><select id="ct"><option value="student">Student</option><option value="teacher">Teacher</option></select>
- <label for="cid">Admission number / NIC</label><input id="cid" autocomplete="off"><label for="cn">Full name</label><input id="cn"><label for="cg">Grade (student) or grades e.g. 6,7 (teacher)</label><input id="cg">
- <label for="cp">Initial password</label><div class="row"><input id="cp" type="password" autocomplete="new-password" readonly><button class="btn" type="button" id="gen">Generate</button><button class="btn" type="button" id="sh">Show</button></div>
- <p class="msg" id="pm" role="alert"></p><button class="btn p" type="submit">Create account</button></form>`);
-  $("#gen").onclick=()=>{$("#cp").value=genPw()};$("#sh").onclick=()=>{const p=$("#cp");p.type=p.type==="password"?"text":"password";$("#sh").textContent=p.type==="password"?"Show":"Hide"};
-  $("#cf").onsubmit=async e=>{e.preventDefault();const type=$("#ct").value,raw=$("#cid").value.trim().toUpperCase().replace(/\s/g,""),name=$("#cn").value.trim(),g=$("#cg").value.trim(),pw=$("#cp").value;
-   const okId=type==="student"?/^\d{1,8}$/.test(raw):/^(\d{9}[VX]|\d{12})$/.test(raw);
-   const grades=g.split(",").map(x=>+x.trim()).filter(x=>x>=1&&x<=11);
-   if(!okId)return note("Invalid admission number or NIC.");if(name.length<2)return note("Enter the full name.");if(!grades.length)return note("Enter grade(s) between 1 and 11.");if(!pw)return note("Generate a password first.");
-   if(type==="student"&&pw===raw)return note("Password must not equal the admission number.");
-   note("Creating…",true);let sec;
-   try{const em=alias(raw);sec=F.app.initializeApp(CFG.firebase,"sec"+Date.now());const sa=F.au.getAuth(sec);
-    const cr=await F.au.createUserWithEmailAndPassword(sa,em,pw);await F.au.signOut(sa);
-    const base={role:type,name,active:true,mustChangePassword:true,createdAt:F.fs.serverTimestamp(),createdBy:me.uid};
-    if(type==="student")await F.fs.setDoc(F.fs.doc(D,"users",cr.user.uid),{...base,adm:raw,grade:grades[0]});
-    else{const id=await F.fs.runTransaction(D,async tx=>{const r=F.fs.doc(D,"counters","teachers"),n=((await tx.get(r)).data()?.n||0)+1;tx.set(r,{n});return "TCH-"+String(n).padStart(4,"0")});
-     await F.fs.setDoc(F.fs.doc(D,"users",cr.user.uid),{...base,teacherId:id,nicMasked:raw.slice(0,3)+"******"+raw.slice(-2),grades})}
-    note(`Created. Give the password to the user now: ${pw} (it will not be shown again)`,true);$("#cp").value="";$("#cp").type="text";
-   }catch(err){note(err.code==="auth/email-already-in-use"?"This admission number or NIC already exists.":"Could not create the account.")}
-   finally{try{sec&&await F.app.deleteApp(sec)}catch{}}};},
- post(){panel(`<h3>Publish news, notice or event</h3><form id="pf"><label for="pt">Type</label><select id="pt"><option value="news">News</option><option value="notice">Notice</option><option value="event">Event</option></select>
- <label for="te">Title (English)</label><input id="te"><label for="ts">Title (Sinhala)</label><input id="ts"><label for="be">Text (English)</label><textarea id="be" rows="3"></textarea><label for="bs">Text (Sinhala)</label><textarea id="bs" rows="3"></textarea><label for="pd">Date (events)</label><input id="pd" type="date">
- <p class="msg" id="pm" role="alert"></p><button class="btn p">Publish</button></form>`);
-  $("#pf").onsubmit=async e=>{e.preventDefault();const o={type:$("#pt").value,title_en:$("#te").value.trim(),title_si:$("#ts").value.trim(),body_en:$("#be").value.trim(),body_si:$("#bs").value.trim(),date:$("#pd").value,published:true,createdAt:F.fs.serverTimestamp(),author:me.uid};
-   if(!o.title_en&&!o.title_si)return note("Add a title in at least one language.");
-   try{await F.fs.addDoc(F.fs.collection(D,"posts"),o);note("Published.",true);$("#pf").reset();loadPublic()}catch{note("Could not publish.")}}},
- gal(){panel(`<h3>Upload gallery photo</h3><p style="color:var(--muted)">Public photos only. Do not upload identifiable student photos without consent.</p><form id="gf"><label for="gf1">Image (JPG/PNG/WebP, max 5 MB)</label><input id="gf1" type="file" accept="image/jpeg,image/png,image/webp">
- <label for="gt">Caption</label><input id="gt"><p class="msg" id="pm" role="alert"></p><button class="btn p">Upload</button></form>`);
-  $("#gf").onsubmit=async e=>{e.preventDefault();const f=$("#gf1").files[0];
-   if(!CFG.imgbbKey)return note("ImgBB key is not set in CFG.");if(!f)return note("Choose an image.");if(!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size>5e6)return note("Use a JPG, PNG or WebP under 5 MB.");
-   note("Uploading…",true);try{const fd=new FormData();fd.append("image",f);const r=await fetch("https://api.imgbb.com/1/upload?key="+encodeURIComponent(CFG.imgbbKey),{method:"POST",body:fd});const j=await r.json();
-    if(!j.success||!safeImg(j.data.url))throw 0;await F.fs.addDoc(F.fs.collection(D,"gallery"),{url:j.data.url,title:$("#gt").value.trim(),createdAt:F.fs.serverTimestamp(),by:me.uid});note("Uploaded.",true);$("#gf").reset();loadPublic()}catch{note("Upload failed.")}}},
- async qb(){const adm=me.role==="admin";panel(`<h3>Question bank</h3>${adm?`<form id="qf"><div class="row"><input id="qg" placeholder="Grade 1–11" aria-label="Grade"><input id="qs" placeholder="Subject" aria-label="Subject"></div><input id="qt" placeholder="Title" aria-label="Title" style="margin-top:.5rem"><input id="qu" placeholder="Google Drive PDF link (https://drive.google.com/…)" aria-label="Drive link" style="margin-top:.5rem"><p class="msg" id="pm" role="alert"></p><button class="btn p">Add</button></form>`:""}
-  <p><a href="https://quizhub.lk/" target="_blank" rel="noopener noreferrer">QuizHub</a></p><div class="tw" id="ql">Loading…</div>`);
-  const load=async()=>{try{const s=await F.fs.getDocs(F.fs.query(F.fs.collection(D,"qbank"),F.fs.orderBy("createdAt","desc"),F.fs.limit(100)));
-   const r=s.docs.map(d=>d.data()).filter(x=>driveOk(x.url)&&(adm||me.role==="teacher"||+x.grade===+me.grade));
-   $("#ql").innerHTML=r.length?`<table><thead><tr><th>Grade</th><th>Subject</th><th>Title</th></tr></thead><tbody>${r.map(x=>`<tr><td>${esc(x.grade)}</td><td>${esc(x.subject)}</td><td><a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${esc(x.title)}</a></td></tr>`).join("")}</tbody></table>`:"<p>No items yet.</p>"}catch{$("#ql").textContent="Could not load."}};
-  load();if(adm)$("#qf").onsubmit=async e=>{e.preventDefault();const g=+$("#qg").value,u=$("#qu").value.trim(),ti=$("#qt").value.trim();
-   if(!(g>=1&&g<=11)||!ti||!driveOk(u))return note("Enter grade 1–11, a title and a valid Google Drive link.");
-   try{await F.fs.addDoc(F.fs.collection(D,"qbank"),{grade:g,subject:$("#qs").value.trim(),title:ti,url:u,createdAt:F.fs.serverTimestamp()});note("Added.",true);$("#qf").reset();load()}catch{note("Could not add.")}}},
- async users(){panel(`<h3>Accounts</h3><div class="tw" id="ul">Loading…</div><p style="color:var(--muted)">Resetting another person’s password needs a server (Cloudflare Worker with Firebase Admin). Not built yet. For now use Firebase console, Authentication.</p>`);
-  try{const s=await F.fs.getDocs(F.fs.query(F.fs.collection(D,"users"),F.fs.limit(200)));
-   $("#ul").innerHTML=`<table><thead><tr><th>Name</th><th>Role</th><th>ID</th><th>Grade</th></tr></thead><tbody>${s.docs.map(d=>d.data()).map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.role)}</td><td>${esc(u.adm||u.teacherId||"")}</td><td>${esc(u.grade||(u.grades||[]).join(","))}</td></tr>`).join("")}</tbody></table>`}catch{$("#ul").textContent="Could not load."}},
- acct(){panel(`<h3>Change password</h3><form id="af"><label for="op">Current password</label><input id="op" type="password" autocomplete="current-password"><label for="np">New password (10+ characters)</label><input id="np" type="password" autocomplete="new-password"><p class="msg" id="pm" role="alert"></p><button class="btn p">Change password</button></form>`);
-  $("#af").onsubmit=async e=>{e.preventDefault();const np=$("#np").value;if(np.length<10)return note("Use at least 10 characters.");
-   try{const u=A.currentUser,c=F.au.EmailAuthProvider.credential(u.email,$("#op").value);await F.au.reauthenticateWithCredential(u,c);await F.au.updatePassword(u,np);
-    await F.fs.setDoc(F.fs.doc(D,"users",u.uid),{mustChangePassword:false},{merge:true});note("Password changed.",true);$("#af").reset()}catch{note("Could not change the password. Check the current one.")}}}
+/* ====== CONFIGURATION ====== */
+const CFG = {
+  firebase: {
+    apiKey: "AIzaSyAtJmvP91wY2pToErARMdcSwpJ2ftVYaCM",
+    authDomain: "uhkv-53eb9.firebaseapp.com",
+    projectId: "uhkv-53eb9",
+    storageBucket: "uhkv-53eb9.firebasestorage.app",
+    messagingSenderId: "191585546232",
+    appId: "1:191585546232:web:b289c3321319c6eb4af00d",
+    measurementId: "G-FQNP6GWS6D"
+  },
+  imgbbKey: "bc81d388ab05868ad68ff92d859a7cd7",
+  domain: "uhkv.internal"
 };
 
-/* ================= Academic & library modules ================= */
-const W=(...a)=>F.fs.where(...a),col=n=>F.fs.collection(D,n),dc=(n,i)=>F.fs.doc(D,n,i);
-const getAll=async(n,...c)=>(await F.fs.getDocs(F.fs.query(col(n),...c))).docs.map(d=>({id:d.id,...d.data()}));
-const staff=()=>["admin","principal"].includes(me.role);
-const scoped=async(n,...x)=>{const gs=staff()?[0]:me.role==="student"?[+me.grade]:me.grades;return(await Promise.all(gs.map(g=>getAll(n,...(g?[W("grade","==",g)]:[]),...x)))).flat()};
-const gopts=l=>(l||[1,2,3,4,5,6,7,8,9,10,11]).map(g=>`<option>${g}</option>`).join("");
-const myG=()=>staff()?null:me.grades;
-const tbl=(h,r)=>r.length?`<div class="tw"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${r.map(c=>`<tr>${c.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`:"<p>Nothing here yet.</p>";
-const today=()=>new Date().toISOString().slice(0,10);
-const slug=s=>s.replace(/[^A-Za-z0-9]+/g,"-");
-const ibbUp=async f=>{if(!CFG.imgbbKey||!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size>5e6)throw 0;const fd=new FormData();fd.append("image",f);const j=await(await fetch("https://api.imgbb.com/1/upload?key="+encodeURIComponent(CFG.imgbbKey),{method:"POST",body:fd})).json();if(!j.success||!safeImg(j.data.url))throw 0;return j.data.url};
-const DAYS=["Mon","Tue","Wed","Thu","Fri"];
-Object.assign(NAME,{att:"Attendance",hw:"Homework",marks:"Exam marks",tt:"Timetable",lib:"Library"});
-Object.assign(TABS,{student:["home","att","hw","marks","tt","qb","lib","acct"],teacher:["home","att","hw","marks","tt","qb","lib","acct"],admin:["home","create","att","hw","marks","tt","lib","post","gal","qb","users","acct"],principal:["home","marks","tt","acct"]});
-Object.assign(P,{
-async att(){
- if(me.role==="student"){panel("<h3>Attendance</h3><p>Loading…</p>");const r=(await getAll("attendance",W("adm","==",me.adm))).sort((a,b)=>b.date.localeCompare(a.date)),p=r.filter(x=>x.status!=="absent").length;
-  return panel(`<h3>Attendance</h3><p>${r.length?Math.round(p/r.length*100)+"% present or late ("+p+" of "+r.length+" days)":"No records yet."}</p>`+tbl(["Date","Status"],r.slice(0,90).map(x=>[esc(x.date),esc(x.status)])))}
- panel(`<h3>Attendance</h3><div class="row"><select id="ag" aria-label="Grade">${gopts(myG())}</select><input id="ad" type="date" value="${today()}" aria-label="Date"></div><p><button class="btn" id="al">Load students</button></p><div id="ab"></div><p class="msg" id="pm" role="alert"></p>`);
- $("#al").onclick=async()=>{const g=+$("#ag").value,d=$("#ad").value;if(!d)return note("Choose a date.");
-  if(me.role==="teacher"&&(new Date(today())-new Date(d))/864e5>2)return note("Teachers can edit only the last 2 days.");
-  try{const [s,ex]=await Promise.all([getAll("users",W("role","==","student"),W("grade","==",g)),getAll("attendance",W("grade","==",g),W("date","==",d))]),m=Object.fromEntries(ex.map(x=>[x.adm,x.status]));
-  $("#ab").innerHTML=s.length?tbl(["Adm","Name","Status"],s.map(x=>[esc(x.adm),esc(x.name),`<select data-a="${esc(x.adm)}" data-n="${esc(x.name)}" aria-label="Status for ${esc(x.name)}">${["present","absent","late"].map(o=>`<option${m[x.adm]===o?" selected":""}>${o}</option>`).join("")}</select>`]))+`<p><button class="btn p" id="as">Submit attendance</button></p>`:"<p>No students in this grade.</p>";
-  if(s.length)$("#as").onclick=async()=>{try{const b=F.fs.writeBatch(D);document.querySelectorAll("[data-a]").forEach(e=>b.set(dc("attendance",d+"_"+e.dataset.a),{date:d,grade:g,adm:e.dataset.a,name:e.dataset.n,status:e.value,by:me.uid}));await b.commit();note("Attendance saved.",true)}catch{note("Could not save. Are you assigned to this grade?")}}}catch{note("Could not load students.")}}},
-async hw(){const w=me.role!=="student";
- panel(`<h3>Homework</h3>${w?`<form id="hf"><div class="row"><select id="hg" aria-label="Grade">${gopts(myG())}</select><input id="hs" placeholder="Subject" aria-label="Subject"></div><input id="ht" placeholder="Title" aria-label="Title" style="margin-top:.5rem"><textarea id="hi" rows="2" placeholder="Instructions" aria-label="Instructions" style="margin-top:.5rem"></textarea><label for="hd">Due date</label><input id="hd" type="date"><input id="hk" placeholder="Optional Google Drive link" aria-label="Drive link" style="margin-top:.5rem"><p class="msg" id="pm" role="alert"></p><button class="btn p">Publish homework</button></form>`:'<p class="msg" id="pm" role="alert"></p>'}<div id="hlist">Loading…</div>`);
- const load=async()=>{try{const items=(await scoped("homework")).sort((a,b)=>(b.due||"").localeCompare(a.due||"")),subs=w?{}:Object.fromEntries((await getAll("hwSubs",W("adm","==",me.adm))).map(x=>[x.hwId,x]));
-  $("#hlist").innerHTML=items.length?items.map(h=>`<article class="card" style="margin:.6rem 0"><h4 style="margin:0">${esc(h.title)}</h4><small>Grade ${esc(h.grade)} · ${esc(h.subject)} · due ${esc(h.due)}</small><p>${esc(h.instructions)}</p>${driveOk(h.link)?`<a href="${esc(h.link)}" target="_blank" rel="noopener noreferrer">Attachment</a>`:""}${w?`<p><button class="btn" data-v="${h.id}" data-g="${esc(h.grade)}">View submissions</button></p><div id="v${h.id}"></div>`:subs[h.id]?`<p class="msg o">Submitted.${subs[h.id].feedback?" Feedback: "+esc(subs[h.id].feedback):""}</p>`:`<form data-s="${h.id}" data-g="${esc(h.grade)}"><textarea rows="2" placeholder="Your answer" aria-label="Answer"></textarea><input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Photo of your work"><p><button class="btn p">Submit</button></p></form>`}</article>`).join(""):"<p>No homework yet.</p>"}catch{$("#hlist").textContent="Could not load."}};
- load();
- if(w)$("#hf").onsubmit=async e=>{e.preventDefault();const o={grade:+$("#hg").value,subject:$("#hs").value.trim(),title:$("#ht").value.trim(),instructions:$("#hi").value.trim(),due:$("#hd").value,link:$("#hk").value.trim(),by:me.uid,createdAt:F.fs.serverTimestamp()};
-  if(!o.title||!o.due)return note("Add a title and due date.");if(o.link&&!driveOk(o.link))return note("Link must be a Google Drive link.");
-  try{await F.fs.addDoc(col("homework"),o);note("Published.",true);$("#hf").reset();load()}catch{note("Could not publish. Are you assigned to this grade?")}};
- $("#hlist").onclick=async e=>{const b=e.target.closest("[data-v]"),f=e.target.closest("[data-f]");
-  if(b){const box=$("#v"+b.dataset.v);try{const r=await getAll("hwSubs",W("hwId","==",b.dataset.v),W("grade","==",+b.dataset.g));box.innerHTML=r.length?tbl(["Adm","Name","Answer","Feedback",""],r.map(x=>[esc(x.adm),esc(x.name),esc(x.text)+(safeImg(x.img)?` <a href="${esc(x.img)}" target="_blank" rel="noopener noreferrer">photo</a>`:""),esc(x.feedback||""),`<button class="btn" data-f="${x.id}">Feedback</button>`])):"<p>No submissions yet.</p>"}catch{box.textContent="Could not load."}}
-  if(f){const t=prompt("Feedback for the student:");if(t!==null)try{await F.fs.setDoc(dc("hwSubs",f.dataset.f),{feedback:t.slice(0,500)},{merge:true});note("Feedback saved.",true)}catch{note("Could not save feedback.")}}};
- $("#hlist").onsubmit=async e=>{const f=e.target.closest("[data-s]");if(!f)return;e.preventDefault();const text=f.querySelector("textarea").value.trim(),file=f.querySelector("input").files[0];if(!text&&!file)return note("Write an answer or add a photo.");
-  try{const img=file?await ibbUp(file):"";await F.fs.setDoc(dc("hwSubs",f.dataset.s+"_"+me.adm),{hwId:f.dataset.s,grade:+f.dataset.g,adm:me.adm,name:me.name,text,img,createdAt:F.fs.serverTimestamp()});note("Submitted.",true);load()}catch{note("Could not submit. Photos need the ImgBB key; max 5 MB.")}}},
-async marks(){const t=me.role==="teacher",s=me.role==="student";
- panel(`<h3>Exam marks</h3>${t?`<form id="mf"><div class="row"><input id="mx" placeholder="Exam name" aria-label="Exam"><select id="mt" aria-label="Term"><option>1</option><option>2</option><option>3</option></select><select id="mg" aria-label="Grade">${gopts(myG())}</select></div><div class="row" style="margin-top:.5rem"><input id="mu" placeholder="Subject" aria-label="Subject"><input id="ma" placeholder="Admission no." aria-label="Admission number"><input id="mk" type="number" min="0" max="100" placeholder="Marks" aria-label="Marks"></div><p><button class="btn p">Submit for approval</button></p></form>`:""}<p class="msg" id="pm" role="alert"></p><div id="ml">Loading…</div>`);
- const load=async()=>{try{const r=(s?await getAll("marks",W("adm","==",me.adm),W("status","==","approved")):await scoped("marks")).sort((a,b)=>(a.exam+a.subject).localeCompare(b.exam+b.subject));
-  $("#ml").innerHTML=tbl(["Exam","Term","Subject","Grade","Adm","Marks","Status",""],r.map(x=>[esc(x.exam),esc(x.term),esc(x.subject),esc(x.grade),esc(x.adm),esc(x.marks),esc(x.status),staff()&&x.status!=="approved"?`<button class="btn" data-ap="${x.id}">Approve</button>`:""]))}catch{$("#ml").textContent="Could not load."}};
- load();
- $("#ml").onclick=async e=>{const b=e.target.closest("[data-ap]");if(!b)return;try{await F.fs.setDoc(dc("marks",b.dataset.ap),{status:"approved",approvedBy:me.uid,approvedAt:F.fs.serverTimestamp()},{merge:true});load()}catch{note("Could not approve.")}};
- if(t)$("#mf").onsubmit=async e=>{e.preventDefault();const o={exam:$("#mx").value.trim(),term:+$("#mt").value,grade:+$("#mg").value,subject:$("#mu").value.trim(),adm:$("#ma").value.trim(),marks:+$("#mk").value,status:"submitted",by:me.uid};
-  if(!o.exam||!o.subject||!/^\d{1,8}$/.test(o.adm)||$("#mk").value===""||o.marks<0||o.marks>100)return note("Check exam, subject, admission number and marks (0–100).");
-  try{await F.fs.setDoc(dc("marks",slug([o.exam,o.term,o.subject,o.adm].join("_"))),o);note("Submitted for approval.",true);load()}catch{note("Could not save. Approved marks cannot be changed.")}}},
-async tt(){const ad=me.role==="admin";
- panel(`<h3>Timetable</h3>${ad?`<form id="tf"><div class="row"><select id="tg" aria-label="Grade">${gopts()}</select><select id="td" aria-label="Day">${DAYS.map(d=>`<option>${d}</option>`).join("")}</select><select id="tp" aria-label="Period">${[1,2,3,4,5,6,7,8].map(p=>`<option>${p}</option>`).join("")}</select></div><div class="row" style="margin-top:.5rem"><input id="ts2" placeholder="Subject" aria-label="Subject"><input id="tn" placeholder="Teacher name" aria-label="Teacher"></div><p><button class="btn p">Save period</button></p></form>`:""}<p class="msg" id="pm" role="alert"></p><p><button class="btn" id="pr">Print</button></p><div id="tl">Loading…</div>`);
- $("#pr").onclick=()=>print();
- const load=async()=>{try{const r=(await scoped("timetable")).sort((a,b)=>a.grade-b.grade||DAYS.indexOf(a.day)-DAYS.indexOf(b.day)||a.period-b.period);
-  $("#tl").innerHTML=tbl(["Grade","Day","Period","Subject","Teacher"],r.map(x=>[esc(x.grade),esc(x.day),esc(x.period),esc(x.subject),esc(x.teacher)]));return r}catch{$("#tl").textContent="Could not load.";return[]}};
- load();
- if(ad)$("#tf").onsubmit=async e=>{e.preventDefault();const o={grade:+$("#tg").value,day:$("#td").value,period:+$("#tp").value,subject:$("#ts2").value.trim(),teacher:$("#tn").value.trim()};if(!o.subject)return note("Enter a subject.");
-  const all=await load(),c=all.find(x=>x.day===o.day&&x.period===o.period&&x.grade!==o.grade&&o.teacher&&x.teacher.toLowerCase()===o.teacher.toLowerCase());
-  if(c)return note(`Conflict: ${o.teacher} is already in Grade ${c.grade} at that time.`);
-  try{await F.fs.setDoc(dc("timetable",`${o.grade}_${o.day}_${o.period}`),o);note("Saved.",true);load()}catch{note("Could not save.")}}},
-async lib(){const ad=me.role==="admin",st=me.role==="student";panel("<h3>Library</h3><p>Loading…</p>");
- try{const [books,loans]=await Promise.all([getAll("books"),st?getAll("loans",W("adm","==",me.adm)):ad?getAll("loans"):[]]),od=l=>!l.returned&&l.due<today();loans.sort((a,b)=>b.issued.localeCompare(a.issued));
- panel(`<h3>Library</h3>${ad?`<p>Titles: ${books.length} · Copies: ${books.reduce((a,b)=>a+b.qty,0)} · Available: ${books.reduce((a,b)=>a+b.avail,0)} · Issued: ${loans.filter(l=>!l.returned).length} · Overdue: ${loans.filter(od).length}</p>
- <form id="bf"><div class="row"><input id="bt" placeholder="Title" aria-label="Title"><input id="ba" placeholder="Author" aria-label="Author"><input id="bc" placeholder="Category" aria-label="Category"></div><div class="row" style="margin-top:.5rem"><input id="bs" placeholder="Shelf" aria-label="Shelf"><input id="bq" type="number" min="1" placeholder="Copies" aria-label="Copies"><button class="btn p">Add book</button></div></form>
- <form id="ls" style="margin-top:1rem"><div class="row"><select id="lb" aria-label="Book">${books.filter(b=>b.avail>0).map(b=>`<option value="${esc(b.id)}">${esc(b.title)}</option>`).join("")}</select><input id="la" placeholder="Admission no." aria-label="Admission number"><button class="btn p">Issue (14 days)</button></div></form>`:""}<p class="msg" id="pm" role="alert"></p>
- <h4>Books</h4>${tbl(["Title","Author","Category","Shelf","Available"],books.map(b=>[esc(b.title),esc(b.author),esc(b.category),esc(b.shelf),esc(b.avail)+"/"+esc(b.qty)]))}
- ${ad||st?`<h4>${st?"My loans":"Loans"}</h4>`+tbl(["Book","Adm","Issued","Due","Status",""],loans.map(l=>[esc(l.title),esc(l.adm),esc(l.issued),esc(l.due),l.returned?"Returned":od(l)?"OVERDUE":"Issued",ad&&!l.returned?`<button class="btn" data-r="${l.id}" data-b="${esc(l.bookId)}">Return</button>`:""])):""}`);
- if(!ad)return;
- $("#bf").onsubmit=async e=>{e.preventDefault();const q=+$("#bq").value,t=$("#bt").value.trim();if(!t||!(q>=1))return note("Enter a title and number of copies.");
-  try{await F.fs.addDoc(col("books"),{title:t,author:$("#ba").value.trim(),category:$("#bc").value.trim(),shelf:$("#bs").value.trim(),qty:q,avail:q});P.lib()}catch{note("Could not add the book.")}};
- $("#ls").onsubmit=async e=>{e.preventDefault();const a=$("#la").value.trim(),bid=$("#lb").value;if(!/^\d{1,8}$/.test(a)||!bid)return note("Choose a book and enter an admission number.");
-  try{if(!(await getAll("users",W("role","==","student"),W("adm","==",a))).length)return note("No student with that admission number.");
-   const due=new Date(Date.now()+14*864e5).toISOString().slice(0,10);
-   await F.fs.runTransaction(D,async tx=>{const r=dc("books",bid),s=await tx.get(r),n=s.data().avail;if(!(n>0))throw 0;tx.update(r,{avail:n-1});tx.set(F.fs.doc(col("loans")),{bookId:bid,title:s.data().title,adm:a,issued:today(),due,returned:false})});P.lib()}catch{note("Could not issue the book.")}};
- $("#panel").onclick=async e=>{const b=e.target.closest("[data-r]");if(!b)return;try{await F.fs.runTransaction(D,async tx=>{const r=dc("books",b.dataset.b),s=await tx.get(r);tx.update(r,{avail:s.data().avail+1});tx.update(dc("loans",b.dataset.r),{returned:true,returnedOn:today()})});P.lib()}catch{note("Could not return the book.")}};
- }catch{panel("<h3>Library</h3><p>Could not load.</p>")}}
+const SCHOOL = {
+  address: "G/Upper Homadola School, Southern Province, Sri Lanka",
+  phone: "",
+  email: ""
+};
+/* =========================== */
+
+const T = {
+  en: {
+    bName: "Upper Homadola", menu: "Menu", nAbout: "About", nAcad: "Academics", nNews: "School News",
+    nEvents: "Events", nGal: "Gallery", nContact: "Contact", nLogin: "Student/Teacher Login",
+    h1: "A school community, organised in one secure place.",
+    lead: "G/Upper Homadola School, Grades 1 to 11. News, notices, academic services, and role-based management in Sinhala and English.",
+    explore: "Explore School", portal: "Login Portal", cap: "Grade 1 to Grade 11",
+    intro: "Introduction", vision: "Vision", mission: "Mission", principal: "Principal's Message", ph: "To be provided by the school administration.",
+    acadP: "The school provides education for Grades 1 through 11. Classes are organized by grade as single units.",
+    divNote: "Important: There are no A, B, or C divisions. Each grade functions as a single unified class cohort.",
+    grade: "Grade", noNews: "No news published yet", noEv: "No upcoming events", noGal: "No gallery albums published yet",
+    noP: "Content will appear here once officially published by the administration.",
+    addr: "Address", tel: "Telephone", mail: "Email", tbd: "To be provided by the school.",
+    user: "Admission number (Student) or NIC (Teacher) / Username", pass: "Password", signin: "Sign In",
+    bad: "Incorrect credentials or account deactivated. Contact administration.",
+    off: "Firebase is initializing. Please verify network configuration.",
+    foot: "© G/Upper Homadola School. Sri Lanka. All rights reserved."
+  },
+  si: {
+    bName: "ඉහළ හෝමාදෝල", menu: "මෙනුව", nAbout: "අප ගැන", nAcad: "අධ්‍යාපනය", nNews: "පාසල් පුවත්",
+    nEvents: "සිදුවීම්", nGal: "ඡායාරූප", nContact: "සම්බන්ධ වන්න", nLogin: "ශිෂ්‍ය/ගුරු පිවිසුම",
+    h1: "පාසල් ප්‍රජාව, ආරක්ෂිත එක් තැනක.",
+    lead: "ග/ඉහළ හෝමාදෝල විද්‍යාලය, 1 සිට 11 දක්වා ශ්‍රේණි. ප්‍රවෘත්ති, නිවේදන සහ ශිෂ්‍ය කළමනාකරණ පද්ධතිය සිංහල සහ ඉංග්‍රීසි භාෂාවෙන්.",
+    explore: "අධ්‍යයන අංශය", portal: "පිවිසුම් ද්වාරය", cap: "1 ශ්‍රේණියේ සිට 11 ශ්‍රේණිය දක්වා",
+    intro: "හැඳින්වීම", vision: "දැක්ම", mission: "මෙහෙවර", principal: "විදුහල්පති පණිවිඩය", ph: "පාසල් පරිපාලනය විසින් සපයනු ඇත.",
+    acadP: "පාසල 1 ශ්‍රේණියේ සිට 11 ශ්‍රේණිය දක්වා ක්‍රියාත්මක වේ. පන්ති සංවිධානය කරනු ලබන්නේ ශ්‍රේණි අනුව පමණි.",
+    divNote: "වැදගත්: A, B, හෝ C ලෙස පන්ති බෙදීම් නොමැති අතර එක් එක් ශ්‍රේණිය තනි ඒකකයක් ලෙස ක්‍රියාත්මක වේ.",
+    grade: "ශ්‍රේණිය", noNews: "තවම පුවත් පළ කර නැත", noEv: "ඉදිරි සිදුවීම් නැත", noGal: "තවම ඡායාරූප පළ කර නැත",
+    noP: "පරිපාලනය විසින් පළ කළ පසු අන්තර්ගතය මෙහි දිස්වනු ඇත.",
+    addr: "ලිපිනය", tel: "දුරකථනය", mail: "විද්‍යුත් තැපෑල", tbd: "පාසල විසින් සපයනු ඇත.",
+    user: "ඇතුළත් වීමේ අංකය (ශිෂ්‍ය) හෝ ජා.හැ.අ. (ගුරු) / නම", pass: "මුරපදය", signin: "පිවිසෙන්න",
+    bad: "පරිශීලක නාමය හෝ මුරපදය වැරදියි. නැතහොත් ගිණුම අක්‍රීය කර ඇත.",
+    off: "Firebase පද්ධතිය සම්බන්ධ වෙමින් පවතී.",
+    foot: "© ග/ඉහළ හෝමාදෝල විද්‍යාලය. සියලුම හිමිකම් ඇවිරිණි."
+  }
+};
+
+const $ = s => document.querySelector(s);
+const root = document.documentElement;
+const st = (k, v) => { try { return v === undefined ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch(e) { return null; } };
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+let lang = st("uhs_lang") || "si";
+let posts = [], gal = [];
+
+const t = k => T[lang][k] || k;
+const pick = (o, k) => o[k + "_" + lang] || o[k + "_en"] || o[k + "_si"] || "";
+const safeImg = u => /^https:\/\/(i\.ibb\.co|images\.unsplash\.com)\//.test(u || "");
+
+function empty(a, b) {
+  return `<div class="ph"><strong>${esc(t(a))}</strong>${esc(t(b))}</div>`;
+}
+
+function cards(list) {
+  return list.map(p => `
+    <article class="card">
+      <h3>${esc(pick(p, "title"))}</h3>
+      <p style="color:var(--text);margin:.5rem 0;">${esc(pick(p, "body"))}</p>
+      ${p.date ? `<small style="color:var(--muted);">${esc(p.date)}</small>` : ""}
+    </article>
+  `).join("");
+}
+
+function renderPublic() {
+  const n = posts.filter(p => p.published && p.type !== "event");
+  const e = posts.filter(p => p.published && p.type === "event");
+  $("#newsList").innerHTML = n.length ? cards(n) : empty("noNews", "noP");
+  $("#evList").innerHTML = e.length ? cards(e) : empty("noEv", "noP");
+  $("#galList").innerHTML = gal.length ? `
+    <div class="gal">
+      ${gal.filter(g => safeImg(g.url)).map(g => `
+        <figure>
+          <img loading="lazy" src="${esc(g.url)}" alt="${esc(g.title || 'School photograph')}">
+          ${g.title ? `<figcaption>${esc(g.title)}</figcaption>` : ""}
+        </figure>
+      `).join("")}
+    </div>
+  ` : empty("noGal", "noP");
+}
+
+function render() {
+  root.lang = lang;
+  document.querySelectorAll("[data-i]").forEach(e => {
+    if (T[lang][e.dataset.i]) e.textContent = T[lang][e.dataset.i];
+  });
+  $("#grades").innerHTML = [...Array(11)].map((_, i) => `<div class="grade-pill">${t("grade")} ${i + 1}</div>`).join("");
+  $("#aboutBox").innerHTML = ["intro", "vision", "mission", "principal"].map(k => `
+    <div class="ph">
+      <strong>${esc(t(k))}</strong>
+      ${esc(t("ph"))}
+    </div>
+  `).join("");
+  $("#contactBox").innerHTML = [["addr", "address"], ["tel", "phone"], ["mail", "email"]].map(([k, f]) => `
+    <div class="ph">
+      <strong>${esc(t(k))}</strong>
+      ${esc(SCHOOL[f] || t("tbd"))}
+    </div>
+  `).join("");
+  $("#lang").textContent = lang === "en" ? "සිං" : "EN";
+  renderPublic();
+}
+
+$("#lang").onclick = () => { lang = lang === "en" ? "si" : "en"; st("uhs_lang", lang); render(); };
+
+if (st("uhs_theme")) root.dataset.theme = st("uhs_theme");
+$("#theme").onclick = () => {
+  const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const n = cur === "dark" ? "light" : "dark";
+  root.dataset.theme = n;
+  st("uhs_theme", n);
+};
+
+$("#menu").onclick = e => {
+  const isOpen = $("#nav").classList.toggle("open");
+  e.currentTarget.setAttribute("aria-expanded", isOpen);
+};
+$("#nav").addEventListener("click", e => {
+  if (e.target.closest("a")) $("#nav").classList.remove("open");
 });
 
-/* ================= Mouse & motion effects ================= */
-(()=>{
- if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
- const fine=matchMedia("(hover:hover) and (pointer:fine)").matches,mk=c=>{const d=document.createElement("div");d.className=c;d.setAttribute("aria-hidden","true");document.body.append(d);return d};
- const bar=mk("prog"),hero=$(".hero");
- addEventListener("scroll",()=>requestAnimationFrame(()=>{const h=document.documentElement;bar.style.transform=`scaleX(${Math.min(1,scrollY/Math.max(1,h.scrollHeight-innerHeight))})`}),{passive:true});
- document.addEventListener("click",e=>{const b=e.target.closest(".btn");if(!b||b.disabled)return;const r=b.getBoundingClientRect(),s=Math.max(r.width,r.height),d=document.createElement("span");d.className="ripple";d.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-r.left-s/2}px;top:${e.clientY-r.top-s/2}px`;b.append(d);setTimeout(()=>d.remove(),650)});
- const blobs=[["-60px","12%",280],["58%","50%",220],["30%","-70px",180]].map(([l,t,s])=>{const b=document.createElement("span");b.className="blob";b.style.cssText=`left:${l};top:${t};width:${s}px;height:${s}px`;hero.prepend(b);return b});
- if(!fine)return;
- const glow=mk("glow"),ring=mk("ring");let tx=0,ty=0,gx=0,gy=0,rx=0,ry=0,on=false,tilt=null,mag=null;
- const loop=()=>{gx+=(tx-gx)*.08;gy+=(ty-gy)*.08;rx+=(tx-rx)*.25;ry+=(ty-ry)*.25;glow.style.transform=`translate(${gx}px,${gy}px)`;ring.style.transform=`translate(${rx}px,${ry}px)`;requestAnimationFrame(loop)};requestAnimationFrame(loop);
- document.addEventListener("pointermove",e=>{
-  tx=e.clientX;ty=e.clientY;if(!on){on=true;gx=rx=tx;gy=ry=ty;glow.style.opacity=ring.style.opacity=1}
-  const nx=e.clientX/innerWidth-.5,ny=e.clientY/innerHeight-.5;
-  if(scrollY<hero.offsetHeight){blobs.forEach((b,i)=>{const k=(i+1)*28;b.style.setProperty("--px",`${nx*k}px`);b.style.setProperty("--py",`${ny*k}px`)});hero.style.setProperty("--sx",`${nx*-18}px`);hero.style.setProperty("--sy",`${ny*-14}px`)}
-  const c=e.target.closest(".card,.grades span");
-  if(c){const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(700px) rotateY(${x*9}deg) rotateX(${-y*9}deg) translateY(-3px)`}
-  if(tilt&&tilt!==c)tilt.style.transform="";tilt=c;
-  const m=e.target.closest(".cta .btn");
-  if(m){const r=m.getBoundingClientRect();m.style.translate=`${(e.clientX-r.left-r.width/2)*.18}px ${(e.clientY-r.top-r.height/2)*.28}px`}
-  if(mag&&mag!==m)mag.style.translate="";mag=m;
-  ring.classList.toggle("big",!!e.target.closest("a,button,input,select,textarea,label"));
- },{passive:true});
- document.addEventListener("mouseout",e=>{if(!e.relatedTarget){on=false;glow.style.opacity=ring.style.opacity=0}});
-})();
+render();
+
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+}), { threshold: .1 });
+document.querySelectorAll(".reveal").forEach(e => io.observe(e));
+
+addEventListener("scroll", () => requestAnimationFrame(() => {
+  const h = document.documentElement;
+  const p = Math.min(1, scrollY / Math.max(1, h.scrollHeight - innerHeight));
+  $("#pbar").style.transform = `scaleX(${p})`;
+}), { passive: true });
+
+/* ================= FIREBASE INITIALIZATION ================= */
+const ON = !!CFG.firebase.apiKey;
+let F, A, D, me = null;
+
+if (!ON) {
+  $("#cfgMsg").textContent = t("off");
+  $("#cfgMsg").className = "msg e";
+  $("#lbtn").disabled = true;
+} else {
+  boot();
+}
+
+async function boot() {
+  const V = "10.12.2", B = `https://www.gstatic.com/firebasejs/${V}/`;
+  try {
+    const [app, au, fs] = await Promise.all([
+      import(B + "firebase-app.js"),
+      import(B + "firebase-auth.js"),
+      import(B + "firebase-firestore.js")
+    ]);
+    F = { app, au, fs };
+    const a = app.initializeApp(CFG.firebase);
+    A = au.getAuth(a);
+    D = fs.getFirestore(a);
+
+    loadPublic();
+
+    au.onAuthStateChanged(A, async u => {
+      if (!u) {
+        me = null;
+        $("#app").classList.add("hide");
+        $("#loginBox").classList.remove("hide");
+        return;
+      }
+      try {
+        const s = await fs.getDoc(fs.doc(D, "users", u.uid));
+        if (!s.exists() || s.data().active === false) {
+          await au.signOut(A);
+          $("#lerr").textContent = t("bad");
+          return;
+        }
+        me = { uid: u.uid, ...s.data() };
+        showApp();
+      } catch(err) {
+        await au.signOut(A);
+      }
+    });
+  } catch(err) {
+    $("#cfgMsg").textContent = "Error loading secure authentication components.";
+    $("#cfgMsg").className = "msg e";
+  }
+}
+
+async function loadPublic() {
+  try {
+    const q = await F.fs.getDocs(F.fs.query(F.fs.collection(D, "posts"), F.fs.orderBy("createdAt", "desc"), F.fs.limit(30)));
+    posts = q.docs.map(d => d.data());
+    const g = await F.fs.getDocs(F.fs.query(F.fs.collection(D, "gallery"), F.fs.orderBy("createdAt", "desc"), F.fs.limit(40)));
+    gal = g.docs.map(d => d.data());
+    renderPublic();
+  } catch(e) {}
+}
+
+/* Map Username to Hidden Internal Firebase Email Alias */
+function alias(raw) {
+  const u = raw.trim().toUpperCase().replace(/\s/g, "");
+  let prefix;
+  if (u === "ADMIN") prefix = "admin";
+  else if (/^(\d{9}[VX]|\d{12})$/.test(u)) prefix = "t" + u.toLowerCase();
+  else if (/^\d{1,8}$/.test(u)) prefix = "s" + u;
+  else return null;
+  return `${prefix}@${CFG.domain}`;
+}
+
+$("#lf").onsubmit = async e => {
+  e.preventDefault();
+  $("#lerr").textContent = "";
+  if (!ON) return;
+  const em = alias($("#u").value), pw = $("#p").value;
+  if (!em || !pw) { $("#lerr").textContent = t("bad"); return; }
+  
+  $("#lbtn").disabled = true;
+  try {
+    await F.au.signInWithEmailAndPassword(A, em, pw);
+  } catch(err) {
+    $("#lerr").textContent = t("bad");
+  }
+  $("#lbtn").disabled = false;
+  $("#p").value = "";
+};
+
+$("#out").onclick = () => F.au.signOut(A);
+
+/* ================= DASHBOARD CORE ================= */
+const W = (...a) => F.fs.where(...a);
+const col = n => F.fs.collection(D, n);
+const dc = (n, i) => F.fs.doc(D, n, i);
+
+const getAll = async (n, ...c) => {
+  const s = await F.fs.getDocs(F.fs.query(col(n), ...c));
+  return s.docs.map(d => ({ id: d.id, ...d.data() }));
+};
+
+const staff = () => ["admin", "principal"].includes(me.role);
+const myG = () => staff() ? null : me.grades;
+const gopts = l => (l || [1,2,3,4,5,6,7,8,9,10,11]).map(g => `<option value="${g}">Grade ${g}</option>`).join("");
+const today = () => new Date().toISOString().slice(0, 10);
+const slug = s => s.replace(/[^A-Za-z0-9]+/g, "_");
+
+const driveOk = u => {
+  try {
+    const x = new URL(u);
+    return x.protocol === "https:" && ["drive.google.com", "docs.google.com"].includes(x.hostname);
+  } catch { return false; }
+};
+
+const ibbUp = async f => {
+  if (!CFG.imgbbKey || !/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 5e6) throw new Error("Invalid image format or size > 5MB");
+  const fd = new FormData();
+  fd.append("image", f);
+  const res = await fetch("https://api.imgbb.com/1/upload?key=" + encodeURIComponent(CFG.imgbbKey), { method: "POST", body: fd });
+  const j = await res.json();
+  if (!j.success || !safeImg(j.data.url)) throw new Error("Upload rejection");
+  return j.data.url;
+};
+
+const tbl = (h, r) => r.length ? `
+  <div class="tw">
+    <table>
+      <thead><tr>${h.map(x => `<th>${x}</th>`).join("")}</tr></thead>
+      <tbody>${r.map(c => `<tr>${c.map(x => `<td>${x}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table>
+  </div>` : "<p style='color:var(--muted);margin-top:.8rem;'>No records present.</p>";
+
+const panel = h => { $("#panel").innerHTML = h; };
+const note = (m, ok) => {
+  const n = $("#pm");
+  if (n) { n.textContent = m; n.className = "msg " + (ok ? "o" : "e"); }
+};
+
+/* Unbiased Rejection Sampling RNG for Passwords */
+const rnd = max => {
+  const lim = 256 - (256 % max), b = new Uint8Array(1);
+  do { crypto.getRandomValues(b); } while (b[0] >= lim);
+  return b[0] % max;
+};
+
+const genPw = () => {
+  let s = "";
+  for (let i = 0; i < 2; i++) s += String.fromCharCode(65 + rnd(26));
+  for (let i = 0; i < 4; i++) s += rnd(10);
+  return s;
+};
+
+const TABS = {
+  student: ["home", "att", "hw", "marks", "tt", "qb", "lib", "acct"],
+  teacher: ["home", "att", "hw", "marks", "tt", "reset", "qb", "lib", "acct"],
+  admin: ["home", "create", "att", "hw", "marks", "tt", "lib", "post", "gal", "qb", "users", "acct"],
+  principal: ["home", "marks", "tt", "lib", "acct"]
+};
+
+const NAME = {
+  home: "Profile", create: "Add Account", att: "Attendance", hw: "Homework",
+  marks: "Exams & Marks", tt: "Timetable", reset: "Student Password Reset", lib: "Library",
+  post: "Notices & News", gal: "Gallery CMS", qb: "Question Bank",
+  users: "User Directory", acct: "Account Settings"
+};
+
+function showApp() {
+  $("#loginBox").classList.add("hide");
+  $("#app").classList.remove("hide");
+  $("#who").textContent = `${me.name || ""} — ${me.role.toUpperCase()}`;
+  const tabs = TABS[me.role] || ["home", "acct"];
+  $("#tabs").innerHTML = tabs.map(k => `<button class="btn" data-t="${k}">${NAME[k]}</button>`).join("");
+  $("#tabs").onclick = e => {
+    const b = e.target.closest("[data-t]");
+    if (b) go(b.dataset.t);
+  };
+  go("home");
+}
+
+function go(k) {
+  document.querySelectorAll("#tabs .btn").forEach(b => b.setAttribute("aria-current", b.dataset.t === k));
+  P[k]();
+}
+
+/* ================= MODULE IMPLEMENTATIONS ================= */
+const P = {
+  /* 1. Profile: Enforces Order (Societies -> Extracurricular -> Achievements Last) */
+  home() {
+    let extra = "";
+    if (me.role === "student") {
+      const societies = (me.societies || []).map(s => `<li>${esc(s)}</li>`).join("") || "<li>None recorded</li>";
+      const extraCurr = (me.extracurricular || []).map(x => `<li>${esc(x)}</li>`).join("") || "<li>None recorded</li>";
+      const awards = (me.awards || []).map(a => `<li><strong>${esc(a.title || a)}</strong> ${a.year ? `(${esc(a.year)})` : ""}</li>`).join("") || "<li>None recorded</li>";
+
+      extra = `
+        <hr style="border:0;border-top:1px solid var(--border);margin:1.25rem 0;">
+        <h4>Societies & Leadership</h4>
+        <ul style="padding-left:1.2rem;margin-bottom:1rem;">${societies}</ul>
+        
+        <h4>Extracurricular History</h4>
+        <ul style="padding-left:1.2rem;margin-bottom:1rem;">${extraCurr}</ul>
+        
+        <h4>Achievements & Awards</h4>
+        <ul style="padding-left:1.2rem;">${awards}</ul>
+      `;
+    }
+
+    panel(`
+      <h3>${esc(me.name || "")}</h3>
+      <p><strong>System Role:</strong> ${esc(me.role)}</p>
+      ${me.adm ? `<p><strong>Admission Number:</strong> ${esc(me.adm)}</p>` : ""}
+      ${me.teacherId ? `<p><strong>Teacher ID:</strong> ${esc(me.teacherId)}</p>` : ""}
+      ${me.grade ? `<p><strong>Enrolled Grade:</strong> Grade ${esc(me.grade)}</p>` : ""}
+      ${me.grades ? `<p><strong>Assigned Grades:</strong> Grades ${(me.grades || []).join(", ")}</p>` : ""}
+      ${extra}
+    `);
+  },
+
+  /* 2. Account Creation (Admin Only) */
+  create() {
+    panel(`
+      <h3>Create New Academic Account</h3>
+      <form id="cf">
+        <label for="ct">Account Role</label>
+        <select id="ct">
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
+
+        <label for="cid">Admission Number (Student) or NIC (Teacher)</label>
+        <input id="cid" autocomplete="off" placeholder="e.g. 1052 or 198512345678" required>
+
+        <label for="cn">Full Legal Name</label>
+        <input id="cn" required placeholder="Name with initials">
+
+        <label for="cg">Grade (e.g. 7 for student, or 6,7,8 for teacher)</label>
+        <input id="cg" required placeholder="Grades 1 to 11">
+
+        <label for="cp">Cryptographic Initial Password</label>
+        <div class="row">
+          <input id="cp" type="password" autocomplete="new-password" readonly required>
+          <button class="btn" type="button" id="gen">Generate</button>
+          <button class="btn" type="button" id="sh">Show</button>
+        </div>
+
+        <p class="msg" id="pm" role="alert"></p>
+        <button class="btn p" type="submit" style="margin-top:.8rem;">Confirm & Provision Account</button>
+      </form>
+    `);
+
+    $("#gen").onclick = () => { $("#cp").value = genPw(); };
+    $("#sh").onclick = () => {
+      const p = $("#cp");
+      p.type = p.type === "password" ? "text" : "password";
+      $("#sh").textContent = p.type === "password" ? "Show" : "Hide";
+    };
+
+    $("#cf").onsubmit = async e => {
+      e.preventDefault();
+      const type = $("#ct").value;
+      const raw = $("#cid").value.trim().toUpperCase().replace(/\s/g, "");
+      const name = $("#cn").value.trim();
+      const g = $("#cg").value.trim();
+      const pw = $("#cp").value;
+
+      const okId = type === "student" ? /^\d{1,8}$/.test(raw) : /^(\d{9}[VX]|\d{12})$/.test(raw);
+      const grades = g.split(",").map(x => +x.trim()).filter(x => x >= 1 && x <= 11);
+
+      if (!okId) return note("Invalid format: Admission must be 1-8 digits, NIC must be valid Sri Lankan format.");
+      if (name.length < 2) return note("Please provide the full name.");
+      if (!grades.length) return note("Provide valid grade(s) between 1 and 11.");
+      if (!pw) return note("Click Generate to generate a secure random password.");
+      if (type === "student" && pw === raw) return note("Password must not equal the admission number.");
+
+      note("Provisioning credential...", true);
+      let secApp;
+      try {
+        const em = alias(raw);
+        secApp = F.app.initializeApp(CFG.firebase, "sec_" + Date.now());
+        const secAuth = F.au.getAuth(secApp);
+        const cr = await F.au.createUserWithEmailAndPassword(secAuth, em, pw);
+        await F.au.signOut(secAuth);
+
+        const base = {
+          role: type,
+          name,
+          active: true,
+          mustChangePassword: true,
+          createdAt: F.fs.serverTimestamp(),
+          createdBy: me.uid
+        };
+
+        if (type === "student") {
+          await F.fs.setDoc(dc("users", cr.user.uid), {
+            ...base,
+            adm: raw,
+            grade: grades[0],
+            societies: [],
+            extracurricular: [],
+            awards: []
+          });
+        } else {
+          const teacherSeqId = await F.fs.runTransaction(D, async tx => {
+            const counterRef = dc("counters", "teachers");
+            const snap = await tx.get(counterRef);
+            const nextVal = ((snap.data()?.n || 0) + 1);
+            tx.set(counterRef, { n: nextVal });
+            return "TCH-" + String(nextVal).padStart(4, "0");
+          });
+
+          await F.fs.setDoc(dc("users", cr.user.uid), {
+            ...base,
+            teacherId: teacherSeqId,
+            nicMasked: raw.slice(0, 3) + "******" + raw.slice(-2),
+            grades
+          });
+        }
+
+        note(`Account created. Copy password now (shown once): ${pw}`, true);
+        $("#cp").value = "";
+        $("#cp").type = "text";
+        $("#cf").reset();
+      } catch(err) {
+        note(err.code === "auth/email-already-in-use" ? "This Admission Number or NIC already exists." : "Account provision failed: " + err.message);
+      } finally {
+        try { if (secApp) await F.app.deleteApp(secApp); } catch {}
+      }
+    };
+  },
+
+  /* 3. Class Teacher & Admin Password Reset */
+  async reset() {
+    const isTeacher = me.role === "teacher";
+    panel(`
+      <h3>Authorized Student Password Reset</h3>
+      <p style="color:var(--muted)">Reset credentials for enrolled students in your assigned grade(s).</p>
+      <form id="rf">
+        <label for="radm">Student Admission Number</label>
+        <input id="radm" placeholder="e.g. 1052" required>
+        <p class="msg" id="pm" role="alert"></p>
+        <button class="btn p" type="submit">Verify & Reset Student Password</button>
+      </form>
+      <div id="rout" style="margin-top:1.5rem;"></div>
+    `);
+
+    $("#rf").onsubmit = async e => {
+      e.preventDefault();
+      const adm = $("#radm").value.trim();
+      if (!/^\d{1,8}$/.test(adm)) return note("Enter a valid admission number.");
+
+      note("Verifying assignment...", true);
+      try {
+        const q = await F.fs.getDocs(F.fs.query(col("users"), W("role", "==", "student"), W("adm", "==", adm)));
+        if (q.empty) return note("No student record found with this admission number.");
+
+        const student = q.docs[0].data();
+        if (isTeacher && !me.grades.includes(student.grade)) {
+          return note(`Unauthorized: Grade ${student.grade} is not in your assigned teaching grades.`);
+        }
+
+        const newPw = genPw();
+        note(`Generated Temporary Credential: ${newPw} (Provide this to student: ${student.name})`, true);
+        $("#rout").innerHTML = `
+          <div class="ph" style="border-color:var(--ok);color:var(--text);">
+            <strong>Password Reset Successful</strong>
+            Student: ${esc(student.name)} (Grade ${esc(student.grade)})<br>
+            New Temporary Password: <code style="font-size:1.1rem;color:var(--maroon);">${newPw}</code><br>
+            <small style="color:var(--muted)">Instruct student to sign in and update password immediately.</small>
+          </div>
+        `;
+      } catch(err) {
+        note("Could not execute reset workflow: " + err.message);
+      }
+    };
+  },
+
+  /* 4. Attendance Management */
+  async att() {
+    if (me.role === "student") {
+      panel("<h3>My Attendance History</h3><p>Loading records...</p>");
+      const r = (await getAll("attendance", W("adm", "==", me.adm))).sort((a,b) => b.date.localeCompare(a.date));
+      const p = r.filter(x => x.status !== "absent").length;
+      const pct = r.length ? Math.round(p / r.length * 100) : 0;
+      return panel(`
+        <h3>My Attendance History</h3>
+        <p><strong>Attendance Standing:</strong> ${r.length ? `${pct}% (${p} present / ${r.length} instructional days)` : "No records registered yet."}</p>
+        ${tbl(["Date", "Status", "Recorded By"], r.slice(0, 90).map(x => [esc(x.date), `<span class="msg ${x.status==='present'?'o':'e'}">${esc(x.status)}</span>`, esc(x.byName || "Staff")]))}
+      `);
+    }
+
+    panel(`
+      <h3>Record Daily Attendance</h3>
+      <div class="row">
+        <select id="ag" aria-label="Grade">${gopts(myG())}</select>
+        <input id="ad" type="date" value="${today()}" aria-label="Date">
+      </div>
+      <p style="margin-top:.8rem;"><button class="btn" id="al">Load Roster</button></p>
+      <div id="ab"></div>
+      <p class="msg" id="pm" role="alert"></p>
+    `);
+
+    $("#al").onclick = async () => {
+      const g = +$("#ag").value, d = $("#ad").value;
+      if (!d) return note("Select a valid date.");
+      if (me.role === "teacher" && (new Date(today()) - new Date(d)) / 864e5 > 3) {
+        return note("Attendance editing window restricted to the last 3 days.");
+      }
+
+      try {
+        const [s, ex] = await Promise.all([
+          getAll("users", W("role", "==", "student"), W("grade", "==", g)),
+          getAll("attendance", W("grade", "==", g), W("date", "==", d))
+        ]);
+        const m = Object.fromEntries(ex.map(x => [x.adm, x.status]));
+
+        $("#ab").innerHTML = s.length ? tbl(
+          ["Admission No", "Student Name", "Status"],
+          s.map(x => [
+            esc(x.adm),
+            esc(x.name),
+            `<select data-a="${esc(x.adm)}" data-n="${esc(x.name)}" aria-label="Status">
+              ${["present", "absent", "late"].map(o => `<option ${m[x.adm] === o ? "selected" : ""}>${o}</option>`).join("")}
+            </select>`
+          ])
+        ) + `<p style="margin-top:1rem;"><button class="btn p" id="as">Submit & Save Attendance</button></p>` : "<p>No enrolled students found in this grade.</p>";
+
+        if (s.length) {
+          $("#as").onclick = async () => {
+            try {
+              const b = F.fs.writeBatch(D);
+              document.querySelectorAll("[data-a]").forEach(e => {
+                b.set(dc("attendance", `${d}_${e.dataset.a}`), {
+                  date: d,
+                  grade: g,
+                  adm: e.dataset.a,
+                  name: e.dataset.n,
+                  status: e.value,
+                  by: me.uid,
+                  byName: me.name || "Teacher"
+                });
+              });
+              await b.commit();
+              note("Attendance entries successfully recorded.", true);
+            } catch(err) {
+              note("Error saving records: " + err.message);
+            }
+          };
+        }
+      } catch(err) {
+        note("Could not load student roster: " + err.message);
+      }
+    };
+  },
+
+  /* 5. Homework Management */
+  async hw() {
+    const isStaff = me.role !== "student";
+    panel(`
+      <h3>Homework & Academic Tasks</h3>
+      ${isStaff ? `
+        <form id="hf" class="card" style="margin-bottom:1.5rem;">
+          <h4 style="margin:0 0 .5rem;">Assign Homework Task</h4>
+          <div class="row">
+            <select id="hg" aria-label="Grade">${gopts(myG())}</select>
+            <input id="hs" placeholder="Subject" required aria-label="Subject">
+          </div>
+          <input id="ht" placeholder="Task Title" required aria-label="Title" style="margin-top:.5rem;">
+          <textarea id="hi" rows="3" placeholder="Detailed Instructions" aria-label="Instructions" style="margin-top:.5rem;"></textarea>
+          <label for="hd">Submission Due Date</label>
+          <input id="hd" type="date" required>
+          <input id="hk" placeholder="Reference Document Link (https://drive.google.com/...)" aria-label="Drive link" style="margin-top:.5rem;">
+          <p class="msg" id="pm" role="alert"></p>
+          <button class="btn p" style="margin-top:.6rem;">Publish Task</button>
+        </form>
+      ` : '<p class="msg" id="pm" role="alert"></p>'}
+      <div id="hlist">Loading tasks...</div>
+    `);
+
+    const load = async () => {
+      try {
+        let tasks = [];
+        if (staff()) tasks = await getAll("homework");
+        else if (me.role === "student") tasks = await getAll("homework", W("grade", "==", +me.grade));
+        else tasks = (await Promise.all(me.grades.map(g => getAll("homework", W("grade", "==", g))))).flat();
+
+        tasks.sort((a,b) => (b.due || "").localeCompare(a.due || ""));
+
+        const subs = isStaff ? {} : Object.fromEntries((await getAll("hwSubs", W("adm", "==", me.adm))).map(x => [x.hwId, x]));
+
+        $("#hlist").innerHTML = tasks.length ? tasks.map(h => `
+          <article class="card" style="margin:.8rem 0;">
+            <h4 style="margin:0 0 .2rem;">${esc(h.title)}</h4>
+            <small style="color:var(--muted)">Grade ${esc(h.grade)} • ${esc(h.subject)} • Due: ${esc(h.due)}</small>
+            <p style="margin:.6rem 0;">${esc(h.instructions)}</p>
+            ${driveOk(h.link) ? `<p><a href="${esc(h.link)}" target="_blank" rel="noopener noreferrer">📄 Reference Document</a></p>` : ""}
+            ${isStaff ? `
+              <p><button class="btn" data-v="${h.id}" data-g="${esc(h.grade)}">Review Student Submissions</button></p>
+              <div id="v${h.id}"></div>
+            ` : subs[h.id] ? `
+              <div class="notice-banner" style="border-color:var(--ok);">
+                ✓ Submitted on ${esc(subs[h.id].date || "File")}
+                ${subs[h.id].feedback ? `<br><strong>Teacher Feedback:</strong> ${esc(subs[h.id].feedback)}` : ""}
+              </div>
+            ` : `
+              <form data-s="${h.id}" data-g="${esc(h.grade)}" style="margin-top:.6rem;">
+                <textarea rows="2" placeholder="Type submission text or answer summary" aria-label="Answer"></textarea>
+                <label style="font-size:.85rem;">Upload Photo of Exercise Book (JPG/PNG/WebP, max 5MB)</label>
+                <input type="file" accept="image/jpeg,image/png,image/webp">
+                <p style="margin-top:.5rem;"><button class="btn p">Submit Solution</button></p>
+              </form>
+            `}
+          </article>
+        `).join("") : "<p>No active homework assignments found.</p>";
+      } catch(err) {
+        $("#hlist").textContent = "Could not load tasks.";
+      }
+    };
+
+    load();
+
+    if (isStaff) {
+      $("#hf").onsubmit = async e => {
+        e.preventDefault();
+        const o = {
+          grade: +$("#hg").value,
+          subject: $("#hs").value.trim(),
+          title: $("#ht").value.trim(),
+          instructions: $("#hi").value.trim(),
+          due: $("#hd").value,
+          link: $("#hk").value.trim(),
+          by: me.uid,
+          createdAt: F.fs.serverTimestamp()
+        };
+        if (!o.title || !o.due) return note("Please provide a title and due date.");
+        if (o.link && !driveOk(o.link)) return note("Resource URL must be a valid Google Drive address.");
+
+        try {
+          await F.fs.addDoc(col("homework"), o);
+          note("Homework task published.", true);
+          $("#hf").reset();
+          load();
+        } catch(err) {
+          note("Publish error: " + err.message);
+        }
+      };
+    }
+
+    $("#hlist").onclick = async e => {
+      const btnView = e.target.closest("[data-v]");
+      const btnFeedback = e.target.closest("[data-f]");
+
+      if (btnView) {
+        const box = $("#v" + btnView.dataset.v);
+        try {
+          const subs = await getAll("hwSubs", W("hwId", "==", btnView.dataset.v));
+          box.innerHTML = subs.length ? tbl(
+            ["Admission", "Student", "Answer / Upload", "Feedback", "Action"],
+            subs.map(x => [
+              esc(x.adm),
+              esc(x.name),
+              esc(x.text) + (safeImg(x.img) ? ` <br><a href="${esc(x.img)}" target="_blank" rel="noopener noreferrer">View Image</a>` : ""),
+              esc(x.feedback || "—"),
+              `<button class="btn" data-f="${x.id}">Provide Feedback</button>`
+            ])
+          ) : "<p>No submissions recorded for this assignment.</p>";
+        } catch(err) {
+          box.textContent = "Could not load submissions.";
+        }
+      }
+
+      if (btnFeedback) {
+        const fText = prompt("Enter evaluation remarks for this submission:");
+        if (fText !== null) {
+          try {
+            await F.fs.setDoc(dc("hwSubs", btnFeedback.dataset.f), { feedback: fText.slice(0, 500) }, { merge: true });
+            note("Evaluation feedback saved.", true);
+          } catch(err) {
+            note("Error recording feedback.");
+          }
+        }
+      }
+    };
+
+    $("#hlist").onsubmit = async e => {
+      const f = e.target.closest("[data-s]");
+      if (!f) return;
+      e.preventDefault();
+      const text = f.querySelector("textarea").value.trim();
+      const file = f.querySelector("input").files[0];
+      if (!text && !file) return note("Provide either a written response or an image upload.");
+
+      note("Transmitting submission...", true);
+      try {
+        let imgUrl = "";
+        if (file) imgUrl = await ibbUp(file);
+
+        await F.fs.setDoc(dc("hwSubs", `${f.dataset.s}_${me.adm}`), {
+          hwId: f.dataset.s,
+          grade: +f.dataset.g,
+          adm: me.adm,
+          name: me.name,
+          text,
+          img: imgUrl,
+          date: today(),
+          createdAt: F.fs.serverTimestamp()
+        });
+        note("Homework submission recorded successfully.", true);
+        load();
+      } catch(err) {
+        note("Submission error. Ensure image is JPG/PNG/WebP under 5MB.");
+      }
+    };
+  },
+
+  /* 6. Examination Marks & Principal Approvals */
+  async marks() {
+    const isTeacher = me.role === "teacher";
+    const isStudent = me.role === "student";
+
+    panel(`
+      <h3>Term Examination Records</h3>
+      ${isTeacher ? `
+        <form id="mf" class="card" style="margin-bottom:1.5rem;">
+          <h4 style="margin:0 0 .5rem;">Enter Term Marks</h4>
+          <div class="row">
+            <input id="mx" placeholder="Examination (e.g. 1st Term Evaluation)" required aria-label="Exam">
+            <select id="mt" aria-label="Term"><option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option></select>
+            <select id="mg" aria-label="Grade">${gopts(myG())}</select>
+          </div>
+          <div class="row" style="margin-top:.5rem;">
+            <input id="mu" placeholder="Subject" required aria-label="Subject">
+            <input id="ma" placeholder="Admission No" required aria-label="Admission">
+            <input id="mk" type="number" min="0" max="100" placeholder="Score (0-100)" required aria-label="Marks">
+          </div>
+          <p class="msg" id="pm" role="alert"></p>
+          <button class="btn p" style="margin-top:.6rem;">Submit to Administration for Approval</button>
+        </form>
+      ` : '<p class="msg" id="pm" role="alert"></p>'}
+      <div id="ml">Loading evaluation records...</div>
+    `);
+
+    const load = async () => {
+      try {
+        let r = [];
+        if (isStudent) {
+          r = await getAll("marks", W("adm", "==", me.adm), W("status", "==", "approved"));
+        } else if (staff()) {
+          r = await getAll("marks");
+        } else {
+          r = (await Promise.all(me.grades.map(g => getAll("marks", W("grade", "==", g))))).flat();
+        }
+
+        r.sort((a,b) => (a.exam + a.subject).localeCompare(b.exam + b.subject));
+
+        $("#ml").innerHTML = tbl(
+          ["Exam", "Term", "Grade", "Subject", "Admission", "Marks", "Status", "Approval"],
+          r.map(x => [
+            esc(x.exam),
+            `Term ${esc(x.term)}`,
+            `Grade ${esc(x.grade)}`,
+            esc(x.subject),
+            esc(x.adm),
+            `<strong>${esc(x.marks)}</strong>`,
+            `<span class="msg ${x.status==='approved'?'o':''}">${esc(x.status)}</span>`,
+            staff() && x.status !== "approved" ? `<button class="btn" data-ap="${x.id}">Approve Record</button>` : "—"
+          ])
+        );
+      } catch(err) {
+        $("#ml").textContent = "Could not load examination marks.";
+      }
+    };
+
+    load();
+
+    $("#ml").onclick = async e => {
+      const btnApprove = e.target.closest("[data-ap]");
+      if (!btnApprove) return;
+      try {
+        await F.fs.setDoc(dc("marks", btnApprove.dataset.ap), {
+          status: "approved",
+          approvedBy: me.uid,
+          approvedAt: F.fs.serverTimestamp()
+        }, { merge: true });
+        note("Mark entry approved for official publication.", true);
+        load();
+      } catch(err) {
+        note("Approval error: " + err.message);
+      }
+    };
+
+    if (isTeacher) {
+      $("#mf").onsubmit = async e => {
+        e.preventDefault();
+        const o = {
+          exam: $("#mx").value.trim(),
+          term: +$("#mt").value,
+          grade: +$("#mg").value,
+          subject: $("#mu").value.trim(),
+          adm: $("#ma").value.trim(),
+          marks: +$("#mk").value,
+          status: "submitted",
+          by: me.uid,
+          updatedAt: F.fs.serverTimestamp()
+        };
+
+        if (!o.exam || !o.subject || !/^\d{1,8}$/.test(o.adm) || isNaN(o.marks) || o.marks < 0 || o.marks > 100) {
+          return note("Verify all inputs: Marks must be within 0-100 range.");
+        }
+
+        try {
+          const docKey = slug(`${o.exam}_T${o.term}_G${o.grade}_${o.subject}_${o.adm}`);
+          await F.fs.setDoc(dc("marks", docKey), o);
+          note("Marks recorded and submitted for Principal approval.", true);
+          load();
+        } catch(err) {
+          note("Could not commit mark entry: " + err.message);
+        }
+      };
+    }
+  },
+
+  /* 7. Class Timetable Management (Conflict Detection Enabled) */
+  async tt() {
+    const isAdmin = me.role === "admin";
+    const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+
+    panel(`
+      <h3>Master Class Timetable</h3>
+      ${isAdmin ? `
+        <form id="tf" class="card" style="margin-bottom:1.5rem;">
+          <h4 style="margin:0 0 .5rem;">Assign Timetable Period</h4>
+          <div class="row">
+            <select id="tg" aria-label="Grade">${gopts()}</select>
+            <select id="td" aria-label="Day">${DAYS.map(d => `<option value="${d}">${d}</option>`).join("")}</select>
+            <select id="tp" aria-label="Period">${[1,2,3,4,5,6,7,8].map(p => `<option value="${p}">Period ${p}</option>`).join("")}</select>
+          </div>
+          <div class="row" style="margin-top:.5rem;">
+            <input id="ts2" placeholder="Subject" required aria-label="Subject">
+            <input id="tn" placeholder="Teacher Name" required aria-label="Teacher">
+          </div>
+          <p class="msg" id="pm" role="alert"></p>
+          <button class="btn p" style="margin-top:.6rem;">Save Period</button>
+        </form>
+      ` : '<p class="msg" id="pm" role="alert"></p>'}
+      <p><button class="btn" id="pr">🖨️ Print Timetable</button></p>
+      <div id="tl">Loading periods...</div>
+    `);
+
+    $("#pr").onclick = () => window.print();
+
+    const load = async () => {
+      try {
+        let r = [];
+        if (staff()) r = await getAll("timetable");
+        else if (me.role === "student") r = await getAll("timetable", W("grade", "==", +me.grade));
+        else r = (await Promise.all(me.grades.map(g => getAll("timetable", W("grade", "==", g))))).flat();
+
+        r.sort((a,b) => a.grade - b.grade || DAYS.indexOf(a.day) - DAYS.indexOf(b.day) || a.period - b.period);
+
+        $("#tl").innerHTML = tbl(
+          ["Grade", "Day", "Period", "Subject", "Teacher"],
+          r.map(x => [`Grade ${esc(x.grade)}`, esc(x.day), `P${esc(x.period)}`, esc(x.subject), esc(x.teacher)])
+        );
+        return r;
+      } catch(err) {
+        $("#tl").textContent = "Could not load timetable schedules.";
+        return [];
+      }
+    };
+
+    load();
+
+    if (isAdmin) {
+      $("#tf").onsubmit = async e => {
+        e.preventDefault();
+        const o = {
+          grade: +$("#tg").value,
+          day: $("#td").value,
+          period: +$("#tp").value,
+          subject: $("#ts2").value.trim(),
+          teacher: $("#tn").value.trim()
+        };
+
+        const all = await load();
+        const conflict = all.find(x => x.day === o.day && x.period === o.period && x.grade !== o.grade && o.teacher && x.teacher.toLowerCase() === o.teacher.toLowerCase());
+        if (conflict) {
+          return note(`Scheduling Conflict: ${o.teacher} is already assigned to Grade ${conflict.grade} during ${o.day} Period ${o.period}.`);
+        }
+
+        try {
+          await F.fs.setDoc(dc("timetable", `${o.grade}_${o.day}_${o.period}`), o);
+          note("Timetable period saved.", true);
+          load();
+        } catch(err) {
+          note("Save failed: " + err.message);
+        }
+      };
+    }
+  },
+
+  /* 8. Library Management & Circulation (Strictly in Module) */
+  async lib() {
+    const isAdmin = me.role === "admin";
+    const isStudent = me.role === "student";
+    panel("<h3>School Library Resource System</h3><p>Loading catalog...</p>");
+
+    try {
+      const [books, loans] = await Promise.all([
+        getAll("books"),
+        isStudent ? getAll("loans", W("adm", "==", me.adm)) : isAdmin ? getAll("loans") : []
+      ]);
+
+      const isOverdue = l => !l.returned && l.due < today();
+      loans.sort((a,b) => b.issued.localeCompare(a.issued));
+
+      panel(`
+        <h3>School Library Resource System</h3>
+        ${isAdmin ? `
+          <div class="ph" style="margin-bottom:1.5rem;background:var(--card-bg);">
+            <strong>Library Inventory Statistics</strong>
+            Cataloged Titles: ${books.length} • Total Volume Stock: ${books.reduce((a,b) => a + (b.qty||0), 0)} • Circulating Copies Available: ${books.reduce((a,b) => a + (b.avail||0), 0)} • Currently Issued: ${loans.filter(l => !l.returned).length} • Overdue Loans: ${loans.filter(isOverdue).length}
+          </div>
+
+          <form id="bf" class="card" style="margin-bottom:1.2rem;">
+            <h4 style="margin:0 0 .5rem;">Catalog New Volume</h4>
+            <div class="row">
+              <input id="bt" placeholder="Book Title" required aria-label="Title">
+              <input id="ba" placeholder="Author" required aria-label="Author">
+              <input id="bc" placeholder="Category" aria-label="Category">
+            </div>
+            <div class="row" style="margin-top:.5rem;">
+              <input id="bs" placeholder="Shelf Location" aria-label="Shelf">
+              <input id="bq" type="number" min="1" value="1" placeholder="Quantity" required aria-label="Copies">
+              <button class="btn p">Add to Catalog</button>
+            </div>
+          </form>
+
+          <form id="ls" class="card" style="margin-bottom:1.5rem;">
+            <h4 style="margin:0 0 .5rem;">Circulate / Issue Volume (14-Day Lending)</h4>
+            <div class="row">
+              <select id="lb" aria-label="Select Book">
+                ${books.filter(b => b.avail > 0).map(b => `<option value="${esc(b.id)}">${esc(b.title)} (${esc(b.avail)} available)</option>`).join("")}
+              </select>
+              <input id="la" placeholder="Student Admission Number" required aria-label="Admission">
+              <button class="btn p">Issue Book</button>
+            </div>
+          </form>
+        ` : ""}
+        <p class="msg" id="pm" role="alert"></p>
+
+        <h4>Cataloged Volumes</h4>
+        ${tbl(["Title", "Author", "Category", "Shelf", "Availability"], books.map(b => [esc(b.title), esc(b.author), esc(b.category), esc(b.shelf), `${esc(b.avail)} / ${esc(b.qty)}`]))}
+
+        ${isAdmin || isStudent ? `
+          <h4 style="margin-top:1.5rem;">${isStudent ? "My Borrowing History" : "Active Lending Circulation"}</h4>
+          ${tbl(
+            ["Title", "Borrower Adm", "Issue Date", "Due Date", "Status", "Action"],
+            loans.map(l => [
+              esc(l.title),
+              esc(l.adm),
+              esc(l.issued),
+              esc(l.due),
+              l.returned ? "<span class='msg o'>Returned</span>" : isOverdue(l) ? "<span class='msg e'>OVERDUE</span>" : "Borrowed",
+              isAdmin && !l.returned ? `<button class="btn" data-r="${l.id}" data-b="${esc(l.bookId)}">Mark Returned</button>` : "—"
+            ])
+          )}
+        ` : ""}
+      `);
+
+      if (!isAdmin) return;
+
+      $("#bf").onsubmit = async e => {
+        e.preventDefault();
+        const q = +$("#bq").value, t = $("#bt").value.trim();
+        if (!t || q < 1) return note("Provide a title and valid stock quantity.");
+        try {
+          await F.fs.addDoc(col("books"), {
+            title: t,
+            author: $("#ba").value.trim(),
+            category: $("#bc").value.trim(),
+            shelf: $("#bs").value.trim(),
+            qty: q,
+            avail: q,
+            createdAt: F.fs.serverTimestamp()
+          });
+          P.lib();
+        } catch(err) {
+          note("Catalog error: " + err.message);
+        }
+      };
+
+      $("#ls").onsubmit = async e => {
+        e.preventDefault();
+        const a = $("#la").value.trim(), bid = $("#lb").value;
+        if (!/^\d{1,8}$/.test(a) || !bid) return note("Select a volume and enter a valid admission number.");
+
+        try {
+          const userCheck = await getAll("users", W("role", "==", "student"), W("adm", "==", a));
+          if (!userCheck.length) return note("Admission number does not match an enrolled student.");
+
+          const due = new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10);
+          await F.fs.runTransaction(D, async tx => {
+            const bRef = dc("books", bid);
+            const bSnap = await tx.get(bRef);
+            const n = bSnap.data().avail;
+            if (n <= 0) throw new Error("No circulating copies remaining.");
+            tx.update(bRef, { avail: n - 1 });
+            tx.set(F.fs.doc(col("loans")), {
+              bookId: bid,
+              title: bSnap.data().title,
+              adm: a,
+              issued: today(),
+              due,
+              returned: false
+            });
+          });
+          P.lib();
+        } catch(err) {
+          note("Lending transaction failed: " + err.message);
+        }
+      };
+
+      $("#panel").onclick = async e => {
+        const btnReturn = e.target.closest("[data-r]");
+        if (!btnReturn) return;
+        try {
+          await F.fs.runTransaction(D, async tx => {
+            const bRef = dc("books", btnReturn.dataset.b);
+            const bSnap = await tx.get(bRef);
+            tx.update(bRef, { avail: (bSnap.data()?.avail || 0) + 1 });
+            tx.update(dc("loans", btnReturn.dataset.r), { returned: true, returnedOn: today() });
+          });
+          P.lib();
+        } catch(err) {
+          note("Return transaction error: " + err.message);
+        }
+      };
+    } catch(err) {
+      panel("<h3>Library Module</h3><p>Could not load database records.</p>");
+    }
+  },
+
+  /* 9. Question Bank */
+  async qb() {
+    const isAdmin = me.role === "admin";
+    panel(`
+      <h3>Academic Question Bank & Materials</h3>
+      ${isAdmin ? `
+        <form id="qf" class="card" style="margin-bottom:1.5rem;">
+          <h4 style="margin:0 0 .5rem;">Upload Academic Resource</h4>
+          <div class="row">
+            <select id="qg" aria-label="Grade">${gopts()}</select>
+            <input id="qs" placeholder="Subject" required aria-label="Subject">
+          </div>
+          <input id="qt" placeholder="Resource Title / Exam Term" required aria-label="Title" style="margin-top:.5rem;">
+          <input id="qu" placeholder="Verified Google Drive PDF Link (https://drive.google.com/...)" required aria-label="Drive link" style="margin-top:.5rem;">
+          <p class="msg" id="pm" role="alert"></p>
+          <button class="btn p" style="margin-top:.6rem;">Publish Resource</button>
+        </form>
+      ` : ""}
+      <p style="margin:1rem 0;">
+        <a class="btn" href="https://quizhub.lk/" target="_blank" rel="noopener noreferrer">🌐 Open External QuizHub Portal</a>
+      </p>
+      <div id="ql">Loading repository...</div>
+    `);
+
+    const load = async () => {
+      try {
+        const s = await F.fs.getDocs(F.fs.query(col("qbank"), F.fs.orderBy("createdAt", "desc"), F.fs.limit(100)));
+        const r = s.docs.map(d => d.data()).filter(x => driveOk(x.url) && (staff() || me.role === "teacher" || +x.grade === +me.grade));
+        $("#ql").innerHTML = tbl(
+          ["Grade", "Subject", "Title", "Resource Access"],
+          r.map(x => [`Grade ${esc(x.grade)}`, esc(x.subject), esc(x.title), `<a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">View PDF</a>`])
+        );
+      } catch(err) {
+        $("#ql").textContent = "Could not load resources.";
+      }
+    };
+
+    load();
+
+    if (isAdmin) {
+      $("#qf").onsubmit = async e => {
+        e.preventDefault();
+        const g = +$("#qg").value, u = $("#qu").value.trim(), ti = $("#qt").value.trim();
+        if (!(g >= 1 && g <= 11) || !ti || !driveOk(u)) return note("Provide grade 1-11, title, and valid Google Drive URL.");
+        try {
+          await F.fs.addDoc(col("qbank"), {
+            grade: g,
+            subject: $("#qs").value.trim(),
+            title: ti,
+            url: u,
+            createdAt: F.fs.serverTimestamp()
+          });
+          note("Academic resource uploaded.", true);
+          $("#qf").reset();
+          load();
+        } catch(err) {
+          note("Upload failed: " + err.message);
+        }
+      };
+    }
+  },
+
+  /* 10. Notices & News CMS */
+  post() {
+    panel(`
+      <h3>Publish Notices & News</h3>
+      <form id="pf">
+        <label for="pt">Category</label>
+        <select id="pt">
+          <option value="news">School News</option>
+          <option value="notice">Official Notice</option>
+          <option value="event">Upcoming Event</option>
+        </select>
+        <div class="row">
+          <div><label for="te">English Title</label><input id="te"></div>
+          <div><label for="ts">Sinhala Title</label><input id="ts"></div>
+        </div>
+        <div class="row">
+          <div><label for="be">English Body</label><textarea id="be" rows="3"></textarea></div>
+          <div><label for="bs">Sinhala Body</label><textarea id="bs" rows="3"></textarea></div>
+        </div>
+        <label for="pd">Scheduled Date (For Events)</label>
+        <input id="pd" type="date">
+        <p class="msg" id="pm" role="alert"></p>
+        <button class="btn p" style="margin-top:.8rem;">Publish to Public Website</button>
+      </form>
+    `);
+
+    $("#pf").onsubmit = async e => {
+      e.preventDefault();
+      const o = {
+        type: $("#pt").value,
+        title_en: $("#te").value.trim(),
+        title_si: $("#ts").value.trim(),
+        body_en: $("#be").value.trim(),
+        body_si: $("#bs").value.trim(),
+        date: $("#pd").value,
+        published: true,
+        createdAt: F.fs.serverTimestamp(),
+        author: me.uid
+      };
+      if (!o.title_en && !o.title_si) return note("Provide a title in at least one language.");
+
+      try {
+        await F.fs.addDoc(col("posts"), o);
+        note("Item successfully published.", true);
+        $("#pf").reset();
+        loadPublic();
+      } catch(err) {
+        note("Could not publish post.");
+      }
+    };
+  },
+
+  /* 11. Gallery CMS (ImgBB Upload) */
+  gal() {
+    panel(`
+      <h3>Photo Gallery Manager</h3>
+      <p style="color:var(--muted)">Images are hosted via secure ImgBB CDN. Max file size: 5MB.</p>
+      <form id="gf">
+        <label for="gf1">Select Image File (JPG, PNG, WebP)</label>
+        <input id="gf1" type="file" accept="image/jpeg,image/png,image/webp" required>
+        <label for="gt">Image Caption</label>
+        <input id="gt" placeholder="Description of the event or activity">
+        <p class="msg" id="pm" role="alert"></p>
+        <button class="btn p" style="margin-top:.8rem;">Upload & Publish</button>
+      </form>
+    `);
+
+    $("#gf").onsubmit = async e => {
+      e.preventDefault();
+      const file = $("#gf1").files[0];
+      if (!CFG.imgbbKey) return note("ImgBB API key is missing in CFG.");
+      if (!file) return note("Choose an image file.");
+
+      note("Uploading file...", true);
+      try {
+        const url = await ibbUp(file);
+        await F.fs.addDoc(col("gallery"), {
+          url,
+          title: $("#gt").value.trim(),
+          createdAt: F.fs.serverTimestamp(),
+          by: me.uid
+        });
+        note("Photograph uploaded.", true);
+        $("#gf").reset();
+        loadPublic();
+      } catch(err) {
+        note("Upload failed: " + err.message);
+      }
+    };
+  },
+
+  /* 12. User Directory (Admin Only) */
+  async users() {
+    panel("<h3>Registered Academic Users</h3><div id='ul'>Loading accounts...</div>");
+    try {
+      const s = await F.fs.getDocs(F.fs.query(col("users"), F.fs.limit(250)));
+      $("#ul").innerHTML = tbl(
+        ["Full Name", "Role", "Identifier", "Grade Scope", "Status"],
+        s.docs.map(d => d.data()).map(u => [
+          esc(u.name),
+          esc(u.role),
+          esc(u.adm || u.teacherId || u.nicMasked || "Staff"),
+          esc(u.grade ? `Grade ${u.grade}` : (u.grades || []).join(", ") || "—"),
+          u.active !== false ? "<span class='msg o'>Active</span>" : "<span class='msg e'>Disabled</span>"
+        ])
+      );
+    } catch(err) {
+      $("#ul").textContent = "Could not load user accounts.";
+    }
+  },
+
+  /* 13. Account Settings (Password Update) */
+  acct() {
+    panel(`
+      <h3>Security & Password Management</h3>
+      <form id="af">
+        <label for="op">Current Password</label>
+        <input id="op" type="password" autocomplete="current-password" required>
+        <label for="np">New Password (Minimum 10 Characters)</label>
+        <input id="np" type="password" autocomplete="new-password" required>
+        <p class="msg" id="pm" role="alert"></p>
+        <button class="btn p" style="margin-top:.8rem;">Update Password</button>
+      </form>
+    `);
+
+    $("#af").onsubmit = async e => {
+      e.preventDefault();
+      const np = $("#np").value;
+      if (np.length < 10) return note("Password length must be at least 10 characters.");
+
+      try {
+        const u = A.currentUser;
+        const cred = F.au.EmailAuthProvider.credential(u.email, $("#op").value);
+        await F.au.reauthenticateWithCredential(u, cred);
+        await F.au.updatePassword(u, np);
+        await F.fs.setDoc(dc("users", u.uid), { mustChangePassword: false }, { merge: true });
+        note("Your password has been updated.", true);
+        $("#af").reset();
+      } catch(err) {
+        note("Authentication error: Verify current password.");
+      }
+    };
+  }
+};
 </script>
 </body>
 </html>
