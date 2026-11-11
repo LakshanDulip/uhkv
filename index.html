@@ -328,7 +328,7 @@ tr:last-child td { border-bottom: none; }
 .msg.e { color: var(--err); } .msg.o { color: var(--ok); }
 
 /* ==========================================================================
-   ADMIN DASHBOARD LAYOUT (UPGRADED 2026 UI)
+   ADMIN DASHBOARD LAYOUT
    ========================================================================== */
 #adminLayout {
   display: grid;
@@ -399,28 +399,34 @@ tr:last-child td { border-bottom: none; }
 
 footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--text-muted); font-size: .9rem; background: var(--bg); }
 
+/* Student Profile Modal Style */
+.prof-modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(18, 13, 18, 0.75); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.prof-modal {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 20px; width: min(650px, 100%); max-height: 90vh;
+  overflow-y: auto; box-shadow: var(--shadow-lg); padding: 1.8rem;
+  animation: toastIn .25s ease;
+}
+.prof-header-flex { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+.prof-pic {
+  width: 84px; height: 84px; border-radius: 50%; object-fit: cover;
+  border: 3px solid var(--maroon); box-shadow: var(--shadow-sm); flex-shrink: 0;
+}
+.prof-modal hr { border: 0; border-top: 1px solid var(--border); margin: 1.2rem 0; }
+.prof-detail-row { display: flex; justify-content: space-between; padding: .4rem 0; font-size: .92rem; border-bottom: 1px dashed var(--border); }
+.term-marks-group { margin-bottom: 1.2rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.term-marks-header { background: color-mix(in srgb, var(--maroon) 8%, transparent); padding: .6rem 1rem; font-weight: 700; color: var(--maroon); }
+
 @media(prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 @media print {
   header, footer, .dash-sidebar, .btn, .hero, section:not(#login) { display: none !important; }
 }
-   /* Student Profile Modal Style */
-.prof-modal-overlay {
-  position: fixed; inset: 0; z-index: 9999;
-  background: rgba(18, 13, 18, 0.7); backdrop-filter: blur(6px);
-  display: flex; align-items: center; justify-content: center; padding: 1rem;
-}
-.prof-modal {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: 18px; width: min(540px, 100%); max-height: 90vh;
-  overflow-y: auto; box-shadow: var(--shadow-lg); padding: 1.8rem;
-  animation: toastIn .25s ease;
-}
-.prof-modal h3 { margin: 0 0 .2rem; color: var(--maroon); }
-.prof-modal hr { border: 0; border-top: 1px solid var(--border); margin: 1rem 0; }
-.prof-detail-row { display: flex; justify-content: space-between; padding: .4rem 0; font-size: .92rem; border-bottom: 1px dashed var(--border); }
-   
 </style>
 </head>
 <body>
@@ -598,7 +604,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--te
 </main>
 
 <!-- ==========================================================================
-     AUTHENTICATED ADMIN MANAGEMENT CONSOLE (DESKTOP + MOBILE DRAWER)
+     AUTHENTICATED ADMIN MANAGEMENT CONSOLE
      ========================================================================== -->
 <div id="adminLayout" class="hide">
   <!-- Sidebar -->
@@ -638,7 +644,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--te
         <small id="dashSubtitle" style="color:var(--text-muted)">G/Upper Homadola School • Admin Panel</small>
       </div>
       <div style="display:flex;align-items:center;gap:.6rem;">
-        <button class="btn sm" id="toggleSideMobile" style="display:none;">☰ Menu</button>
+        <button class="btn sm" id="toggleSideMobile">☰ Menu</button>
         <span id="adminBadge" style="font-size:.85rem;font-weight:700;color:var(--maroon);">ADMIN</span>
         <button class="btn sm danger" id="outBtn">Sign Out</button>
       </div>
@@ -772,6 +778,18 @@ function showToast(msg, isOk = true) {
   el.innerHTML = `${isOk ? '✓' : '⚠️'} ${esc(msg)}`;
   c.appendChild(el);
   setTimeout(() => el.remove(), 4000);
+}
+
+// Client-side image upload helper (Converts to Data URL to avoid third-party upload failures)
+async function ibbUp(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) return reject(new Error("No file selected"));
+    if (file.size > 2 * 1024 * 1024) return reject(new Error("Image size must be less than 2MB"));
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = () => reject(new Error("Failed to read image file"));
+    reader.readAsDataURL(file);
+  });
 }
 
 function renderPublic() {
@@ -941,7 +959,7 @@ const rnd = max => {
 const genPw = () => {
   let s = "";
   for (let i = 0; i < 2; i++) s += String.fromCharCode(65 + rnd(26));
-  for (let i = 0; i < 4; i++) s += rnd(10);
+  for (let i = 4; i > 0; i--) s += rnd(10);
   return s;
 };
 
@@ -1035,7 +1053,7 @@ const tbl = (h, r) => r.length ? `
       <tbody>${r.map(c => `<tr>${c.map(x => `<td>${x}</td>`).join("")}</tr>`).join("")}</tbody>
     </table>
   </div>` : "<p style='color:var(--text-muted);margin-top:.8rem;'>No records present.</p>";
-   
+
 function showAdminDashboard() {
   $("#publicSite").classList.add("hide");
   $("#adminLayout").classList.remove("hide");
@@ -1047,8 +1065,16 @@ function showAdminDashboard() {
       btn.setAttribute("aria-current", "true");
       const target = btn.dataset.t;
       if (ADMIN_MODULES[target]) ADMIN_MODULES[target]();
+      // Auto close sidebar on mobile
+      $("#dashSidebar").classList.remove("mobile-open");
     };
   });
+
+  // Mobile sidebar drawer toggle
+  const mobBtn = $("#toggleSideMobile");
+  if (mobBtn) {
+    mobBtn.onclick = () => $("#dashSidebar").classList.toggle("mobile-open");
+  }
 
   ADMIN_MODULES.overview();
 }
@@ -1060,7 +1086,7 @@ const setPanel = (title, subtitle, contentHtml) => {
 };
 
 const ADMIN_MODULES = {
-  /* Overview: Excludes Library Stats per Requirements */
+  /* Overview */
   async overview() {
     setPanel("System Overview", "Operational metrics and institutional status", `<div class="grid" id="ovGrid"><p>Loading metrics...</p></div>`);
     try {
@@ -1069,8 +1095,8 @@ const ADMIN_MODULES = {
         getAll("posts"),
         getAll("notices")
       ]);
-      const teachers = uDocs.filter(u => u.role === "teacher");
-      const students = uDocs.filter(u => u.role === "student");
+      const teachers = uDocs.filter(u => String(u.role||"").toLowerCase() === "teacher");
+      const students = uDocs.filter(u => String(u.role||"").toLowerCase() === "student");
 
       $("#ovGrid").innerHTML = `
         <div class="card">
@@ -1100,10 +1126,6 @@ const ADMIN_MODULES = {
   },
 
   /* Student Management Module */
- /* Student Management Module (With Duplicate Admission Check) */
- /* Student Management Module (With Profile View & Duplicate Check) */
-/* Student Management Module (With Profile Picture & Full Exam Marks History) */
-/* Student Management Module (With Gender, Profile View & Exam Marks) */
   async students() {
     setPanel("Student Management", "Enrolled roster, profile registries, and credential lifecycle", `
       <div class="card" style="margin-bottom:1.5rem;">
@@ -1386,8 +1408,9 @@ const ADMIN_MODULES = {
 
       showToast("Checking admission number uniqueness...", true);
       try {
+        // Robust check for string/number types in admission field
         const existingStudentCheck = await F.fs.getDocs(
-          F.fs.query(col("users"), W("role", "==", "student"), W("adm", "==", adm))
+          F.fs.query(col("users"), W("role", "==", "student"), W("adm", "in", [adm, Number(adm)]))
         );
 
         if (!existingStudentCheck.empty) {
@@ -1444,6 +1467,7 @@ const ADMIN_MODULES = {
       }
     };
   },
+
   /* Teacher Management Module */
   async teachers() {
     setPanel("Teacher Management", "Faculty directories, subject assignments, and class-teacher responsibilities", `
@@ -1481,7 +1505,7 @@ const ADMIN_MODULES = {
     $("#t_genBtn").onclick = () => { $("#t_pw").value = genPw(); };
     $("#t_genBtn").click();
 
-const loadTeachers = async () => {
+    const loadTeachers = async () => {
       try {
         const allUsers = await getAll("users");
         const teachers = allUsers.filter(u => {
@@ -2205,7 +2229,7 @@ const loadTeachers = async () => {
     };
   },
 
-  /* Library Module (Per requirements, library statistics are shown ONLY here) */
+  /* Library Module */
   async library() {
     setPanel("Library Management", "Book catalog, lending circulation, and volume statistics", `
       <div class="card" id="libStatsBox" style="margin-bottom:1.5rem;"><p>Loading library statistics...</p></div>
