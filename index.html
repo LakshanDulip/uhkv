@@ -779,6 +779,22 @@ function showToast(msg, isOk = true) {
   c.appendChild(el);
   setTimeout(() => el.remove(), 4000);
 }
+// Image Upload Helper Function (ibbUp)
+async function ibbUp(file) {
+  if (!file) throw new Error("No image file selected.");
+  
+  // ඡායාරූපයේ ප්‍රමාණය 2MB ට වඩා වැඩි නම් compress හෝ block කිරීම
+  if (file.size > 2 * 1024 * 1024) {
+    throw new Error("Image file is too large. Please select an image below 2MB.");
+  }
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Failed to process image file."));
+    reader.readAsDataURL(file);
+  });
+}   
 
 // Client-side image upload helper (Converts to Data URL to avoid third-party upload failures)
 async function ibbUp(file) {
