@@ -1012,6 +1012,14 @@ $("#outBtn").onclick = () => F.au.signOut(A);
 /* ==========================================================================
    ADMIN MANAGEMENT PLATFORM CONTROLLERS
    ========================================================================== */
+const tbl = (h, r) => r.length ? `
+  <div class="tw">
+    <table>
+      <thead><tr>${h.map(x => `<th>${x}</th>`).join("")}</tr></thead>
+      <tbody>${r.map(c => `<tr>${c.map(x => `<td>${x}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table>
+  </div>` : "<p style='color:var(--text-muted);margin-top:.8rem;'>No records present.</p>";
+   
 function showAdminDashboard() {
   $("#publicSite").classList.add("hide");
   $("#adminLayout").classList.remove("hide");
