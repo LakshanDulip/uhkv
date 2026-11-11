@@ -797,6 +797,7 @@ function showToast(msg, isOk = true) {
    ========================================================================== */
 async function ibbUp(file) {
   if (!file) throw new Error("No image file selected.");
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new Error("Only JPEG, PNG or WebP images are supported.");
   if (file.size > 5 * 1024 * 1024) throw new Error("Image file is too large. Choose an image below 5MB.");
 
   return new Promise((resolve, reject) => {
@@ -921,13 +922,15 @@ function renderPublic() {
   `).join("") : `<p style="color:var(--text-muted)">${t("noAchieve")}</p>`;
 
   // Gallery Albums
-  $("#galList").innerHTML = ALBUMS.length ? '<div class="albs">' + ALBUMS.map((a, i) => `
-    <button class="alb" data-i="${i}" aria-label="${esc(pick(a, 'title'))}">
-      <img loading="lazy" src="${esc(a.cover || a.urls[0])}" alt="">
-      <span class="albc">${a.urls.length} ${t("photos")}</span>
+  $("#galList").innerHTML = ALBUMS.length ? '<div class="albs">' + ALBUMS.map((a, i) => {
+    const urls = Array.isArray(a.urls) ? a.urls : [];
+    const cover = ok(a.cover) ? a.cover : (urls.find(ok) || "");
+    return `<button class="alb" data-i="${i}" aria-label="${esc(pick(a, 'title'))}">
+      ${cover ? `<img loading="lazy" src="${esc(cover)}" alt="">` : ""}
+      <span class="albc">${urls.length} ${esc(t("photos"))}</span>
       <b>${esc(pick(a, 'title'))}</b>
-    </button>
-  `).join("") + '</div>' : `<p style="color:var(--text-muted)">${t("noGal")}</p>`;
+    </button>`;
+  }).join("") + '</div>' : `<p style="color:var(--text-muted)">${esc(t("noGal"))}</p>`;
 
   // News & Events
   $("#newsList").innerHTML = POSTS.length ? POSTS.map(p => `
@@ -939,7 +942,7 @@ function renderPublic() {
   `).join("") : `<p style="color:var(--text-muted)">${t("noNews")}</p>`;
 
   // Public Notices: EXPLICITLY FILTERED FOR TARGET 'ALL' ONLY
-  const pubNotices = NOTICES.filter(n => !n.target || n.target === "all");
+  const pubNotices = NOTICES.filter(n => n.target === "all" && n.published !== false);
   $("#publicNoticesList").innerHTML = pubNotices.length ? pubNotices.map(n => `
     <article class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -1084,24 +1087,31 @@ async function boot() {
 }
 
 async function loadAllData() {
-  try {
-    const [cDoc, hDocs, pDocs, achDocs, albDocs, postDocs, notDocs] = await Promise.all([
-      F.fs.getDoc(dc("cms", "home")),
-      getAll("timeline", F.fs.orderBy("year", "asc")),
-      getAll("prefects", F.fs.orderBy("order", "asc")),
-      getAll("achievements", F.fs.orderBy("createdAt", "desc")),
-      getAll("albums", F.fs.orderBy("createdAt", "desc")),
-      getAll("posts", F.fs.orderBy("createdAt", "desc"), F.fs.limit(20)),
-      getAll("notices", F.fs.orderBy("createdAt", "desc"), F.fs.limit(30))
-    ]);
-    if (cDoc.exists()) CMS = { ...CMS, ...cDoc.data() };
-    TIMELINE = hDocs; PREFECTS = pDocs; ACHIEVEMENTS = achDocs; ALBUMS = albDocs; POSTS = postDocs; NOTICES = notDocs;
-    renderPublic();
-  } catch (e) {
-    console.error("Data fetch error from Firestore:", e);
-    showToast("දත්ත ලබාගැනීම අසාර්ථකයි: " + e.message, false);
-    renderPublic();
-  }
+  const sources = [
+    ["cms", F.fs.getDoc(dc("cms", "home"))],
+    ["timeline", getAll("timeline", F.fs.orderBy("year", "asc"))],
+    ["prefects", getAll("prefects", F.fs.orderBy("order", "asc"))],
+    ["achievements", getAll("achievements", F.fs.orderBy("createdAt", "desc"))],
+    ["albums", getAll("albums", F.fs.orderBy("createdAt", "desc"))],
+    ["posts", getAll("posts", F.fs.orderBy("createdAt", "desc"), F.fs.limit(20))],
+    ["notices", getAll("notices", F.fs.orderBy("createdAt", "desc"), F.fs.limit(30))]
+  ];
+  const settled = await Promise.allSettled(sources.map(([, p]) => p));
+  const data = Object.fromEntries(settled.map((result, i) => {
+    if (result.status === "rejected") {
+      console.error(`Failed to load ${sources[i][0]}:`, result.reason);
+      return [sources[i][0], null];
+    }
+    return [sources[i][0], result.value];
+  }));
+  if (data.cms?.exists()) CMS = { ...CMS, ...data.cms.data() };
+  TIMELINE = data.timeline ?? TIMELINE;
+  PREFECTS = data.prefects ?? PREFECTS;
+  ACHIEVEMENTS = data.achievements ?? ACHIEVEMENTS;
+  ALBUMS = data.albums ?? ALBUMS;
+  POSTS = data.posts ?? POSTS;
+  NOTICES = data.notices ?? NOTICES;
+  renderPublic();
 }
 
 function alias(raw) {
@@ -1113,6 +1123,7 @@ function alias(raw) {
 $("#lf").onsubmit = async e => {
   e.preventDefault();
   const em = alias($("#u").value), pw = $("#p").value;
+  if (!F?.au || !A) { $("#lerr").textContent = t("off"); return; }
   if (!em || !pw) { $("#lerr").textContent = t("bad"); return; }
   $("#lbtn").disabled = true;
   try { 
