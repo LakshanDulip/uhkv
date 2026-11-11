@@ -405,6 +405,22 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--te
 @media print {
   header, footer, .dash-sidebar, .btn, .hero, section:not(#login) { display: none !important; }
 }
+   /* Student Profile Modal Style */
+.prof-modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(18, 13, 18, 0.7); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.prof-modal {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 18px; width: min(540px, 100%); max-height: 90vh;
+  overflow-y: auto; box-shadow: var(--shadow-lg); padding: 1.8rem;
+  animation: toastIn .25s ease;
+}
+.prof-modal h3 { margin: 0 0 .2rem; color: var(--maroon); }
+.prof-modal hr { border: 0; border-top: 1px solid var(--border); margin: 1rem 0; }
+.prof-detail-row { display: flex; justify-content: space-between; padding: .4rem 0; font-size: .92rem; border-bottom: 1px dashed var(--border); }
+   
 </style>
 </head>
 <body>
@@ -1085,6 +1101,7 @@ const ADMIN_MODULES = {
 
   /* Student Management Module */
  /* Student Management Module (With Duplicate Admission Check) */
+ /* Student Management Module (With Profile View & Duplicate Check) */
   async students() {
     setPanel("Student Management", "Enrolled roster, profile registries, and credential lifecycle", `
       <div class="card" style="margin-bottom:1.5rem;">
@@ -1127,17 +1144,46 @@ const ADMIN_MODULES = {
         <h4>Enrolled Students Directory</h4>
         <div id="sTableBox"><p>Loading records...</p></div>
       </div>
+
+      <!-- Student Profile Modal Container -->
+      <div id="studentProfileModal" class="prof-modal-overlay hide">
+        <div class="prof-modal">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <h3 id="pm_name">Student Name</h3>
+              <small id="pm_adm" style="color:var(--text-muted);font-weight:700;">ADM: —</small>
+            </div>
+            <button class="btn sm" id="pm_closeBtn" type="button">✕</button>
+          </div>
+          <hr>
+          <div class="prof-detail-row"><span>Enrolled Grade:</span><strong id="pm_grade">—</strong></div>
+          <div class="prof-detail-row"><span>Account Status:</span><span id="pm_status">—</span></div>
+          <div class="prof-detail-row"><span>Guardian Details:</span><span id="pm_guard">—</span></div>
+          
+          <h4 style="margin:1.2rem 0 .4rem;">Societies & Leadership</h4>
+          <ul id="pm_societies" style="margin:0 0 1rem;padding-left:1.2rem;font-size:.9rem;"></ul>
+
+          <h4 style="margin:.8rem 0 .4rem;">Extracurricular Activities</h4>
+          <ul id="pm_extra" style="margin:0 0 1rem;padding-left:1.2rem;font-size:.9rem;"></ul>
+
+          <h4 style="margin:.8rem 0 .4rem;">Achievements & Awards</h4>
+          <ul id="pm_awards" style="margin:0;padding-left:1.2rem;font-size:.9rem;"></ul>
+        </div>
+      </div>
     `);
 
     $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
     $("#s_genBtn").click();
 
+    let studentCache = [];
+
     const loadStudents = async () => {
       try {
         const filterVal = $("#s_filterGrade") ? $("#s_filterGrade").value : "all";
         const allUsers = await getAll("users");
-        let students = allUsers.filter(u => String(u.role || "").toLowerCase() === "student");
+        studentCache = allUsers.filter(u => String(u.role || "").toLowerCase() === "student");
 
+        let students = [...studentCache];
         if (filterVal !== "all") {
           students = students.filter(s => Number(s.grade) === Number(filterVal));
         }
@@ -1148,10 +1194,11 @@ const ADMIN_MODULES = {
           ["Admission", "Student Name", "Grade", "Status", "Actions"],
           students.map(s => [
             `<strong>${esc(s.adm || "—")}</strong>`,
-            esc(s.name || "—"),
+            `<a href="#" data-s-view="${esc(s.id)}" style="font-weight:700;color:var(--maroon);text-decoration:underline;">${esc(s.name || "—")}</a>`,
             `Grade ${esc(s.grade || "—")}`,
             `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`,
             `<div style="display:flex;gap:.35rem;">
+              <button class="btn sm" data-s-view="${esc(s.id)}">View</button>
               <button class="btn sm" data-s-tog="${esc(s.id)}" data-st="${s.active !== false}">${s.active !== false ? 'Suspend' : 'Activate'}</button>
               <button class="btn sm" data-s-rst="${esc(s.id)}" data-adm="${esc(s.adm)}" data-nm="${esc(s.name)}">Reset Password</button>
             </div>`
@@ -1164,6 +1211,33 @@ const ADMIN_MODULES = {
     };
     loadStudents();
     $("#s_filterGrade").onchange = loadStudents;
+
+    // Student Profile Modal Helper
+    const openStudentModal = (studentId) => {
+      const s = studentCache.find(x => x.id === studentId);
+      if (!s) return;
+
+      $("#pm_name").textContent = s.name || "Student Profile";
+      $("#pm_adm").textContent = `ADMISSION NO: ${s.adm || "—"}`;
+      $("#pm_grade").textContent = `Grade ${s.grade || "—"}`;
+      $("#pm_status").innerHTML = `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`;
+      $("#pm_guard").textContent = s.guardianInfo || "Not Recorded";
+
+      const renderList = (el, arr) => {
+        el.innerHTML = (arr && arr.length) ? arr.map(item => `<li>${esc(typeof item === 'object' ? (item.title || JSON.stringify(item)) : item)}</li>`).join("") : "<li>None recorded</li>";
+      };
+
+      renderList($("#pm_societies"), s.societies);
+      renderList($("#pm_extra"), s.extracurricular);
+      renderList($("#pm_awards"), s.awards);
+
+      $("#studentProfileModal").classList.remove("hide");
+    };
+
+    $("#pm_closeBtn").onclick = () => $("#studentProfileModal").classList.add("hide");
+    $("#studentProfileModal").onclick = e => {
+      if (e.target.id === "studentProfileModal") $("#studentProfileModal").classList.add("hide");
+    };
 
     $("#sfReg").onsubmit = async e => {
       e.preventDefault();
@@ -1178,7 +1252,6 @@ const ADMIN_MODULES = {
 
       showToast("Checking admission number uniqueness...", true);
       try {
-        // 1. එකම Admission Number එක සහිත වෙනත් සිසුවෙකු සිටීදැයි පරීක්ෂා කිරීම
         const existingStudentCheck = await F.fs.getDocs(
           F.fs.query(col("users"), W("role", "==", "student"), W("adm", "==", adm))
         );
@@ -1189,7 +1262,6 @@ const ADMIN_MODULES = {
           return;
         }
 
-        // 2. අංකය නොමැති නම් පමණක් ලියාපදිංචි කිරීම
         showToast("Saving student record to registry...", true);
         const docRef = F.fs.doc(col("users"));
         await F.fs.setDoc(docRef, {
@@ -1216,8 +1288,14 @@ const ADMIN_MODULES = {
     };
 
     $("#sTableBox").onclick = async e => {
+      const view = e.target.closest("[data-s-view]");
       const tog = e.target.closest("[data-s-tog]");
       const rst = e.target.closest("[data-s-rst]");
+
+      if (view) {
+        e.preventDefault();
+        openStudentModal(view.dataset.sView);
+      }
       if (tog) {
         const current = tog.dataset.st === "true";
         await F.fs.setDoc(dc("users", tog.dataset.sTog), { active: !current }, { merge: true });
@@ -1230,7 +1308,6 @@ const ADMIN_MODULES = {
       }
     };
   },
-
   /* Teacher Management Module */
   async teachers() {
     setPanel("Teacher Management", "Faculty directories, subject assignments, and class-teacher responsibilities", `
