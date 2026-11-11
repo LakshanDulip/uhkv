@@ -780,21 +780,54 @@ function showToast(msg, isOk = true) {
   setTimeout(() => el.remove(), 4000);
 }
 // Image Upload Helper Function (ibbUp)
+// Image Upload & Auto-Resizer Helper Function (ibbUp)
 async function ibbUp(file) {
   if (!file) throw new Error("No image file selected.");
-  
-  // ඡායාරූපයේ ප්‍රමාණය 2MB ට වඩා වැඩි නම් compress හෝ block කිරීම
-  if (file.size > 2 * 1024 * 1024) {
-    throw new Error("Image file is too large. Please select an image below 2MB.");
+
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error("Image file is too large. Please select an image below 5MB.");
   }
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Failed to process image file."));
+    reader.onerror = () => reject(new Error("Failed to read image file."));
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Invalid image format."));
+      img.onload = () => {
+        // Firestore 1MB සීමාව නොඉක්මවීමට 320x320 pixels උපරිමයකට resize කිරීම
+        const maxDim = 320;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Quality 0.78 කින් compress කර කුඩා Data URL එකක් ලබා ගැනීම
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.78);
+        resolve(compressedDataUrl);
+      };
+      img.src = e.target.result;
+    };
     reader.readAsDataURL(file);
   });
-}   
+}
 
 // Client-side image upload helper (Converts to Data URL to avoid third-party upload failures)
 async function ibbUp(file) {
