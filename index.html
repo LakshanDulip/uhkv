@@ -1084,6 +1084,7 @@ const ADMIN_MODULES = {
   },
 
   /* Student Management Module */
+ /* Student Management Module (With Duplicate Admission Check) */
   async students() {
     setPanel("Student Management", "Enrolled roster, profile registries, and credential lifecycle", `
       <div class="card" style="margin-bottom:1.5rem;">
@@ -1131,7 +1132,7 @@ const ADMIN_MODULES = {
     $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
     $("#s_genBtn").click();
 
-const loadStudents = async () => {
+    const loadStudents = async () => {
       try {
         const filterVal = $("#s_filterGrade") ? $("#s_filterGrade").value : "all";
         const allUsers = await getAll("users");
@@ -1175,11 +1176,21 @@ const loadStudents = async () => {
       if (!/^\d{1,8}$/.test(adm)) return showToast("Admission number must be 1 to 8 digits.", false);
       if (pw === adm) return showToast("Password cannot match admission number.", false);
 
-      showToast("Saving student record to registry...", true);
+      showToast("Checking admission number uniqueness...", true);
       try {
-        const em = alias(adm);
-        // Direct creation of users on frontend without backend API triggers account switch in Firebase SDK
-        // Therefore, we register student document in Firestore users registry for administrative control
+        // 1. එකම Admission Number එක සහිත වෙනත් සිසුවෙකු සිටීදැයි පරීක්ෂා කිරීම
+        const existingStudentCheck = await F.fs.getDocs(
+          F.fs.query(col("users"), W("role", "==", "student"), W("adm", "==", adm))
+        );
+
+        if (!existingStudentCheck.empty) {
+          showToast(`Error: Admission No ${adm} is already registered!`, false);
+          alert(`දෝෂයකි: '${adm}' ඇතුළත් වීමේ අංකය දැනටමත් වෙනත් සිසුවෙකු සඳහා ලියාපදිංචි කර ඇත! එකම අංකයෙන් සිසුන් දෙදෙනෙකු ලියාපදිංචි කළ නොහැක.`);
+          return;
+        }
+
+        // 2. අංකය නොමැති නම් පමණක් ලියාපදිංචි කිරීම
+        showToast("Saving student record to registry...", true);
         const docRef = F.fs.doc(col("users"));
         await F.fs.setDoc(docRef, {
           role: "student",
@@ -1195,11 +1206,13 @@ const loadStudents = async () => {
           createdAt: F.fs.serverTimestamp()
         });
 
-        alert(`Student Registered Successfully!\nAdmission: ${adm}\nInitial Password: ${pw}\n\nProvide these credentials to the student. Password will not be displayed again.`);
+        alert(`Student Registered Successfully!\nAdmission: ${adm}\nInitial Password: ${pw}\n\nNotice: Provide these credentials to the student.`);
         $("#sfReg").reset();
         $("#s_genBtn").click();
         loadStudents();
-      } catch(err) { showToast(err.message, false); }
+      } catch (err) {
+        showToast(err.message, false);
+      }
     };
 
     $("#sTableBox").onclick = async e => {
