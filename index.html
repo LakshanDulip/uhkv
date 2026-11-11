@@ -1103,6 +1103,7 @@ const ADMIN_MODULES = {
  /* Student Management Module (With Duplicate Admission Check) */
  /* Student Management Module (With Profile View & Duplicate Check) */
 /* Student Management Module (With Profile Picture & Full Exam Marks History) */
+/* Student Management Module (With Gender, Profile View & Exam Marks) */
   async students() {
     setPanel("Student Management", "Enrolled roster, profile registries, and credential lifecycle", `
       <div class="card" style="margin-bottom:1.5rem;">
@@ -1116,6 +1117,13 @@ const ADMIN_MODULES = {
               <label>Enrolled Grade</label>
               <select id="s_gr" required>
                 ${[...Array(11)].map((_, i) => `<option value="${i+1}">Grade ${i+1}</option>`).join("")}
+              </select>
+            </div>
+            <div>
+              <label>Gender</label>
+              <select id="s_gen" required>
+                <option value="Male">Boy (පිරිමි)</option>
+                <option value="Female">Girl (ගැහැණු)</option>
               </select>
             </div>
           </div>
@@ -1149,7 +1157,7 @@ const ADMIN_MODULES = {
         <div id="sTableBox"><p>Loading records...</p></div>
       </div>
 
-    <!-- Student Profile & Full Exam Marks Modal -->
+      <!-- Student Profile & Full Exam Marks Modal -->
       <div id="studentProfileModal" class="prof-modal-overlay hide">
         <div class="prof-modal">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;">
@@ -1159,7 +1167,6 @@ const ADMIN_MODULES = {
                 <h3 id="pm_name" style="margin:0 0 .2rem;">Student Name</h3>
                 <small id="pm_adm" style="color:var(--text-muted);font-weight:700;">ADM: —</small>
                 
-                <!-- නව ඡායාරූපයක් Upload කිරීමේ Input එක -->
                 <div style="margin-top:.6rem;">
                   <label style="font-size:.78rem;font-weight:600;margin:0 0 .2rem;display:block;">Change Profile Picture:</label>
                   <div style="display:flex;gap:.4rem;align-items:center;">
@@ -1174,6 +1181,7 @@ const ADMIN_MODULES = {
           </div>
 
           <hr>
+          <div class="prof-detail-row"><span>Gender:</span><strong id="pm_gender">—</strong></div>
           <div class="prof-detail-row"><span>Enrolled Grade:</span><strong id="pm_grade">—</strong></div>
           <div class="prof-detail-row"><span>Account Status:</span><span id="pm_status">—</span></div>
           <div class="prof-detail-row"><span>Guardian Details:</span><span id="pm_guard">—</span></div>
@@ -1193,15 +1201,16 @@ const ADMIN_MODULES = {
         </div>
       </div>
     `);
-     //1
-$("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
+
+    $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
     $("#s_genBtn").click();
 
     let studentCache = [];
     let currentViewingStudentId = null;
 
-    // Profile එකක් upload කර නොමැති විට පෙන්වන නිල "No Profile" Avatar එක
-    const NO_PROFILE_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B5A9B0'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+    // Boy සහ Girl සඳහා වෙන වෙනම Default No-Profile Avatars
+    const BOY_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233B82F6'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+    const GIRL_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23EC4899'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
     const loadStudents = async () => {
       try {
@@ -1217,9 +1226,10 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
         students.sort((a, b) => String(a.adm || "").localeCompare(String(b.adm || "")));
 
         $("#sTableBox").innerHTML = tbl(
-          ["Photo", "Admission", "Student Name", "Grade", "Status", "Actions"],
+          ["Photo", "Admission", "Student Name", "Gender", "Grade", "Status", "Actions"],
           students.map(s => {
-            const avatarSrc = s.photo && s.photo.trim() !== "" ? s.photo : NO_PROFILE_AVATAR;
+            const defAvatar = s.gender === "Female" ? GIRL_AVATAR : BOY_AVATAR;
+            const avatarSrc = s.photo && s.photo.trim() !== "" ? s.photo : defAvatar;
 
             return [
               `<div style="width:38px;height:38px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -1227,6 +1237,7 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
               </div>`,
               `<strong>${esc(s.adm || "—")}</strong>`,
               `<a href="#" data-s-view="${esc(s.id)}" style="font-weight:700;color:var(--maroon);text-decoration:underline;">${esc(s.name || "—")}</a>`,
+              `<span style="font-weight:600;color:${s.gender === 'Female' ? '#EC4899' : '#2563EB'};">${esc(s.gender || "—")}</span>`,
               `Grade ${esc(s.grade || "—")}`,
               `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`,
               `<div style="display:flex;gap:.35rem;">
@@ -1245,7 +1256,7 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
     loadStudents();
     $("#s_filterGrade").onchange = loadStudents;
 
-    // Profile Modal Loader
+    // Student Profile Modal & Full Marks Loader
     const openStudentModal = async (studentId) => {
       currentViewingStudentId = studentId;
       const s = studentCache.find(x => x.id === studentId);
@@ -1254,11 +1265,12 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
       if ($("#pm_fileInput")) $("#pm_fileInput").value = "";
       if ($("#pm_upMsg")) $("#pm_upMsg").textContent = "";
 
-      // ඡායාරූපයක් නැත්නම් No Profile Avatar එක පෙන්වීම
-      $("#pm_img").src = s.photo && s.photo.trim() !== "" ? s.photo : NO_PROFILE_AVATAR;
+      const defAvatar = s.gender === "Female" ? GIRL_AVATAR : BOY_AVATAR;
+      $("#pm_img").src = s.photo && s.photo.trim() !== "" ? s.photo : defAvatar;
 
       $("#pm_name").textContent = s.name || "Student Profile";
       $("#pm_adm").textContent = `ADMISSION NO: ${s.adm || "—"}`;
+      $("#pm_gender").textContent = s.gender ? (s.gender === "Female" ? "Girl (ගැහැණු)" : "Boy (පිරිමි)") : "Not Specified";
       $("#pm_grade").textContent = `Grade ${s.grade || "—"}`;
       $("#pm_status").innerHTML = `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`;
       $("#pm_guard").textContent = s.guardianInfo || "Not Recorded";
@@ -1271,7 +1283,6 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
       renderList($("#pm_extra"), s.extracurricular);
       renderList($("#pm_awards"), s.awards);
 
-      // Marks Fetching Logic
       $("#pm_marksBox").innerHTML = "<p style='color:var(--text-muted);font-size:.9rem;'>Loading evaluation history...</p>";
       $("#studentProfileModal").classList.remove("hide");
 
@@ -1310,77 +1321,13 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
         $("#pm_marksBox").innerHTML = `<p class="msg e">Could not load marks: ${esc(err.message)}</p>`;
       }
     };
-      currentViewingStudentId = studentId;
-      const s = studentCache.find(x => x.id === studentId);
-      if (!s) return;
 
-      // File input සහ Message reset කිරීම
-      if ($("#pm_fileInput")) $("#pm_fileInput").value = "";
-      if ($("#pm_upMsg")) $("#pm_upMsg").textContent = "";
-
-      $("#pm_img").src = s.photo || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
-      $("#pm_name").textContent = s.name || "Student Profile";
-      $("#pm_adm").textContent = `ADMISSION NO: ${s.adm || "—"}`;
-      $("#pm_grade").textContent = `Grade ${s.grade || "—"}`;
-      $("#pm_status").innerHTML = `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`;
-      $("#pm_guard").textContent = s.guardianInfo || "Not Recorded";
-
-      const renderList = (el, arr) => {
-        el.innerHTML = (arr && arr.length) ? arr.map(item => `<li>${esc(typeof item === 'object' ? (item.title || JSON.stringify(item)) : item)}</li>`).join("") : "<li>None recorded</li>";
-      };
-
-      renderList($("#pm_societies"), s.societies);
-      renderList($("#pm_extra"), s.extracurricular);
-      renderList($("#pm_awards"), s.awards);
-
-      // ශිෂ්‍යයාගේ සියලුම වාර විභාග ලකුණු ලබා ගැනීම
-      $("#pm_marksBox").innerHTML = "<p style='color:var(--text-muted);font-size:.9rem;'>Loading evaluation history...</p>";
-      $("#studentProfileModal").classList.remove("hide");
-
-      try {
-        const studentMarks = await getAll("marks", W("adm", "==", String(s.adm)));
-        if (!studentMarks.length) {
-          $("#pm_marksBox").innerHTML = "<p style='color:var(--text-muted);font-size:.9rem;'>No term examination records found for this student.</p>";
-          return;
-        }
-
-        // වසර සහ වාර අනුව ලකුණු කාණ්ඩගත කිරීම (Grouping)
-        const groups = {};
-        studentMarks.forEach(m => {
-          const key = `${m.exam || 'Evaluation'} (Grade ${m.grade || s.grade} - Term ${m.term || 1})`;
-          if (!groups[key]) groups[key] = [];
-          groups[key].push(m);
-        });
-
-        $("#pm_marksBox").innerHTML = Object.entries(groups).map(([title, records]) => `
-          <div class="term-marks-group">
-            <div class="term-marks-header">${esc(title)}</div>
-            <table>
-              <thead><tr><th>Subject</th><th>Marks</th><th>Status</th></tr></thead>
-              <tbody>
-                ${records.map(r => `
-                  <tr>
-                    <td>${esc(r.subject)}</td>
-                    <td><strong>${esc(r.marks)}</strong></td>
-                    <td><span class="status-pill ${r.status === 'approved' ? 'active' : 'pending'}">${esc(r.status)}</span></td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
-          </div>
-        `).join("");
-      } catch (err) {
-        $("#pm_marksBox").innerHTML = `<p class="msg e">Could not load marks: ${esc(err.message)}</p>`;
-      }
-    };
-
-    // Modal එක වැසීම
     $("#pm_closeBtn").onclick = () => $("#studentProfileModal").classList.add("hide");
     $("#studentProfileModal").onclick = e => {
       if (e.target.id === "studentProfileModal") $("#studentProfileModal").classList.add("hide");
     };
 
-    // Profile Picture එක Upload කිරීමේ Button Event එක
+    // Modal එක ඇතුළෙන්ම ඡායාරූපය Upload කිරීම
     $("#pm_uploadBtn").onclick = async () => {
       const file = $("#pm_fileInput").files[0];
       const msg = $("#pm_upMsg");
@@ -1398,18 +1345,14 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
       $("#pm_uploadBtn").disabled = true;
 
       try {
-        // ImgBB API හරහා ඡායාරූපය upload කර direct link එක ගැනීම
         const photoUrl = await ibbUp(file);
 
-        // Firestore හි users collection එකේ අදාළ ශිෂ්‍යයාගේ document එකට photo එක update කිරීම
         await F.fs.setDoc(dc("users", currentViewingStudentId), {
           photo: photoUrl
         }, { merge: true });
 
-        // Modal එකේ image එක ක්ෂණිකව update කිරීම
         $("#pm_img").src = photoUrl;
 
-        // Cache එකේ photo එක update කිරීම
         const cached = studentCache.find(x => x.id === currentViewingStudentId);
         if (cached) cached.photo = photoUrl;
 
@@ -1417,7 +1360,6 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
         msg.className = "msg o";
         showToast("Profile picture updated!");
 
-        // පිටුපස Table එකේ ඡායාරූපයද refresh කිරීම
         await loadStudents();
       } catch (err) {
         msg.textContent = "Upload failed: " + err.message;
@@ -1427,80 +1369,14 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
         $("#pm_fileInput").value = "";
       }
     };
-    loadStudents();
-    $("#s_filterGrade").onchange = loadStudents;
 
-    // Student Profile Modal & Full Marks Loader
-    const openStudentModal = async (studentId) => {
-      const s = studentCache.find(x => x.id === studentId);
-      if (!s) return;
-
-      $("#pm_img").src = s.photo || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
-      $("#pm_name").textContent = s.name || "Student Profile";
-      $("#pm_adm").textContent = `ADMISSION NO: ${s.adm || "—"}`;
-      $("#pm_grade").textContent = `Grade ${s.grade || "—"}`;
-      $("#pm_status").innerHTML = `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`;
-      $("#pm_guard").textContent = s.guardianInfo || "Not Recorded";
-
-      const renderList = (el, arr) => {
-        el.innerHTML = (arr && arr.length) ? arr.map(item => `<li>${esc(typeof item === 'object' ? (item.title || JSON.stringify(item)) : item)}</li>`).join("") : "<li>None recorded</li>";
-      };
-
-      renderList($("#pm_societies"), s.societies);
-      renderList($("#pm_extra"), s.extracurricular);
-      renderList($("#pm_awards"), s.awards);
-
-      // Fetch All Terms & Years Marks for this Student
-      $("#pm_marksBox").innerHTML = "<p style='color:var(--text-muted);font-size:.9rem;'>Loading evaluation history...</p>";
-      $("#studentProfileModal").classList.remove("hide");
-
-      try {
-        const studentMarks = await getAll("marks", W("adm", "==", String(s.adm)));
-        if (!studentMarks.length) {
-          $("#pm_marksBox").innerHTML = "<p style='color:var(--text-muted);font-size:.9rem;'>No term examination records found for this student.</p>";
-          return;
-        }
-
-        // Group Marks by Exam / Year / Term
-        const groups = {};
-        studentMarks.forEach(m => {
-          const key = `${m.exam || 'Evaluation'} (Grade ${m.grade || s.grade} - Term ${m.term || 1})`;
-          if (!groups[key]) groups[key] = [];
-          groups[key].push(m);
-        });
-
-        $("#pm_marksBox").innerHTML = Object.entries(groups).map(([title, records]) => `
-          <div class="term-marks-group">
-            <div class="term-marks-header">${esc(title)}</div>
-            <table>
-              <thead><tr><th>Subject</th><th>Marks</th><th>Status</th></tr></thead>
-              <tbody>
-                ${records.map(r => `
-                  <tr>
-                    <td>${esc(r.subject)}</td>
-                    <td><strong>${esc(r.marks)}</strong></td>
-                    <td><span class="status-pill ${r.status==='approved'?'active':'pending'}">${esc(r.status)}</span></td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
-          </div>
-        `).join("");
-      } catch (err) {
-        $("#pm_marksBox").innerHTML = `<p class="msg e">Could not load marks: ${esc(err.message)}</p>`;
-      }
-    };
-
-    $("#pm_closeBtn").onclick = () => $("#studentProfileModal").classList.add("hide");
-    $("#studentProfileModal").onclick = e => {
-      if (e.target.id === "studentProfileModal") $("#studentProfileModal").classList.add("hide");
-    };
-
+    // New Student Registration Form Submit
     $("#sfReg").onsubmit = async e => {
       e.preventDefault();
       const adm = $("#s_adm").value.trim();
       const name = $("#s_nm").value.trim();
       const grade = +$("#s_gr").value;
+      const gender = $("#s_gen").value;
       const guardian = $("#s_gd").value.trim();
       const photo = $("#s_pic").value.trim();
       const pw = $("#s_pw").value;
@@ -1527,6 +1403,7 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
           adm,
           name,
           grade,
+          gender,
           guardianInfo: guardian,
           photo,
           active: true,
@@ -1537,7 +1414,7 @@ $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
           createdAt: F.fs.serverTimestamp()
         });
 
-        alert(`Student Registered Successfully!\nAdmission: ${adm}\nInitial Password: ${pw}\n\nNotice: Provide these credentials to the student.`);
+        alert(`Student Registered Successfully!\nAdmission: ${adm}\nGender: ${gender}\nInitial Password: ${pw}\n\nNotice: Provide these credentials to the student.`);
         $("#sfReg").reset();
         $("#s_genBtn").click();
         loadStudents();
