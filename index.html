@@ -1123,20 +1123,24 @@ const ADMIN_MODULES = {
     $("#s_genBtn").onclick = () => { $("#s_pw").value = genPw(); };
     $("#s_genBtn").click();
 
-    const loadStudents = async () => {
+const loadStudents = async () => {
       try {
-        const filterVal = $("#s_filterGrade").value;
-        const qConstraints = [W("role", "==", "student")];
-        if (filterVal !== "all") qConstraints.push(W("grade", "==", +filterVal));
-        const students = await getAll("users", ...qConstraints);
-        students.sort((a,b) => (a.adm || "").localeCompare(b.adm || ""));
+        const filterVal = $("#s_filterGrade") ? $("#s_filterGrade").value : "all";
+        const allUsers = await getAll("users");
+        let students = allUsers.filter(u => String(u.role || "").toLowerCase() === "student");
+
+        if (filterVal !== "all") {
+          students = students.filter(s => Number(s.grade) === Number(filterVal));
+        }
+
+        students.sort((a, b) => String(a.adm || "").localeCompare(String(b.adm || "")));
 
         $("#sTableBox").innerHTML = tbl(
           ["Admission", "Student Name", "Grade", "Status", "Actions"],
           students.map(s => [
-            `<strong>${esc(s.adm)}</strong>`,
-            esc(s.name),
-            `Grade ${esc(s.grade)}`,
+            `<strong>${esc(s.adm || "—")}</strong>`,
+            esc(s.name || "—"),
+            `Grade ${esc(s.grade || "—")}`,
             `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`,
             `<div style="display:flex;gap:.35rem;">
               <button class="btn sm" data-s-tog="${esc(s.id)}" data-st="${s.active !== false}">${s.active !== false ? 'Suspend' : 'Activate'}</button>
@@ -1144,7 +1148,10 @@ const ADMIN_MODULES = {
             </div>`
           ])
         );
-      } catch(err) { $("#sTableBox").innerHTML = `<p class="msg e">${esc(err.message)}</p>`; }
+      } catch (err) {
+        console.error("Student load error:", err);
+        $("#sTableBox").innerHTML = `<p class="msg e">Error loading students: ${esc(err.message)}</p>`;
+      }
     };
     loadStudents();
     $("#s_filterGrade").onchange = loadStudents;
@@ -1240,14 +1247,21 @@ const ADMIN_MODULES = {
     $("#t_genBtn").onclick = () => { $("#t_pw").value = genPw(); };
     $("#t_genBtn").click();
 
-    const loadTeachers = async () => {
+const loadTeachers = async () => {
       try {
-        const teachers = await getAll("users", W("role", "in", ["teacher", "principal"]));
+        const allUsers = await getAll("users");
+        const teachers = allUsers.filter(u => {
+          const r = String(u.role || "").toLowerCase();
+          return r === "teacher" || r === "principal";
+        });
+
+        teachers.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+
         $("#tTableBox").innerHTML = tbl(
           ["Teacher ID", "Full Name", "Masked NIC", "Grades", "Class Teacher", "Status", "Actions"],
           teachers.map(t => [
             `<strong>${esc(t.teacherId || "—")}</strong>`,
-            esc(t.name),
+            esc(t.name || "—"),
             `<code>${esc(t.nicMasked || "Protected")}</code>`,
             esc((t.grades || []).join(", ") || "—"),
             esc(t.assignedClassTeacherGrade ? `Grade ${t.assignedClassTeacherGrade}` : "—"),
@@ -1258,7 +1272,10 @@ const ADMIN_MODULES = {
             </div>`
           ])
         );
-      } catch(err) { $("#tTableBox").innerHTML = `<p class="msg e">${esc(err.message)}</p>`; }
+      } catch (err) {
+        console.error("Teacher load error:", err);
+        $("#tTableBox").innerHTML = `<p class="msg e">Error loading teachers: ${esc(err.message)}</p>`;
+      }
     };
     loadTeachers();
 
