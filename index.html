@@ -1102,6 +1102,7 @@ const ADMIN_MODULES = {
   /* Student Management Module */
  /* Student Management Module (With Duplicate Admission Check) */
  /* Student Management Module (With Profile View & Duplicate Check) */
+/* Student Management Module (With Profile Picture & Full Exam Marks History) */
   async students() {
     setPanel("Student Management", "Enrolled roster, profile registries, and credential lifecycle", `
       <div class="card" style="margin-bottom:1.5rem;">
@@ -1120,6 +1121,9 @@ const ADMIN_MODULES = {
           </div>
           <div class="row" style="margin-top:.6rem;">
             <div><label>Guardian Contact Info</label><input id="s_gd" placeholder="Guardian name & telephone"></div>
+            <div><label>Profile Picture URL (Optional https://...)</label><input id="s_pic" placeholder="https://i.ibb.co/..."></div>
+          </div>
+          <div class="row" style="margin-top:.6rem;">
             <div>
               <label>Initial Generated Password (Format: 2 Uppercase + 4 Digits)</label>
               <div style="display:flex;gap:.4rem;">
@@ -1145,22 +1149,30 @@ const ADMIN_MODULES = {
         <div id="sTableBox"><p>Loading records...</p></div>
       </div>
 
-      <!-- Student Profile Modal Container -->
+      <!-- Student Profile & Full Exam Marks Modal -->
       <div id="studentProfileModal" class="prof-modal-overlay hide">
         <div class="prof-modal">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-            <div>
-              <h3 id="pm_name">Student Name</h3>
-              <small id="pm_adm" style="color:var(--text-muted);font-weight:700;">ADM: —</small>
+            <div class="prof-header-flex">
+              <img id="pm_img" class="prof-pic" src="" alt="Student Profile Picture">
+              <div>
+                <h3 id="pm_name" style="margin:0 0 .2rem;">Student Name</h3>
+                <small id="pm_adm" style="color:var(--text-muted);font-weight:700;">ADM: —</small>
+              </div>
             </div>
             <button class="btn sm" id="pm_closeBtn" type="button">✕</button>
           </div>
+
           <hr>
           <div class="prof-detail-row"><span>Enrolled Grade:</span><strong id="pm_grade">—</strong></div>
           <div class="prof-detail-row"><span>Account Status:</span><span id="pm_status">—</span></div>
           <div class="prof-detail-row"><span>Guardian Details:</span><span id="pm_guard">—</span></div>
-          
-          <h4 style="margin:1.2rem 0 .4rem;">Societies & Leadership</h4>
+
+          <h4 style="margin:1.4rem 0 .6rem;color:var(--maroon);">📊 Academic Term Examination Records (All Years)</h4>
+          <div id="pm_marksBox">Loading examination marks...</div>
+
+          <hr>
+          <h4 style="margin:1rem 0 .4rem;">Societies & Leadership</h4>
           <ul id="pm_societies" style="margin:0 0 1rem;padding-left:1.2rem;font-size:.9rem;"></ul>
 
           <h4 style="margin:.8rem 0 .4rem;">Extracurricular Activities</h4>
@@ -1191,14 +1203,15 @@ const ADMIN_MODULES = {
         students.sort((a, b) => String(a.adm || "").localeCompare(String(b.adm || "")));
 
         $("#sTableBox").innerHTML = tbl(
-          ["Admission", "Student Name", "Grade", "Status", "Actions"],
+          ["Photo", "Admission", "Student Name", "Grade", "Status", "Actions"],
           students.map(s => [
+            `<img src="${esc(s.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100')}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--border);">`,
             `<strong>${esc(s.adm || "—")}</strong>`,
             `<a href="#" data-s-view="${esc(s.id)}" style="font-weight:700;color:var(--maroon);text-decoration:underline;">${esc(s.name || "—")}</a>`,
             `Grade ${esc(s.grade || "—")}`,
             `<span class="status-pill ${s.active !== false ? 'active' : 'inactive'}">${s.active !== false ? 'Active' : 'Suspended'}</span>`,
             `<div style="display:flex;gap:.35rem;">
-              <button class="btn sm" data-s-view="${esc(s.id)}">View</button>
+              <button class="btn sm" data-s-view="${esc(s.id)}">View Profile</button>
               <button class="btn sm" data-s-tog="${esc(s.id)}" data-st="${s.active !== false}">${s.active !== false ? 'Suspend' : 'Activate'}</button>
               <button class="btn sm" data-s-rst="${esc(s.id)}" data-adm="${esc(s.adm)}" data-nm="${esc(s.name)}">Reset Password</button>
             </div>`
@@ -1212,11 +1225,12 @@ const ADMIN_MODULES = {
     loadStudents();
     $("#s_filterGrade").onchange = loadStudents;
 
-    // Student Profile Modal Helper
-    const openStudentModal = (studentId) => {
+    // Student Profile Modal & Full Marks Loader
+    const openStudentModal = async (studentId) => {
       const s = studentCache.find(x => x.id === studentId);
       if (!s) return;
 
+      $("#pm_img").src = s.photo || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
       $("#pm_name").textContent = s.name || "Student Profile";
       $("#pm_adm").textContent = `ADMISSION NO: ${s.adm || "—"}`;
       $("#pm_grade").textContent = `Grade ${s.grade || "—"}`;
@@ -1231,7 +1245,45 @@ const ADMIN_MODULES = {
       renderList($("#pm_extra"), s.extracurricular);
       renderList($("#pm_awards"), s.awards);
 
+      // Fetch All Terms & Years Marks for this Student
+      $("#pm_marksBox").innerHTML = "<p style='color:var(--text-muted);font-size:.9rem;'>Loading evaluation history...</p>";
       $("#studentProfileModal").classList.remove("hide");
+
+      try {
+        const studentMarks = await getAll("marks", W("adm", "==", String(s.adm)));
+        if (!studentMarks.length) {
+          $("#pm_marksBox").innerHTML = "<p style='color:var(--text-muted);font-size:.9rem;'>No term examination records found for this student.</p>";
+          return;
+        }
+
+        // Group Marks by Exam / Year / Term
+        const groups = {};
+        studentMarks.forEach(m => {
+          const key = `${m.exam || 'Evaluation'} (Grade ${m.grade || s.grade} - Term ${m.term || 1})`;
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(m);
+        });
+
+        $("#pm_marksBox").innerHTML = Object.entries(groups).map(([title, records]) => `
+          <div class="term-marks-group">
+            <div class="term-marks-header">${esc(title)}</div>
+            <table>
+              <thead><tr><th>Subject</th><th>Marks</th><th>Status</th></tr></thead>
+              <tbody>
+                ${records.map(r => `
+                  <tr>
+                    <td>${esc(r.subject)}</td>
+                    <td><strong>${esc(r.marks)}</strong></td>
+                    <td><span class="status-pill ${r.status==='approved'?'active':'pending'}">${esc(r.status)}</span></td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        `).join("");
+      } catch (err) {
+        $("#pm_marksBox").innerHTML = `<p class="msg e">Could not load marks: ${esc(err.message)}</p>`;
+      }
     };
 
     $("#pm_closeBtn").onclick = () => $("#studentProfileModal").classList.add("hide");
@@ -1245,6 +1297,7 @@ const ADMIN_MODULES = {
       const name = $("#s_nm").value.trim();
       const grade = +$("#s_gr").value;
       const guardian = $("#s_gd").value.trim();
+      const photo = $("#s_pic").value.trim();
       const pw = $("#s_pw").value;
 
       if (!/^\d{1,8}$/.test(adm)) return showToast("Admission number must be 1 to 8 digits.", false);
@@ -1270,6 +1323,7 @@ const ADMIN_MODULES = {
           name,
           grade,
           guardianInfo: guardian,
+          photo,
           active: true,
           mustChangePassword: true,
           societies: [],
