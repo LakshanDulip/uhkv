@@ -399,7 +399,7 @@ tr:last-child td { border-bottom: none; }
 
 footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--text-muted); font-size: .9rem; background: var(--bg); }
 
-/* Student Profile Modal Style */
+/* Student Profile & Generic Modal Styles */
 .prof-modal-overlay {
   position: fixed; inset: 0; z-index: 9999;
   background: rgba(18, 13, 18, 0.75); backdrop-filter: blur(8px);
@@ -505,7 +505,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--te
     </div>
   </section>
 
-  <!-- Academics: Grades 1 - 11 (No Divisions) -->
+  <!-- Academics: Grades 1 - 11 (Interactive Modal Explorer) -->
   <section id="academics" class="alt">
     <div class="wrap">
       <h2 data-i="nAcad">Academics</h2>
@@ -556,7 +556,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--te
     </div>
   </section>
 
-  <!-- Notices Section -->
+  <!-- Notices Section (Filtered for Public Community Only) -->
   <section id="noticesSec" class="alt">
     <div class="wrap">
       <h2 data-i="nNotices">Official Notices</h2>
@@ -653,6 +653,18 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--te
     <!-- Active Module Surface -->
     <div id="dashPanel" aria-live="polite"></div>
   </section>
+</div>
+
+<!-- Generic / Grade Explorer Lightbox Overlay -->
+<div id="genModal" class="prof-modal-overlay hide" role="dialog" aria-modal="true">
+  <div class="prof-modal">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <h3 id="gmTitle" style="margin:0;">Information</h3>
+      <button class="btn sm" id="gmClose" type="button">✕</button>
+    </div>
+    <hr>
+    <div id="gmBody"></div>
+  </div>
 </div>
 
 <!-- Lightbox Modal for Albums -->
@@ -779,64 +791,39 @@ function showToast(msg, isOk = true) {
   c.appendChild(el);
   setTimeout(() => el.remove(), 4000);
 }
-// Image Upload Helper Function (ibbUp)
-// Image Upload & Auto-Resizer Helper Function (ibbUp)
+
+/* ==========================================================================
+   IMAGE AUTO-RESIZE & OPTIMIZATION (ibbUp)
+   ========================================================================== */
 async function ibbUp(file) {
   if (!file) throw new Error("No image file selected.");
-
-  if (file.size > 5 * 1024 * 1024) {
-    throw new Error("Image file is too large. Please select an image below 5MB.");
-  }
+  if (file.size > 5 * 1024 * 1024) throw new Error("Image file is too large. Choose an image below 5MB.");
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("Failed to read image file."));
-    reader.onload = (e) => {
+    reader.onload = e => {
       const img = new Image();
       img.onerror = () => reject(new Error("Invalid image format."));
       img.onload = () => {
-        // Firestore 1MB සීමාව නොඉක්මවීමට 320x320 pixels උපරිමයකට resize කිරීම
         const maxDim = 320;
-        let width = img.width;
-        let height = img.height;
-
+        let width = img.width, height = img.height;
         if (width > height) {
-          if (width > maxDim) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
-          }
+          if (width > maxDim) { height = Math.round((height * maxDim) / width); width = maxDim; }
         } else {
-          if (height > maxDim) {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
-          }
+          if (height > maxDim) { width = Math.round((width * maxDim) / height); height = maxDim; }
         }
 
         const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-
+        canvas.width = width; canvas.height = height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Quality 0.78 කින් compress කර කුඩා Data URL එකක් ලබා ගැනීම
-        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.78);
-        resolve(compressedDataUrl);
+        // Quality 0.78 keeps output between 30KB - 80KB (Safely below Firestore 1MB document limit)
+        resolve(canvas.toDataURL("image/jpeg", 0.78));
       };
       img.src = e.target.result;
     };
-    reader.readAsDataURL(file);
-  });
-}
-
-// Client-side image upload helper (Converts to Data URL to avoid third-party upload failures)
-async function ibbUp(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) return reject(new Error("No file selected"));
-    if (file.size > 2 * 1024 * 1024) return reject(new Error("Image size must be less than 2MB"));
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = () => reject(new Error("Failed to read image file"));
     reader.readAsDataURL(file);
   });
 }
@@ -886,7 +873,7 @@ function renderPublic() {
 
   // Academics Grade Explorer
   $("#gradesExplorer").innerHTML = [...Array(11)].map((_, i) => `
-    <div class="grade-card" onclick="alert('Grade ${i+1}: Fully administered without class divisions.')">
+    <div class="grade-card" data-grade="${i+1}">
       <div class="num">${i+1}</div>
       <div class="lbl">Grade ${i+1}</div>
     </div>
@@ -951,12 +938,13 @@ function renderPublic() {
     </article>
   `).join("") : `<p style="color:var(--text-muted)">${t("noNews")}</p>`;
 
-  // Public Notices
-  $("#publicNoticesList").innerHTML = NOTICES.length ? NOTICES.map(n => `
+  // Public Notices: EXPLICITLY FILTERED FOR TARGET 'ALL' ONLY
+  const pubNotices = NOTICES.filter(n => !n.target || n.target === "all");
+  $("#publicNoticesList").innerHTML = pubNotices.length ? pubNotices.map(n => `
     <article class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <h4 style="margin:0;">${esc(n.title)}</h4>
-        <span class="status-pill active">${esc(n.target || 'All')}</span>
+        <span class="status-pill active">Public Notice</span>
       </div>
       <p style="margin:.6rem 0 0;color:var(--text);">${esc(n.body)}</p>
     </article>
@@ -1008,9 +996,43 @@ const rnd = max => {
 const genPw = () => {
   let s = "";
   for (let i = 0; i < 2; i++) s += String.fromCharCode(65 + rnd(26));
-  for (let i = 4; i > 0; i--) s += rnd(10);
+  for (let i = 0; i < 4; i++) s += rnd(10);
   return s;
 };
+
+// Secondary Firebase Auth Instance for Client-Side Account Provisioning without Admin Eviction
+async function createAuthUserInBackground(email, password) {
+  const secondaryApp = F.app.initializeApp(CFG.firebase, "SecAuthApp_" + Date.now() + "_" + Math.random());
+  const secondaryAuth = F.au.getAuth(secondaryApp);
+  try {
+    const uc = await F.au.createUserWithEmailAndPassword(secondaryAuth, email, password);
+    const newUid = uc.user.uid;
+    await F.au.signOut(secondaryAuth);
+    await F.app.deleteApp(secondaryApp);
+    return newUid;
+  } catch (err) {
+    await F.app.deleteApp(secondaryApp);
+    throw err;
+  }
+}
+
+// System Audit Trail Logger
+async function writeAuditLog(action, detail, targetId = "System") {
+  try {
+    if (!me) return;
+    await F.fs.addDoc(col("auditLogs"), {
+      action,
+      detail,
+      targetId,
+      actorUid: me.uid || "system",
+      actorRole: me.role || "admin",
+      actorName: me.name || "Administrator",
+      timestamp: F.fs.serverTimestamp()
+    });
+  } catch (err) {
+    console.warn("Audit logging failed:", err.message);
+  }
+}
 
 async function boot() {
   const V = "10.12.2", B = `https://www.gstatic.com/firebasejs/${V}/`;
@@ -1049,10 +1071,14 @@ async function boot() {
           await au.signOut(A);
           $("#lerr").textContent = t("bad");
         }
-      } catch { await au.signOut(A); }
+      } catch (err) {
+        console.error("Auth routing failure:", err);
+        await au.signOut(A);
+      }
     });
   } catch (err) {
-    $("#cfgMsg").textContent = "Firebase initialization error.";
+    console.error("Firebase Boot Error:", err);
+    $("#cfgMsg").textContent = "Firebase initialization error: " + err.message;
     $("#cfgMsg").className = "msg e";
   }
 }
@@ -1071,11 +1097,15 @@ async function loadAllData() {
     if (cDoc.exists()) CMS = { ...CMS, ...cDoc.data() };
     TIMELINE = hDocs; PREFECTS = pDocs; ACHIEVEMENTS = achDocs; ALBUMS = albDocs; POSTS = postDocs; NOTICES = notDocs;
     renderPublic();
-  } catch (e) { renderPublic(); }
+  } catch (e) {
+    console.error("Data fetch error from Firestore:", e);
+    showToast("දත්ත ලබාගැනීම අසාර්ථකයි: " + e.message, false);
+    renderPublic();
+  }
 }
 
 function alias(raw) {
-  const u = raw.trim().toUpperCase().replace(/\s/g, "");
+  const u = String(raw || "").trim().toUpperCase().replace(/\s/g, "");
   let p = u === "ADMIN" ? "admin" : /^(\d{9}[VX]|\d{12})$/.test(u) ? "t" + u.toLowerCase() : /^\d{1,8}$/.test(u) ? "s" + u : null;
   return p ? `${p}@${CFG.domain}` : null;
 }
@@ -1085,12 +1115,49 @@ $("#lf").onsubmit = async e => {
   const em = alias($("#u").value), pw = $("#p").value;
   if (!em || !pw) { $("#lerr").textContent = t("bad"); return; }
   $("#lbtn").disabled = true;
-  try { await F.au.signInWithEmailAndPassword(A, em, pw); }
-  catch { $("#lerr").textContent = t("bad"); }
+  try { 
+    await F.au.signInWithEmailAndPassword(A, em, pw); 
+  } catch (err) {
+    console.error("Login Error:", err);
+    $("#lerr").textContent = t("bad") + ` (${err.code || 'Unauthorized'})`;
+  }
   $("#lbtn").disabled = false; $("#p").value = "";
 };
 
 $("#outBtn").onclick = () => F.au.signOut(A);
+
+/* ==========================================================================
+   INTERACTIVE GRADE EXPLORER MODAL (PUBLIC SITE)
+   ========================================================================== */
+$("#gradesExplorer").onclick = async e => {
+  const card = e.target.closest("[data-grade]");
+  if (!card) return;
+  const grade = Number(card.dataset.grade);
+
+  $("#gmTitle").textContent = `Grade ${grade} — Cohort Profile`;
+  $("#gmBody").innerHTML = `<p style="color:var(--text-muted)">Loading enrolled class statistics...</p>`;
+  $("#genModal").classList.remove("hide");
+
+  try {
+    const allUsers = await getAll("users");
+    const students = allUsers.filter(u => String(u.role).toLowerCase() === "student" && Number(u.grade) === grade);
+    const teachers = allUsers.filter(u => (u.grades || []).map(Number).includes(grade));
+    const classTeacher = allUsers.find(u => Number(u.assignedClassTeacherGrade) === grade);
+
+    $("#gmBody").innerHTML = `
+      <div class="prof-detail-row"><span>Total Enrolled Students:</span><strong>${students.length} Learners</strong></div>
+      <div class="prof-detail-row"><span>Class System Structure:</span><strong>Single Cohort (No Divisions)</strong></div>
+      <div class="prof-detail-row"><span>Designated Class Teacher:</span><strong>${classTeacher ? esc(classTeacher.name) : 'To be assigned'}</strong></div>
+      
+      <h4 style="margin:1.2rem 0 .4rem;color:var(--maroon);">Faculty Teaching in Grade ${grade}</h4>
+      ${teachers.length ? `<ul style="margin:0;padding-left:1.2rem;">${teachers.map(t => `<li><strong>${esc(t.name)}</strong> (${(t.subjects||[]).join(", ") || 'General Curriculum'})</li>`).join("")}</ul>` : '<p style="color:var(--text-muted);font-size:.9rem;">No teachers currently mapped to this grade.</p>'}
+    `;
+  } catch (err) {
+    $("#gmBody").innerHTML = `<p class="msg e">Could not load cohort data: ${esc(err.message)}</p>`;
+  }
+};
+$("#gmClose").onclick = () => $("#genModal").classList.add("hide");
+$("#genModal").onclick = e => { if (e.target.id === "genModal") $("#genModal").classList.add("hide"); };
 
 /* ==========================================================================
    ADMIN MANAGEMENT PLATFORM CONTROLLERS
@@ -1114,12 +1181,10 @@ function showAdminDashboard() {
       btn.setAttribute("aria-current", "true");
       const target = btn.dataset.t;
       if (ADMIN_MODULES[target]) ADMIN_MODULES[target]();
-      // Auto close sidebar on mobile
       $("#dashSidebar").classList.remove("mobile-open");
     };
   });
 
-  // Mobile sidebar drawer toggle
   const mobBtn = $("#toggleSideMobile");
   if (mobBtn) {
     mobBtn.onclick = () => $("#dashSidebar").classList.toggle("mobile-open");
@@ -1179,7 +1244,7 @@ const ADMIN_MODULES = {
     setPanel("Student Management", "Enrolled roster, profile registries, and credential lifecycle", `
       <div class="card" style="margin-bottom:1.5rem;">
         <h4>Provision New Student Account</h4>
-        <p style="color:var(--text-muted);font-size:.85rem;">Creates authenticated student document. Password strictly generated via CSPRNG.</p>
+        <p style="color:var(--text-muted);font-size:.85rem;">Creates authenticated student document & backend Firebase Auth credential.</p>
         <form id="sfReg">
           <div class="row">
             <div><label>Permanent Admission No</label><input id="s_adm" placeholder="e.g. 1052" required></div>
@@ -1200,7 +1265,7 @@ const ADMIN_MODULES = {
           </div>
           <div class="row" style="margin-top:.6rem;">
             <div><label>Guardian Contact Info</label><input id="s_gd" placeholder="Guardian name & telephone"></div>
-            <div><label>Profile Picture URL (Optional https://...)</label><input id="s_pic" placeholder="https://i.ibb.co/..."></div>
+            <div><label>Profile Picture URL (Optional https://...)</label><input id="s_pic" placeholder="https://..."></div>
           </div>
           <div class="row" style="margin-top:.6rem;">
             <div>
@@ -1211,7 +1276,7 @@ const ADMIN_MODULES = {
               </div>
             </div>
           </div>
-          <button class="btn p" style="margin-top:1rem;" type="submit">Register Student Account</button>
+          <button class="btn p" style="margin-top:1rem;" type="submit" id="s_subBtn">Register Student Account</button>
         </form>
       </div>
 
@@ -1279,7 +1344,6 @@ const ADMIN_MODULES = {
     let studentCache = [];
     let currentViewingStudentId = null;
 
-    // Boy සහ Girl සඳහා වෙන වෙනම Default No-Profile Avatars
     const BOY_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233B82F6'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
     const GIRL_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23EC4899'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
@@ -1398,7 +1462,7 @@ const ADMIN_MODULES = {
       if (e.target.id === "studentProfileModal") $("#studentProfileModal").classList.add("hide");
     };
 
-    // Modal එක ඇතුළෙන්ම ඡායාරූපය Upload කිරීම
+    // Modal Image Upload Listener
     $("#pm_uploadBtn").onclick = async () => {
       const file = $("#pm_fileInput").files[0];
       const msg = $("#pm_upMsg");
@@ -1411,17 +1475,14 @@ const ADMIN_MODULES = {
 
       if (!currentViewingStudentId) return;
 
-      msg.textContent = "Uploading photo...";
+      msg.textContent = "Uploading & compressing photo...";
       msg.className = "msg o";
       $("#pm_uploadBtn").disabled = true;
 
       try {
         const photoUrl = await ibbUp(file);
 
-        await F.fs.setDoc(dc("users", currentViewingStudentId), {
-          photo: photoUrl
-        }, { merge: true });
-
+        await F.fs.setDoc(dc("users", currentViewingStudentId), { photo: photoUrl }, { merge: true });
         $("#pm_img").src = photoUrl;
 
         const cached = studentCache.find(x => x.id === currentViewingStudentId);
@@ -1430,7 +1491,7 @@ const ADMIN_MODULES = {
         msg.textContent = "Profile picture updated successfully!";
         msg.className = "msg o";
         showToast("Profile picture updated!");
-
+        await writeAuditLog("UPDATE_STUDENT_PHOTO", `Updated photo for student doc: ${currentViewingStudentId}`);
         await loadStudents();
       } catch (err) {
         msg.textContent = "Upload failed: " + err.message;
@@ -1441,7 +1502,7 @@ const ADMIN_MODULES = {
       }
     };
 
-    // New Student Registration Form Submit
+    // Student Registration Form with Background Firebase Auth Provisioning
     $("#sfReg").onsubmit = async e => {
       e.preventDefault();
       const adm = $("#s_adm").value.trim();
@@ -1455,9 +1516,11 @@ const ADMIN_MODULES = {
       if (!/^\d{1,8}$/.test(adm)) return showToast("Admission number must be 1 to 8 digits.", false);
       if (pw === adm) return showToast("Password cannot match admission number.", false);
 
+      const subBtn = $("#s_subBtn");
+      subBtn.disabled = true;
       showToast("Checking admission number uniqueness...", true);
+
       try {
-        // Robust check for string/number types in admission field
         const existingStudentCheck = await F.fs.getDocs(
           F.fs.query(col("users"), W("role", "==", "student"), W("adm", "in", [adm, Number(adm)]))
         );
@@ -1465,14 +1528,18 @@ const ADMIN_MODULES = {
         if (!existingStudentCheck.empty) {
           showToast(`Error: Admission No ${adm} is already registered!`, false);
           alert(`දෝෂයකි: '${adm}' ඇතුළත් වීමේ අංකය දැනටමත් වෙනත් සිසුවෙකු සඳහා ලියාපදිංචි කර ඇත! එකම අංකයෙන් සිසුන් දෙදෙනෙකු ලියාපදිංචි කළ නොහැක.`);
+          subBtn.disabled = false;
           return;
         }
 
+        showToast("Provisioning Firebase Authentication account...", true);
+        const email = alias(adm);
+        const authUid = await createAuthUserInBackground(email, pw);
+
         showToast("Saving student record to registry...", true);
-        const docRef = F.fs.doc(col("users"));
-        await F.fs.setDoc(docRef, {
+        await F.fs.setDoc(dc("users", authUid), {
           role: "student",
-          adm,
+          adm: String(adm),
           name,
           grade,
           gender,
@@ -1486,12 +1553,15 @@ const ADMIN_MODULES = {
           createdAt: F.fs.serverTimestamp()
         });
 
-        alert(`Student Registered Successfully!\nAdmission: ${adm}\nGender: ${gender}\nInitial Password: ${pw}\n\nNotice: Provide these credentials to the student.`);
+        await writeAuditLog("STUDENT_REGISTERED", `Provisioned student admission: ${adm} (Grade ${grade})`, authUid);
+        alert(`Student Registered Successfully!\nAdmission: ${adm}\nEmail: ${email}\nInitial Password: ${pw}\n\nNotice: Auth account provisioned. Provide these credentials to the student.`);
         $("#sfReg").reset();
         $("#s_genBtn").click();
         loadStudents();
       } catch (err) {
-        showToast(err.message, false);
+        showToast("Registration failed: " + err.message, false);
+      } finally {
+        subBtn.disabled = false;
       }
     };
 
@@ -1508,11 +1578,19 @@ const ADMIN_MODULES = {
         const current = tog.dataset.st === "true";
         await F.fs.setDoc(dc("users", tog.dataset.sTog), { active: !current }, { merge: true });
         showToast("Student status updated.");
+        await writeAuditLog("TOGGLE_STUDENT_STATUS", `Set student active=${!current}`, tog.dataset.sTog);
         loadStudents();
       }
       if (rst) {
-        const newPw = genPw();
-        alert(`New Password Generated for ${rst.dataset.nm} (${rst.dataset.adm}):\n${newPw}\nInstruct student to sign in and update password immediately.`);
+        const targetEmail = alias(rst.dataset.adm);
+        try {
+          await F.au.sendPasswordResetEmail(A, targetEmail);
+          await F.fs.setDoc(dc("users", rst.dataset.sRst), { mustChangePassword: true }, { merge: true });
+          await writeAuditLog("PASSWORD_RESET_DISPATCHED", `Triggered reset link to ${targetEmail}`, rst.dataset.sRst);
+          alert(`Password Reset Link Dispatched!\nRecipient: ${rst.dataset.nm} (${targetEmail})\n\nA secure password reset email has been sent to the user.`);
+        } catch(err) {
+          showToast("Failed to dispatch password reset: " + err.message, false);
+        }
       }
     };
   },
@@ -1541,7 +1619,7 @@ const ADMIN_MODULES = {
               </div>
             </div>
           </div>
-          <button class="btn p" style="margin-top:1rem;" type="submit">Create Faculty Account</button>
+          <button class="btn p" style="margin-top:1rem;" type="submit" id="t_subBtn">Create Faculty Account</button>
         </form>
       </div>
 
@@ -1575,7 +1653,7 @@ const ADMIN_MODULES = {
             `<span class="status-pill ${t.active !== false ? 'active' : 'inactive'}">${t.active !== false ? 'Active' : 'Disabled'}</span>`,
             `<div style="display:flex;gap:.35rem;">
               <button class="btn sm" data-t-tog="${esc(t.id)}" data-st="${t.active !== false}">${t.active !== false ? 'Disable' : 'Activate'}</button>
-              <button class="btn sm" data-t-rst="${esc(t.id)}" data-nm="${esc(t.name)}">Reset Password</button>
+              <button class="btn sm" data-t-rst="${esc(t.id)}" data-nic="${esc(t.rawNIC || t.nic)}" data-nm="${esc(t.name)}">Reset Password</button>
             </div>`
           ])
         );
@@ -1598,7 +1676,10 @@ const ADMIN_MODULES = {
       if (!/^(\d{9}[VX]|\d{12})$/.test(rawNIC)) return showToast("Invalid Sri Lankan NIC format.", false);
       if (!grades.length) return showToast("Assign at least one grade (1–11).", false);
 
-      showToast("Saving teacher profile...", true);
+      const subBtn = $("#t_subBtn");
+      subBtn.disabled = true;
+      showToast("Provisioning faculty account...", true);
+
       try {
         const teacherSeqId = await F.fs.runTransaction(D, async tx => {
           const counterRef = dc("counters", "teachers");
@@ -1608,11 +1689,14 @@ const ADMIN_MODULES = {
           return "TCH-" + String(nextVal).padStart(4, "0");
         });
 
-        const docRef = F.fs.doc(col("users"));
-        await F.fs.setDoc(docRef, {
+        const email = alias(rawNIC);
+        const authUid = await createAuthUserInBackground(email, pw);
+
+        await F.fs.setDoc(dc("users", authUid), {
           role: "teacher",
           name,
           teacherId: teacherSeqId,
+          rawNIC,
           nicMasked: rawNIC.slice(0, 3) + "******" + rawNIC.slice(-2),
           grades,
           assignedClassTeacherGrade: ctGrade,
@@ -1622,11 +1706,16 @@ const ADMIN_MODULES = {
           createdAt: F.fs.serverTimestamp()
         });
 
-        alert(`Teacher Account Registered!\nID: ${teacherSeqId}\nTemporary Password: ${pw}\n\nNotice: Provide these credentials to the teacher.`);
+        await writeAuditLog("TEACHER_REGISTERED", `Created teacher: ${teacherSeqId} (${name})`, authUid);
+        alert(`Teacher Account Registered!\nID: ${teacherSeqId}\nEmail: ${email}\nInitial Password: ${pw}\n\nNotice: Auth account provisioned. Provide these credentials to the teacher.`);
         $("#tfReg").reset();
         $("#t_genBtn").click();
         loadTeachers();
-      } catch(err) { showToast(err.message, false); }
+      } catch(err) { 
+        showToast("Teacher registration error: " + err.message, false); 
+      } finally {
+        subBtn.disabled = false;
+      }
     };
 
     $("#tTableBox").onclick = async e => {
@@ -1636,11 +1725,20 @@ const ADMIN_MODULES = {
         const current = tog.dataset.st === "true";
         await F.fs.setDoc(dc("users", tog.dataset.tTog), { active: !current }, { merge: true });
         showToast("Teacher status updated.");
+        await writeAuditLog("TOGGLE_TEACHER_STATUS", `Set teacher active=${!current}`, tog.dataset.tTog);
         loadTeachers();
       }
       if (rst) {
-        const newPw = genPw();
-        alert(`Temporary Password for ${rst.dataset.nm}:\n${newPw}\nInstruct teacher to sign in and update password immediately.`);
+        const targetEmail = alias(rst.dataset.nic);
+        try {
+          if (!targetEmail) throw new Error("Could not determine user email alias.");
+          await F.au.sendPasswordResetEmail(A, targetEmail);
+          await F.fs.setDoc(dc("users", rst.dataset.tRst), { mustChangePassword: true }, { merge: true });
+          await writeAuditLog("PASSWORD_RESET_DISPATCHED", `Triggered reset link to ${targetEmail}`, rst.dataset.tRst);
+          alert(`Password Reset Link Dispatched!\nRecipient: ${rst.dataset.nm} (${targetEmail})\n\nA secure password reset email has been sent to the faculty member.`);
+        } catch(err) {
+          showToast("Failed to dispatch password reset: " + err.message, false);
+        }
       }
     };
   },
@@ -1656,7 +1754,7 @@ const ADMIN_MODULES = {
             <div>
               <label>Target Audience</label>
               <select id="n_tgt">
-                <option value="all">Entire School Community</option>
+                <option value="all">Entire School Community (Public)</option>
                 <option value="teachers">All Teachers</option>
                 <option value="students">All Students</option>
                 ${[...Array(11)].map((_, i) => `<option value="grade_${i+1}">Grade ${i+1} Students</option>`).join("")}
@@ -1701,6 +1799,7 @@ const ADMIN_MODULES = {
           by: me.uid
         });
         showToast("Notification broadcasted.");
+        await writeAuditLog("BROADCAST_NOTICE", `Published notice: ${$("#n_ttl").value.trim()}`);
         $("#nfBroadcast").reset();
         await loadAllData();
         loadNotices();
@@ -1711,6 +1810,7 @@ const ADMIN_MODULES = {
       const b = e.target.closest("[data-n-del]");
       if (b && confirm("Delete notification?")) {
         await F.fs.deleteDoc(dc("notices", b.dataset.nDel));
+        await writeAuditLog("DELETE_NOTICE", `Deleted notice: ${b.dataset.nDel}`);
         await loadAllData();
         loadNotices();
       }
@@ -1777,6 +1877,7 @@ const ADMIN_MODULES = {
           author: me.uid
         });
         showToast("Post published successfully.");
+        await writeAuditLog("PUBLISH_POST", `Published post: ${$("#p_tsi").value.trim()}`);
         $("#postForm").reset();
         await loadAllData();
         loadPosts();
@@ -1787,6 +1888,7 @@ const ADMIN_MODULES = {
       const b = e.target.closest("[data-p-del]");
       if (b && confirm("Delete post?")) {
         await F.fs.deleteDoc(dc("posts", b.dataset.pDel));
+        await writeAuditLog("DELETE_POST", `Deleted post: ${b.dataset.pDel}`);
         await loadAllData();
         loadPosts();
       }
@@ -1854,6 +1956,7 @@ const ADMIN_MODULES = {
         CMS = { ...CMS, ...up };
         renderPublic();
         showToast("Website CMS updated live!");
+        await writeAuditLog("UPDATE_CMS", "Updated public school portal CMS");
       } catch(err) { showToast(err.message, false); }
     };
   },
@@ -1914,6 +2017,7 @@ const ADMIN_MODULES = {
           createdAt: F.fs.serverTimestamp()
         });
         showToast("Milestone appended.");
+        await writeAuditLog("ADD_TIMELINE_MILESTONE", `Added milestone: ${$("#h_yr").value.trim()}`);
         $("#hfMilestone").reset();
         await loadAllData();
         loadHistory();
@@ -1924,6 +2028,7 @@ const ADMIN_MODULES = {
       const b = e.target.closest("[data-h-del]");
       if (b && confirm("Delete milestone?")) {
         await F.fs.deleteDoc(dc("timeline", b.dataset.hDel));
+        await writeAuditLog("DELETE_TIMELINE_MILESTONE", `Deleted milestone: ${b.dataset.hDel}`);
         await loadAllData();
         loadHistory();
       }
@@ -1981,6 +2086,7 @@ const ADMIN_MODULES = {
           createdAt: F.fs.serverTimestamp()
         });
         showToast("Prefect appointed.");
+        await writeAuditLog("APPOINT_PREFECT", `Appointed prefect: ${$("#p_nm").value.trim()}`);
         $("#prfForm").reset();
         await loadAllData();
         loadPrefects();
@@ -1991,6 +2097,7 @@ const ADMIN_MODULES = {
       const b = e.target.closest("[data-pref-del]");
       if (b && confirm("Delete record?")) {
         await F.fs.deleteDoc(dc("prefects", b.dataset.prefDel));
+        await writeAuditLog("DELETE_PREFECT", `Removed prefect: ${b.dataset.prefDel}`);
         await loadAllData();
         loadPrefects();
       }
@@ -2049,6 +2156,7 @@ const ADMIN_MODULES = {
           createdAt: F.fs.serverTimestamp()
         });
         showToast("Achievement recorded.");
+        await writeAuditLog("ADD_ACHIEVEMENT", `Added achievement: ${$("#a_tsi").value.trim()}`);
         $("#achForm").reset();
         await loadAllData();
         loadAchieve();
@@ -2059,6 +2167,7 @@ const ADMIN_MODULES = {
       const b = e.target.closest("[data-ach-del]");
       if (b && confirm("Delete record?")) {
         await F.fs.deleteDoc(dc("achievements", b.dataset.achDel));
+        await writeAuditLog("DELETE_ACHIEVEMENT", `Removed achievement: ${b.dataset.achDel}`);
         await loadAllData();
         loadAchieve();
       }
@@ -2111,6 +2220,7 @@ const ADMIN_MODULES = {
           createdAt: F.fs.serverTimestamp()
         });
         showToast("Album created.");
+        await writeAuditLog("CREATE_ALBUM", `Created album: ${$("#alb_t").value.trim()}`);
         $("#albForm").reset();
         await loadAllData();
         loadAlbums();
@@ -2121,6 +2231,7 @@ const ADMIN_MODULES = {
       const b = e.target.closest("[data-alb-del]");
       if (b && confirm("Delete album?")) {
         await F.fs.deleteDoc(dc("albums", b.dataset.albDel));
+        await writeAuditLog("DELETE_ALBUM", `Deleted album: ${b.dataset.albDel}`);
         await loadAllData();
         loadAlbums();
       }
@@ -2177,6 +2288,7 @@ const ADMIN_MODULES = {
         const b = e.target.closest("[data-hw-del]");
         if (b && confirm("Delete assignment?")) {
           await F.fs.deleteDoc(dc("homework", b.dataset.hwDel));
+          await writeAuditLog("DELETE_HOMEWORK", `Deleted homework: ${b.dataset.hwDel}`);
           ADMIN_MODULES.homework();
         }
       };
@@ -2205,6 +2317,7 @@ const ADMIN_MODULES = {
         if (b) {
           await F.fs.setDoc(dc("marks", b.dataset.exApp), { status: "approved", approvedBy: me.uid }, { merge: true });
           showToast("Exam score approved.");
+          await writeAuditLog("APPROVE_MARK", `Approved evaluation record: ${b.dataset.exApp}`);
           ADMIN_MODULES.exams();
         }
       };
@@ -2264,6 +2377,7 @@ const ADMIN_MODULES = {
       try {
         await F.fs.setDoc(dc("timetable", `${o.grade}_${o.day}_${o.period}`), o);
         showToast("Period assigned.");
+        await writeAuditLog("ASSIGN_TIMETABLE", `Assigned Grade ${o.grade} ${o.day} P${o.period}`);
         $("#ttForm").reset();
         loadTT();
       } catch(err) { showToast(err.message, false); }
@@ -2273,6 +2387,7 @@ const ADMIN_MODULES = {
       const b = e.target.closest("[data-tt-del]");
       if (b && confirm("Delete entry?")) {
         await F.fs.deleteDoc(dc("timetable", b.dataset.ttDel));
+        await writeAuditLog("DELETE_TIMETABLE", `Removed period: ${b.dataset.ttDel}`);
         loadTT();
       }
     };
@@ -2329,6 +2444,7 @@ const ADMIN_MODULES = {
             category: $("#b_cat").value.trim(), qty, avail: qty, createdAt: F.fs.serverTimestamp()
           });
           showToast("Volume cataloged.");
+          await writeAuditLog("CATALOG_BOOK", `Cataloged book: ${$("#b_ttl").value.trim()}`);
           ADMIN_MODULES.library();
         } catch(err) { showToast(err.message, false); }
       };
@@ -2382,6 +2498,7 @@ const ADMIN_MODULES = {
           createdAt: F.fs.serverTimestamp()
         });
         showToast("Resource added.");
+        await writeAuditLog("UPLOAD_QBANK", `Uploaded paper: ${$("#qb_ttl").value.trim()}`);
         $("#qbForm").reset();
         loadQB();
       } catch(err) { showToast(err.message, false); }
@@ -2391,12 +2508,13 @@ const ADMIN_MODULES = {
       const b = e.target.closest("[data-qb-del]");
       if (b && confirm("Delete paper?")) {
         await F.fs.deleteDoc(dc("qbank", b.dataset.qbDel));
+        await writeAuditLog("DELETE_QBANK", `Deleted paper: ${b.dataset.qbDel}`);
         loadQB();
       }
     };
   },
 
-  /* Audit Logs */
+  /* Audit Logs Viewer */
   async audit() {
     setPanel("System Audit Logs", "Immutable security activity and administrative actions", `
       <div class="card"><div id="auditBox"><p>Loading security audit trails...</p></div></div>
@@ -2404,14 +2522,17 @@ const ADMIN_MODULES = {
     try {
       const logs = await getAll("auditLogs", F.fs.orderBy("timestamp", "desc"), F.fs.limit(50));
       $("#auditBox").innerHTML = logs.length ? tbl(
-        ["Timestamp", "Actor Role", "Action", "Target"],
+        ["Timestamp", "Actor Name", "Role", "Action", "Detail"],
         logs.map(l => [
           l.timestamp ? new Date(l.timestamp.seconds * 1000).toLocaleString() : 'Recent',
-          esc(l.actorRole || 'admin'), esc(l.action), esc(l.targetId || 'System')
+          esc(l.actorName || 'System Admin'),
+          esc(l.actorRole || 'admin'),
+          `<code>${esc(l.action)}</code>`,
+          esc(l.detail || '—')
         ])
       ) : "<p style='color:var(--text-muted)'>No privileged security events recorded.</p>";
     } catch(err) {
-      $("#auditBox").innerHTML = `<p style="color:var(--text-muted)">Security audit logging enabled on Cloudflare Workers / Firestore Rules.</p>`;
+      $("#auditBox").innerHTML = `<p class="msg e">Could not load audit log entries: ${esc(err.message)}</p>`;
     }
   },
 
@@ -2438,6 +2559,7 @@ const ADMIN_MODULES = {
         await F.au.updatePassword(u, np);
         await F.fs.setDoc(dc("users", u.uid), { mustChangePassword: false }, { merge: true });
         showToast("Password updated successfully.");
+        await writeAuditLog("UPDATE_ADMIN_PASSWORD", "Master admin credential changed");
         $("#afAdmin").reset();
       } catch(err) { showToast("Authentication failed: " + err.message, false); }
     };
